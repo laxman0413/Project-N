@@ -1,0 +1,32 @@
+.card{
+    border: 2px solid black;
+    margin-left: 10%;
+    border-radius: 10%;
+    margin-right: 10%;
+    background-color: aqua;
+    margin-top: 10px;
+}
+.card:hover{
+    box-shadow: 50% 50% 50% 50% grey;
+}
+.card_header{
+    display: flex;
+
+    padding: 10px;
+}
+.card_body_comp{
+    padding: 10px;
+    font-size: 20px;
+    text-align: left;
+}
+
+.card_header_comp{
+    flex: 1;
+    text-align: left;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.card_body{
+    background-color: white;
+}

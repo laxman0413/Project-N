@@ -1,0 +1,14 @@
+.card{
+    border: 2px solid black;
+    margin: auto;
+}
+.card_header_comp{
+
+    flex: 1;
+    text-align: left;
+    padding: 10px;
+}
+.image{
+    max-height:200px ;
+    max-width: 300px;
+}
