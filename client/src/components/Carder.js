@@ -38,7 +38,7 @@ function Carder() {
 
             {/* Description */}
             <Typography variant="body2" color="text.secondary">
-              {/* Lorem Ipsum Text */}
+              Lorem1 ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </Typography>
 
             {/* Payment, Location, Worker Capacity */}
@@ -60,7 +60,8 @@ function Carder() {
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Additional Details</DialogTitle>
         <DialogContent>
-          {/* Add detailed information here */}
+          <h2>Description</h2>
+          <p>Lorem 10</p>
           <Typography variant="body2" color="text.secondary">
             {/* Additional details content */}
           </Typography>
