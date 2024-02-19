@@ -1,10 +1,10 @@
 import './App.css';
-import Carder from './components/Carder.js';
-
+import JobSeeker from './components/JobSeeker';
+import JobProvider from './components/JobProvider';
 function App() {
   return (
     <div className="App">
-      <Carder />
+      <JobProvider />
     </div>
   );
 }
