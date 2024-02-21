@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+import Admin from './components/Admin';
 import './App.css';
-
+import {createBrowserRouter,RouterProvider} from 'react-router-dom';
+import JobProvider from './components/JobProvider';
+import JobSeeker from './components/JobSeeker.js';
+import Home from './components/Home';
+import RootLayout from './RootLayout';
+const router=createBrowserRouter([
+  {
+    path:'/',
+    element:<RootLayout />,
+    children:[
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path:'/admin',
+        element:<Admin />,
+      },
+      {
+        path:'/jobseeker',
+        element:<JobSeeker />,
+      },
+      {
+        path:'/jobprovider',
+        element:<JobProvider />,
+      },
+    ]
+  }
+])
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <RouterProvider router={router} />
     </div>
   );
 }
