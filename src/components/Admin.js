@@ -1,12 +1,13 @@
 import React from "react"
 import {useForm } from "react-hook-form";
-
+import { useNavigate } from "react-router-dom";
 
 const Admin = (props) => {
-
+  const navigate=useNavigate()
   let {register,handleSubmit}=useForm();
   const forsubmit=(userObj)=>{
     console.log(userObj);
+    navigate("/admin-1");
   }
   return (
     <div>

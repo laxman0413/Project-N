@@ -1,12 +1,15 @@
 import {useState} from "react";
 import {useForm } from "react-hook-form";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 const JobProvider = () => {
     let {register,handleSubmit}=useForm();
     let [user,setUser]=useState({})
+    const navigate=useNavigate()
     const forsubmit=(userObj)=>{
         setUser(userObj);
         console.log(userObj);
+        navigate("/jobprovider-1")
     }
   return (
     <div>

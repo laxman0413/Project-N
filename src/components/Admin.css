@@ -1,0 +1,37 @@
+.admin-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+  }
+  
+  .statistics-container {
+    width: 30%;
+  }
+  
+  .chart-container {
+    width: 60%;
+  }
+  
+  .statistic-card {
+    margin-bottom: 20px;
+  }
+  
+  .complaints-container {
+    width: 30%;
+  }
+  
+  .complaint-box-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .complaint-box {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+  
+  /* Add more styling as needed */
+  
