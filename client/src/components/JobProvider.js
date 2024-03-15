@@ -1,36 +1,52 @@
+// frontend/src/JobProvider.js
 import React, { useState } from 'react';
+import axios from 'axios';
 import Menu from './Menu';
 import Carder from './Carder';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import './JobProvider.css';
 
 function JobProvider() {
-  // State to manage modal visibility
   const [isModalOpen, setModalOpen] = useState(false);
 
-  // Job Details Form State
   const [jobDetails, setJobDetails] = useState({
     jobTitle: '',
     jobType: '',
-    customJobType: '', // Added for Others option
+    customJobType: '',
     payment: '',
     peopleNeeded: '',
     location: '',
     date: '',
     time: '',
   });
-
-  // Function to handle "Post a Job" button click and open modal
+  const locations = [
+    "Dobinala Junction",
+    "Ara mile",
+    "Marwari Patti",
+    "Police Point",
+    "Toluvi Junction Purana Bazar",
+    "City Tower",
+    "D. C. Court"
+  ];
   const handlePostJobClick = () => {
     setModalOpen(true);
   };
 
-  // Function to handle modal close
   const handleCloseModal = () => {
     setModalOpen(false);
   };
 
-  // Function to handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setJobDetails((prevDetails) => ({
@@ -39,11 +55,15 @@ function JobProvider() {
     }));
   };
 
-  // Function to handle form submission (you can customize this)
   const handleFormSubmit = () => {
-    // Add form submission logic
-    console.log('Job Details:', jobDetails);
-    handleCloseModal();
+    axios.post('http://localhost:3001/addJob', jobDetails)
+      .then(response => {
+        console.log(response.data);
+        handleCloseModal();
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+      });
   };
 
   return (
@@ -111,14 +131,19 @@ function JobProvider() {
               margin="normal"
             />
 
-            <TextField
-              fullWidth
-              label="Location (GPS)"
-              name="location"
-              value={jobDetails.location}
-              onChange={handleInputChange}
-              margin="normal"
-            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="location-label">Location</InputLabel>
+              <Select
+                labelId="location-label"
+                name="location"
+                value={jobDetails.location}
+                onChange={handleInputChange}
+              >
+                {locations.map((location, index) => (
+                  <MenuItem key={index} value={location}>{location}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <TextField
               fullWidth

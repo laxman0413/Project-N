@@ -1,3 +1,4 @@
+// frontend/src/Carder.js
 import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -6,7 +7,7 @@ import { Button, CardActionArea, CardActions, Dialog, DialogTitle, DialogContent
 import card1 from '../assets/card1.jpg';
 import './Carder.css';
 
-function Carder() {
+function Carder({ job }) {
   // State to manage dialog (overlay) visibility
   const [isDialogOpen, setDialogOpen] = useState(false);
 
@@ -29,22 +30,22 @@ function Carder() {
           <CardContent>
             {/* Title */}
             <Typography gutterBottom variant="h5" component="div">
-              Title
+              {job.jobTitle}
             </Typography>
 
             {/* Date and Time */}
-            <p className='card_header_comp'>Date:</p>
-            <p className='card_header_comp'>Time:</p>
+            <p className='card_header_comp'>Date: {job.date}</p>
+            <p className='card_header_comp'>Time: {job.time}</p>
 
             {/* Description */}
             <Typography variant="body2" color="text.secondary">
-              Lorem1 ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              {job.description}
             </Typography>
 
             {/* Payment, Location, Worker Capacity */}
-            <h4 className='card_header_comp'>Payment:</h4>
-            <h4 className='card_header_comp'>Location:</h4>
-            <h4 className='card_header_comp'>Worker Capacity:</h4>
+            <h4 className='card_header_comp'>Payment: {job.payment}</h4>
+            <h4 className='card_header_comp'>Location: {job.location}</h4>
+            <h4 className='card_header_comp'>Worker Capacity: {job.workerCapacity}</h4>
           </CardContent>
         </CardActionArea>
 
@@ -61,7 +62,7 @@ function Carder() {
         <DialogTitle>Additional Details</DialogTitle>
         <DialogContent>
           <h2>Description</h2>
-          <p>Lorem 10</p>
+          <p>{job.additionalDetails}</p>
           <Typography variant="body2" color="text.secondary">
             {/* Additional details content */}
           </Typography>
