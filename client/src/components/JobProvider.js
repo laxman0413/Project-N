@@ -179,9 +179,7 @@ function JobProvider() {
       </Dialog>
 
       <h2>Previous Jobs</h2>
-      <Carder />
-      <Carder />
-      <Carder />
+      
     </div>
   );
 }
