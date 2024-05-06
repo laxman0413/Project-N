@@ -40,6 +40,34 @@ app.get('/jobdetails', (req, res) => {
   });
 });
 
+app.post('/addJob', (req, res) => {
+  const {
+    jobTitle,
+    jobType,
+    customJobType,
+    payment,
+    peopleNeeded,
+    location,
+    date,
+    time,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO jobdetails
+    (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(sql, [jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.status(200).send('Job added successfully');
+    }
+  });
+});
+
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {

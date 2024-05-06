@@ -3,25 +3,23 @@ import { Link } from "react-router-dom"
 import { createBrowserRouter, RouterProvider,} from "react-router-dom";
 import RootLayout from './components/rootLayout/RootLayout';
 import LoginForm from './components/login/LoginForm';
-import RegisterFrom from './components/register/RegisterForm';
+import RegisterForm from './components/register/RegisterForm'
+import JobProvider from './components/JobProvider';
 
 function App() {
   const RouterObj=createBrowserRouter([
     {
       path:'/',
       element:<RootLayout />,
-      children:
-      [
-        {
-          path:'/register',
-          element: <RegisterFrom />
-        },
-        {
-          path:'/login',
-          element: <LoginForm />
-        },
-      ]
-    }
+    },
+    {
+      path:'/login',
+      element:<LoginForm />,
+    },
+    {
+      path:'/register',
+      element:<RegisterForm />,
+    },
   ])
 
   return (
@@ -35,3 +33,5 @@ function App() {
 }
 
 export default App;
+
+
