@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function RegisterForm() {
+function JobProviderRegister() {
   const [userData, setUserData] = useState({
     username: '',
     password: '',
@@ -36,7 +36,7 @@ function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
+      <h2>JobProviderRegister</h2>
       <div>
         <label>Username:</label>
         <input type="text" name="username" value={userData.username} onChange={handleChange} />
@@ -78,9 +78,9 @@ function RegisterForm() {
           </select>
         </div>
       )}
-      <button type="submit">Register</button>
+      <button type="submit">JobProviderRegister</button>
     </form>
   );
 }
 
-export default RegisterForm;
+export default JobProviderRegister;
