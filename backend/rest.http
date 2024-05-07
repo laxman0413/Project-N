@@ -1,0 +1,11 @@
+POST  http://localhost:3001/jobProvider/register
+Content-Type: application/json
+
+{
+    "username":"Sai",
+    "phone":"9876543210",
+    "location":"Dimapur"
+}
+
+###
+GET http://localhost:3001/jobProvider/jobdetails
