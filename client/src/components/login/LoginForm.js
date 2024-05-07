@@ -4,7 +4,8 @@ import axios from 'axios';
 function LoginForm() {
   const [credentials, setCredentials] = useState({
     username: '',
-    password: ''
+    password: '',
+    role: '' // Added role to the state
   });
 
   const handleChange = (event) => {
@@ -16,6 +17,11 @@ function LoginForm() {
   };
 
   const handleFormSubmit = () => {
+    // Make sure role is not empty
+    if (credentials.role === '') {
+      alert('Please select a role');
+      return;
+    }
     axios.post('http://localhost:3001/login', credentials)
       .then(response => {
         console.log('Login successful:', response.data);
@@ -39,6 +45,14 @@ function LoginForm() {
       <label>
         Password:
         <input type="password" name="password" value={credentials.password} onChange={handleChange} />
+      </label>
+      <label>
+        Role:
+        <select name="role" value={credentials.role} onChange={handleChange}>
+          <option value="">Select Role</option>
+          <option value="provider">Job Provider</option>
+          <option value="seeker">Job Seeker</option>
+        </select>
       </label>
       <button type="submit">Login</button>
     </form>
