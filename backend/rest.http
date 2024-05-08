@@ -2,9 +2,9 @@ POST  http://localhost:3001/jobProvider/register
 Content-Type: application/json
 
 {
-    "username":"Sai",
-    "phone":"9876543210",
-    "location":"Dimapur"
+    "username":"nikil",
+    "phone":"1098765432",
+    "location":"Dimapur-1"
 }
 
 ###

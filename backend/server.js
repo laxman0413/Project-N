@@ -1,6 +1,7 @@
 require('dotenv').config({ path: './token.env' }); // Load JWT secret from token.env
 const express = require('express');
-const mysql = require('mysql');
+const sql = require('mssql');
+const mysql=require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -8,19 +9,23 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'test',
-});
 
-db.connect((err) => {
+const config = {
+  user: 'AdminsofNagaConnect',
+  password: 'iT@QRBPsCkT9@q8',
+  server:'nagaconnect.database.windows.net',
+  database: 'NagaConnect',
+  options: {
+    encrypt: true
+  }
+};
+
+sql.connect(config, err => {
   if (err) {
-    console.error('Error connecting to database:', err);
-  } else {
-    app.set('db',db);
-    console.log('Connected to database');
+      console.log(err);
+  }else{
+    app.set("db",sql);
+    console.log("Connection Successful!");
   }
 });
 
