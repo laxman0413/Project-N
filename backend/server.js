@@ -1,19 +1,39 @@
 require('dotenv').config({ path: './token.env' }); // Load JWT secret from token.env
+const mssql = require('msnodesqlv8');
 const express = require('express');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const sql = require('msnodesqlv8');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+const connectionString = "server=nagaconnect.database.windows.net;Database=NagaConnect;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
+sql.connect(connectionString, (err) => {
+  if (err) {
+    console.error('Error connecting to database:', err);
+  } else {
+    console.log('Connected to database');
+    var request = new sql.Request();
+    request.query('SELECT * FROM jobdetails', (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+      } else {
+        console.log(result);
+      }
+    });
+  }
+})
+
+
 const db = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'test_for_react',
+  user: 'AdminsofNagaConnect',
+  password: 'iT@QRBPsCkT9@q8',
+  database: 'NagaConnect',
 });
 
 db.connect((err) => {
