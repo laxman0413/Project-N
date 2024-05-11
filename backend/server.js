@@ -1,48 +1,35 @@
 require('dotenv').config({ path: './token.env' }); // Load JWT secret from token.env
-const mssql = require('msnodesqlv8');
+const sql = require('mssql');
 const express = require('express');
-const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const sql = require('msnodesqlv8');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const connectionString = "server=nagaconnect.database.windows.net;Database=NagaConnect;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
-sql.connect(connectionString, (err) => {
-  if (err) {
-    console.error('Error connecting to database:', err);
-  } else {
-    console.log('Connected to database');
-    var request = new sql.Request();
-    request.query('SELECT * FROM jobdetails', (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-      } else {
-        console.log(result);
-      }
-    });
+var config = {
+  server: "nagaconnect.database.windows.net",
+  database: "NagaConnect",
+  user: "AdminsofNagaConnect",
+  password:"iT@QRBPsCkT9@q8",
+  driver: "msnodesqlv8",
+  options: {
+    trustedConnection: true
   }
-})
-
-
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'AdminsofNagaConnect',
-  password: 'iT@QRBPsCkT9@q8',
-  database: 'NagaConnect',
+}
+sql.connect(config, function (err) {
+  if (err) console.log("Error while connecting database :- " + err);
+  var request = new sql.Request();
+  request.query("select * from jobprovider", function (err, recordset) {
+    if (err) console.log(err)
+    console.log(recordset);
+  }, function (err) {
+    console.log(err);
+  });
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to database:', err);
-  } else {
-    console.log('Connected to database');
-  }
-});
 
 app.get('/', (req, res) => {
   res.send('Hello from the other side!');
