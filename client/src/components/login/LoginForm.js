@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function LoginForm() {
   const [credentials, setCredentials] = useState({
-    username: '',
+    phone: '',
     password: '',
     role: '' // Added role to the state
   });
@@ -39,8 +39,8 @@ function LoginForm() {
       handleFormSubmit();
     }}>
       <label>
-        Username:
-        <input type="text" name="username" value={credentials.username} onChange={handleChange} />
+        Phone:
+        <input type="text" name="phone" value={credentials.phone} onChange={handleChange} />
       </label>
       <label>
         Password:

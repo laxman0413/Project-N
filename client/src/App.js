@@ -20,6 +20,10 @@ function App() {
       path:'/register',
       element:<RegisterForm />,
     },
+    {
+      path:'/jobprovider',
+      element:<JobProvider />,
+    }
   ])
 
   return (

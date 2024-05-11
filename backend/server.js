@@ -1,4 +1,5 @@
 require('dotenv').config({ path: './token.env' }); // Load JWT secret from token.env
+require('dotenv').config({ path: './credentials.env' }); // Load database credentials from credentials.env
 const sql = require('mssql');
 const express = require('express');
 const bcrypt = require('bcryptjs');
@@ -9,25 +10,19 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-var config = {
-  server: "nagaconnect.database.windows.net",
-  database: "NagaConnect",
-  user: "AdminsofNagaConnect",
-  password:"iT@QRBPsCkT9@q8",
-  driver: "msnodesqlv8",
+const config = {
+  server: process.env.SERVER,
+  database: process.env.DATABASE,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  driver: process.env.DRIVER,
   options: {
-    trustedConnection: true
+    trustedConnection: process.env.TRUSTED_CONNECTION === 'true'
   }
-}
+};
 sql.connect(config, function (err) {
   if (err) console.log("Error while connecting database :- " + err);
-  var request = new sql.Request();
-  request.query("select * from jobprovider", function (err, recordset) {
-    if (err) console.log(err)
-    console.log(recordset);
-  }, function (err) {
-    console.log(err);
-  });
+  else console.log("Database connected successfully");
 });
 
 
@@ -76,72 +71,83 @@ app.post('/addJob', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  const { username, password, phone, role, location } = req.body;
+  const { username, password, phone, role, location, age, sex } = req.body;
 
   try {
-      const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    console.log('Hashed password:', hashedPassword); // Log for verification
 
-      if (role === 'provider') {
-          const sql = 'INSERT INTO job_provider (username, password, phone) VALUES (?, ?, ?)';
-          const values = [username, hashedPassword, phone];
-          db.query(sql, values, (err, result) => {
-              if (err) {
-                  console.error('Error executing query:', err);
-                  return res.status(500).send('Internal Server Error');
-              }
-              res.status(201).send('User registered successfully');
-          });
-      } else if (role === 'seeker') {
-          const sql = 'INSERT INTO job_seeker (username, password, phone, location) VALUES (?, ?, ?, ?)';
-          const values = [username, hashedPassword, phone, location];
-          db.query(sql, values, (err, result) => {
-              if (err) {
-                  console.error('Error executing query:', err);
-                  return res.status(500).send('Internal Server Error');
-              }
-              res.status(201).send('User registered successfully');
-          });
-      } else {
-          return res.status(400).send('Invalid role specified');
+    let sqlQuery;
+    let values;
+
+    if (role === 'provider') {
+      sqlQuery = 'INSERT INTO job_provider (name, password, phone) VALUES (@username, @hashedPassword, @phone)';
+      values = { username, hashedPassword, phone };
+    } else if (role === 'seeker') {
+      sqlQuery = 'INSERT INTO job_seeker (name, password, phone, age, sex, location) VALUES (@username, @hashedPassword, @phone, @age, @sex, @location)';
+      //console.log('name: ',username, 'password: ',hashedPassword, 'phone: ',phone, 'age: ',age );
+      values = { username, hashedPassword, phone, location, age, sex };
+    } else {
+      return res.status(400).send('Invalid role specified');
+    }
+
+    const request = new sql.Request();
+    for (let key in values) {
+      request.input(key, values[key]);
+    }
+
+    request.query(sqlQuery, (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        return res.status(500).send('Internal Server Error');
       }
+      console.log('User registered successfully');
+      res.status(201).send('User registered successfully');
+    });
   } catch (error) {
-      console.error('Error:', error);
-      res.status(500).send('Error registering user');
+    console.error('Error:', error);
+    res.status(500).send('Error registering user');
   }
 });
 
 
 
 
+
+
+
+
 app.post('/login', (req, res) => {
-  const { username, password, role } = req.body;
+  const { phone, password, role } = req.body;
 
   // Determine the correct table based on the user role
   let table;
   if (role === 'provider') {
       table = 'job_provider';
   } else if (role === 'seeker') {
-      table = 'jobseeker';
+      table = 'job_seeker';
   } else {
       return res.status(400).send('Invalid role specified');
   }
 
-  const sql = `SELECT * FROM ${table} WHERE username = ?`;
-  db.query(sql, [username], async (err, results) => {
+  const sqlQuery = `SELECT * FROM ${table} WHERE phone = @phone`;
+  const request = new sql.Request();
+  request.input('phone', sql.VarChar, phone);
+  request.query(sqlQuery, async (err, results) => {
       if (err) {
           console.error('Error executing query:', err);
           return res.status(500).send('Internal Server Error');
       }
-      if (results.length === 0) {
+      if (results.recordset.length === 0) {
           return res.status(404).send('User not found');
       }
 
-      const user = results[0];
+      const user = results.recordset[0];
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
           const userIdField = role === 'provider' ? 'providerid' : 'seekerid';
           const token = jwt.sign(
-              { id: user[userIdField], username: user.username, role }, // include user ID and role in the token
+              { id: user[userIdField], phone: user.phone, role }, // include user ID and role in the token
               process.env.JWT_SECRET,
               { expiresIn: '72h' }
           );
@@ -158,6 +164,10 @@ app.post('/login', (req, res) => {
       }
   });
 });
+
+
+
+
 
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);
