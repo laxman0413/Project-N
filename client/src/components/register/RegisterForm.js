@@ -6,7 +6,7 @@ function RegisterForm() {
     name: '',
     phone: '',
     password: '',
-    role: 'seeker', // Set default role to 'seeker'
+    role: '', // Set default role to 'seeker'
     age: '', // Initialize age field
     sex: '', // Initialize sex field
     location: '' // Initialize location field

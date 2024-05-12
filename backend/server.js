@@ -71,7 +71,7 @@ app.post('/addJob', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  const { username, password, phone, role, location, age, sex } = req.body;
+  const { name, password, phone, role, location, age, sex } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
@@ -81,12 +81,13 @@ app.post('/register', async (req, res) => {
     let values;
 
     if (role === 'provider') {
-      sqlQuery = 'INSERT INTO job_provider (name, password, phone) VALUES (@username, @hashedPassword, @phone)';
-      values = { username, hashedPassword, phone };
+      sqlQuery = 'INSERT INTO job_provider (name, password, phone) VALUES (@name, @hashedPassword, @phone)';
+      values = { name, hashedPassword, phone };
     } else if (role === 'seeker') {
-      sqlQuery = 'INSERT INTO job_seeker (name, password, phone, age, sex, location) VALUES (@username, @hashedPassword, @phone, @age, @sex, @location)';
+      console.log("username: ",name)
+      sqlQuery = 'INSERT INTO job_seeker (name, password, phone, age, sex, location) VALUES (@name, @hashedPassword, @phone, @age, @sex, @location)';
       //console.log('name: ',username, 'password: ',hashedPassword, 'phone: ',phone, 'age: ',age );
-      values = { username, hashedPassword, phone, location, age, sex };
+      values = { name, hashedPassword, phone, location, age, sex };
     } else {
       return res.status(400).send('Invalid role specified');
     }
