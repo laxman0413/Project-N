@@ -1,11 +1,20 @@
-POST  http://localhost:3001/jobProvider/register
+POST  http://localhost:3001/jobSeeker/register
 Content-Type: application/json
 
 {
-    "username":"nikil",
-    "phone":"1098765432",
-    "location":"Dimapur-1"
+    "username":"laxmam",
+    "pass":"laxman",
+    "phone":"9876543210",
+    "age":"20",
+    "sex":"Male",
+    "jobtype":"constuction"
 }
 
 ###
-GET http://localhost:3001/jobProvider/jobdetails
+GET http://localhost:3001/jobSeeker/jobdetails
+Content-Type: application/json
+
+{
+    "location":"Toluvi Junction Purana Bazar",
+    "jobtype":"construction"
+}

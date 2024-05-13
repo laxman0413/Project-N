@@ -14,7 +14,7 @@ job_provider.post('/register', async (req, res) => {
         request.input('providerIdParam', sql.VarChar, id);
         request.input('locationParam', sql.NVarChar, location);
         request.input('phoneParam', sql.Numeric, phone);
-        request.query('INSERT INTO jobProvider(name, provider_id, location, phone) VALUES (@nameParam, @providerIdParam, @locationParam, @phoneParam)', (err, result) => {
+        request.query('INSERT INTO job_provider(name, provider_id, location, phone) VALUES (@nameParam, @providerIdParam, @locationParam, @phoneParam)', (err, result) => {
             if (err) {
                 console.error('Error executing query:', err);
                 return res.status(500).send('Internal Server Error');
@@ -62,7 +62,7 @@ job_provider.post('/addJob', (req, res) => {
 //to get the list of jobs which the JobProvider Post
 job_provider.get('/jobdetails', (req, res) => {
   const id=req.body;
-    const sql = 'SELECT * FROM jobProvider';
+    const sql = 'SELECT * FROM job_provider';
     const db=req.app.get("db");
     db.query(sql, (err, result) => {
       if (err) {
