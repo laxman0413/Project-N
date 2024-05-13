@@ -31,6 +31,9 @@ job_seeker.post('/register', async (req, res) => {
     }
 });
 
+//jobseeker login
+
+
 //To get list of jobs according to JobSeeker location and JobType
 job_seeker.get("/jobdetails",(req, res) => {
     const {location,jobtype}=req.body;

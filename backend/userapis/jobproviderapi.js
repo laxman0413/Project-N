@@ -59,6 +59,7 @@ job_provider.post('/addJob', (req, res) => {
     });
 });
 
+
 //to get the list of jobs which the JobProvider Post
 job_provider.get('/jobdetails', (req, res) => {
   const id=req.body;
@@ -73,6 +74,9 @@ job_provider.get('/jobdetails', (req, res) => {
       }
     });
 });
+
+
+//to modify any of the prev jobs which the JobProvider Post
 
 
 module.exports=job_provider;
