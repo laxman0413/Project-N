@@ -25,7 +25,6 @@ job_seeker.post('/register', async (req, res) => {
         console.error('Error executing query:', err);
         return res.status(500).send('Internal Server Error');
       }
-      console.log('User registered successfully');
       res.status(201).send('User registered successfully');
     });
   } catch (error) {
@@ -100,4 +99,6 @@ job_seeker.get("/job-seeker-details",(req, res) => {
         res.status(201).send(result);
     });
 });
+
+
 module.exports=job_seeker;

@@ -11,7 +11,7 @@ const verifyToken=(req,res,next)=>{
     else{
         const token=bearerToken.split(" ")[1]
         try{
-            const decode=jwt.verify(token,"abcde");
+            const decode=jwt.verify(token,process.env.JWT_SECRET);
             res.locals.decode=decode
             next()
         }catch(err){

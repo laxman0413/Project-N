@@ -1,4 +1,5 @@
 require('dotenv').config({ path: './token.env' }); // Load JWT secret from token.env
+require('dotenv').config({ path: './credentials.env' }); 
 const express = require('express');
 const sql = require('mssql');
 const mysql=require('mysql');
@@ -11,12 +12,13 @@ app.use(cors());
 
 
 const config = {
-  user: 'AdminsofNagaConnect',
-  password: 'iT@QRBPsCkT9@q8',
-  server:'nagaconnect.database.windows.net',
-  database: 'NagaConnect',
+  server: process.env.SERVER,
+  database: process.env.DATABASE,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  driver: process.env.DRIVER,
   options: {
-    encrypt: true
+    trustedConnection: process.env.TRUSTED_CONNECTION === 'true'
   }
 };
 
