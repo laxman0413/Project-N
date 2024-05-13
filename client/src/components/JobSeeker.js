@@ -6,8 +6,8 @@ import Carder from './Carder';
 function JobSeeker() {
   const [jobs, setJobs] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedWorkType, setSelectedWorkType] = useState('');
+  const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedWorkTypes, setSelectedWorkTypes] = useState([]);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -25,16 +25,6 @@ function JobSeeker() {
       });
   }, []);
 
-  // Function to handle location filter
-  const handleLocationFilter = (location) => {
-    setSelectedLocation(location);
-  };
-
-  // Function to handle work type filter
-  const handleWorkTypeFilter = (workType) => {
-    setSelectedWorkType(workType);
-  };
-
   // Function to toggle filter visibility
   const toggleFilterVisibility = () => {
     setIsFilterVisible(!isFilterVisible);
@@ -45,12 +35,12 @@ function JobSeeker() {
     setSearchQuery(event.target.value);
   };
 
-  // Filter jobs based on selected location, work type, and search query
+  // Filter jobs based on selected locations, work types, and search query
   const filteredJobs = jobs.filter(job => {
-    if (selectedLocation && job.location !== selectedLocation) {
+    if (selectedLocations.length > 0 && !selectedLocations.includes(job.location)) {
       return false;
     }
-    if (selectedWorkType && job.jobType !== selectedWorkType) {
+    if (selectedWorkTypes.length > 0 && !selectedWorkTypes.includes(job.jobType)) {
       return false;
     }
     if (searchQuery && !Object.values(job).some(value => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase()))) {
@@ -58,6 +48,28 @@ function JobSeeker() {
     }
     return true;
   });
+
+  // Function to handle location checkbox change
+  const handleLocationChange = (location) => {
+    setSelectedLocations(prevSelectedLocations => {
+      if (prevSelectedLocations.includes(location)) {
+        return prevSelectedLocations.filter(loc => loc !== location);
+      } else {
+        return [...prevSelectedLocations, location];
+      }
+    });
+  };
+
+  // Function to handle work type checkbox change
+  const handleWorkTypeChange = (workType) => {
+    setSelectedWorkTypes(prevSelectedWorkTypes => {
+      if (prevSelectedWorkTypes.includes(workType)) {
+        return prevSelectedWorkTypes.filter(type => type !== workType);
+      } else {
+        return [...prevSelectedWorkTypes, workType];
+      }
+    });
+  };
 
   return (
     <div>
@@ -68,19 +80,80 @@ function JobSeeker() {
           {/* Filter by Location */}
           <h4>Filter by Location:</h4>
           {locations.map((location, index) => (
-            <button key={index} onClick={() => handleLocationFilter(location)}>
-              {location}
-            </button>
+            <div key={index}>
+              <input
+                type="checkbox"
+                id={location}
+                value={location}
+                checked={selectedLocations.includes(location)}
+                onChange={() => handleLocationChange(location)}
+              />
+              <label htmlFor={location}>{location}</label>
+            </div>
           ))}
 
           {/* Filter by Type of Work */}
           <h4>Filter by Type of Work:</h4>
-          <button onClick={() => handleWorkTypeFilter('construction')}>Construction</button>
-          <button onClick={() => handleWorkTypeFilter('factoryWork')}>Factory work</button>
-          <button onClick={() => handleWorkTypeFilter('agriculture')}>Agriculture</button>
-          <button onClick={() => handleWorkTypeFilter('transportation')}>Transportation</button>
-          <button onClick={() => handleWorkTypeFilter('domesticWork')}>Domestic work</button>
-          <button onClick={() => handleWorkTypeFilter('others')}>Others</button>
+          <div>
+            <input
+              type="checkbox"
+              id="construction"
+              value="construction"
+              checked={selectedWorkTypes.includes("construction")}
+              onChange={() => handleWorkTypeChange("construction")}
+            />
+            <label htmlFor="construction">Construction</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="factoryWork"
+              value="factoryWork"
+              checked={selectedWorkTypes.includes("factoryWork")}
+              onChange={() => handleWorkTypeChange("factoryWork")}
+            />
+            <label htmlFor="factoryWork">Factory work</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="agriculture"
+              value="agriculture"
+              checked={selectedWorkTypes.includes("agriculture")}
+              onChange={() => handleWorkTypeChange("agriculture")}
+            />
+            <label htmlFor="agriculture">Agriculture</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="transportation"
+              value="transportation"
+              checked={selectedWorkTypes.includes("transportation")}
+              onChange={() => handleWorkTypeChange("transportation")}
+            />
+            <label htmlFor="transportation">Transportation</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="domesticWork"
+              value="domesticWork"
+              checked={selectedWorkTypes.includes("domesticWork")}
+              onChange={() => handleWorkTypeChange("domesticWork")}
+            />
+            <label htmlFor="domesticWork">Domestic work</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="others"
+              value="others"
+              checked={selectedWorkTypes.includes("others")}
+              onChange={() => handleWorkTypeChange("others")}
+            />
+            <label htmlFor="others">Others</label>
+          </div>
         </div>
       )}
 

@@ -32,7 +32,7 @@ function Carder({ job }) {
             <Typography gutterBottom variant="h5" component="div">
               {job.jobTitle}
             </Typography>
-
+            <p className='card_header_comp'>Job Type: {job.jobType}</p>
             {/* Date and Time */}
             <p className='card_header_comp'>Date: {job.date}</p>
             <p className='card_header_comp'>Time: {job.time}</p>
@@ -45,7 +45,7 @@ function Carder({ job }) {
             {/* Payment, Location, Worker Capacity */}
             <h4 className='card_header_comp'>Payment: {job.payment}</h4>
             <h4 className='card_header_comp'>Location: {job.location}</h4>
-            <h4 className='card_header_comp'>Worker Capacity: {job.workerCapacity}</h4>
+            <h4 className='card_header_comp'>Worker Capacity: {job.peopleNeeded}</h4>
           </CardContent>
         </CardActionArea>
 
