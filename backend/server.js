@@ -30,19 +30,20 @@ app.get('/', (req, res) => {
   res.send('Hello from the other side!');
 });
 
-app.get('/jobdetails', (req, res) => {
-  const sql = 'SELECT * FROM jobdetails';
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).send('Internal Server Error');
-    } else {
-      res.status(200).json(result);
-    }
-  });
+app.get('/jobdetails', async (req, res) => {
+  try {
+    await sql.connect(config);
+    const result = await sql.query('SELECT * FROM jobdetails');
+    res.status(200).json(result.recordset);
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).send('Internal Server Error');
+  } finally {
+    sql.close();
+  }
 });
 
-app.post('/addJob', (req, res) => {
+app.post('/addJob', async (req, res) => {
   const {
     jobTitle,
     jobType,
@@ -54,20 +55,21 @@ app.post('/addJob', (req, res) => {
     time,
   } = req.body;
 
-  const sql = `
-    INSERT INTO jobdetails
-    (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(sql, [jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time], (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).send('Internal Server Error');
-    } else {
-      res.status(200).send('Job added successfully');
-    }
-  });
+  try {
+    await sql.connect(config);
+    const result = await sql.query`
+      INSERT INTO jobdetails
+      (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time)
+      VALUES (${jobTitle}, ${jobType}, ${customJobType}, ${payment}, ${peopleNeeded}, ${location}, ${date}, ${time})
+    `;
+    console.log('Job added successfully');
+    res.status(200).send('Job added successfully');
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).send('Internal Server Error');
+  } finally {
+    sql.close();
+  }
 });
 
 app.post('/register', async (req, res) => {
@@ -110,13 +112,6 @@ app.post('/register', async (req, res) => {
     res.status(500).send('Error registering user');
   }
 });
-
-
-
-
-
-
-
 
 app.post('/login', (req, res) => {
   const { phone, password, role } = req.body;
@@ -165,10 +160,6 @@ app.post('/login', (req, res) => {
       }
   });
 });
-
-
-
-
 
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);
