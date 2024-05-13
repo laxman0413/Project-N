@@ -2,19 +2,25 @@ POST  http://localhost:3001/jobSeeker/register
 Content-Type: application/json
 
 {
-    "username":"laxmam",
+    "name":"laxman",
     "pass":"laxman",
     "phone":"9876543210",
     "age":"20",
     "sex":"Male",
-    "jobtype":"constuction"
+    "jobType":"constuction"
 }
 
 ###
-GET http://localhost:3001/jobSeeker/jobdetails
+POST  http://localhost:3001/jobSeeker/login
 Content-Type: application/json
 
 {
-    "location":"Toluvi Junction Purana Bazar",
-    "jobtype":"construction"
+    "password":"laxman",
+    "phone":"9876543210"
 }
+###
+GET http://localhost:3001/jobSeeker/jobdetails
+
+
+###
+GET http://localhost:3001/jobSeeker/job-seeker-details
