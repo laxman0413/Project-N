@@ -15,8 +15,8 @@ POST  http://localhost:3001/jobSeeker/login
 Content-Type: application/json
 
 {
-    "password":"ram1",
-    "phone":"9392650452"
+    "password":"ram",
+    "phone":"9392650450"
 }
 ###
 GET http://localhost:3001/jobSeeker/jobdetails

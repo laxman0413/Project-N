@@ -1,53 +1,45 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React,{useContext,useEffect,useState} from "react"
+import {useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { Logincontex } from './JobseekerloginContext/Logincontext';
+
 function JobSeekerLogin() {
-  const [credentials, setCredentials] = useState({
-    phone: '',
-    password: ''
-  });
+  let {register,handleSubmit}=useForm();
+  const navigate=useNavigate()
+  let [currentuser,error,userloginStatus,LoginUser,LogoutUser]=useContext(Logincontex)
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setCredentials(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
+  const forsubmit=(userObj)=>{
+    LoginUser(userObj);
+  }
 
-  const handleFormSubmit = () => {
-    // Make sure role is not empty
-    if (credentials.role === '') {
-      alert('Please select a role');
-      return;
+  useEffect(()=>{
+    if(userloginStatus===true){
+      navigate('/job-seeker/dashboad')
     }
-    axios.post('http://localhost:3001/joblogin', credentials)
-      .then(response => {
-        console.log('Login successful:', response.data);
-        // You might want to save the token in localStorage or context
-        localStorage.setItem('token', response.data.token);
-      })
-      .catch(error => {
-        console.error('Error logging in:', error);
-      });
-  };
+  },[userloginStatus])
+  
+  console.log(currentuser)
   return (
     <div>
-        <form onSubmit={(event) => {
-      event.preventDefault();
-      handleFormSubmit();
-    }}>
-      <label>
-        Phone:
-        <input type="text" name="phone" value={credentials.phone} onChange={handleChange} />
-      </label>
-      <label>
-        Password:
-        <input type="password" name="password" value={credentials.password} onChange={handleChange} />
-      </label>
-      <button type="submit">Login</button>
-    </form>
+      <h1 className="text-center">Login</h1>
+      {error.length!==0 && <p>{error}</p>}
+      <div className="row">
+        <div className="col-l1 col-sm-8 col-md-6 mx-auto mt-3">
+          <form onSubmit={handleSubmit(forsubmit)}>
+            <div className="mb-3">
+              <label htmlFor="phone">phone</label>
+              <input type="number" name="phone" id="phone" className="form-control" {...register("phone")} required></input>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password">password</label>
+              <input type="password" name="password" id="password" className="form-control" {...register("password")} required></input>
+            </div>
+            <button type="submit" className="btn btn-success">Login</button>
+          </form>
+        </div>
+      </div>
     </div>
   )
-}
+};
 
 export default JobSeekerLogin

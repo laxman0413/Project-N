@@ -12,8 +12,6 @@ job_seeker.post('/register', async (req, res) => {
     const request=new db.Request();
   try {
     const hashedPassword = await bcrypt.hash(pass, 10); // Hash the password
-    console.log('Hashed password:', hashedPassword); // Log for verification
-    console.log("username: ",name)
     const sqlQuery = 'INSERT INTO job_seeker (name, password, phone, age, sex, jobType) VALUES (@name, @hashedPassword, @phone, @age, @sex, @jobType)';
       //console.log('name: ',username, 'password: ',hashedPassword, 'phone: ',phone, 'age: ',age );
     let values = { name, hashedPassword, phone, jobType, age, sex };
@@ -23,9 +21,9 @@ job_seeker.post('/register', async (req, res) => {
     request.query(sqlQuery, (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
-        return res.status(500).send('Internal Server Error');
+        return res.status(500).send({message:'Internal Server Error'});
       }
-      res.status(201).send('User registered successfully');
+      res.status(201).send({message:'User registered successfully'});
     });
   } catch (error) {
     console.error('Error:', error);
@@ -43,10 +41,10 @@ job_seeker.post('/login', async (req, res) => {
     request.query(sqlQuery, async (err, results) => {
         if (err) {
             console.error('Error executing query:', err);
-            return res.status(500).send('Internal Server Error');
+            return res.status(500).send({message:'Internal Server Error'});
         }
         if (results.recordset.length === 0) {
-            return res.status(404).send('User not found');
+            return res.status(404).send({message:'User not found'});
         }
         const user = results.recordset[0];
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -63,9 +61,9 @@ job_seeker.post('/login', async (req, res) => {
                 maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
                 secure: process.env.NODE_ENV === "production" // send only over HTTPS in production
             });
-            res.status(200).json({ message: 'Logged in successfully!' });
+            res.status(200).json({message: 'Logged in successfully!',token:token,payload:user});
         } else {
-            res.status(401).send('Invalid credentials');
+            res.status(401).send({message:'Invalid credentials'});
         }
     });
   });
