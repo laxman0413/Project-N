@@ -15,10 +15,16 @@ function JobSeekerDashboard() {
     // Fetch job details and available locations from the backend when the component mounts
     axios.get('http://localhost:3001/jobSeeker/jobdetails')
       .then(response => {
-        setJobs(response.data);
-        // Extracting unique locations from job details
-        const uniqueLocations = [...new Set(response.data.map(job => job.location))];
-        setLocations(uniqueLocations);
+        console.log(response.data);  // Log response data to debug
+        if (response.data && response.data.recordsets && Array.isArray(response.data.recordsets[0])) {
+          const jobsData = response.data.recordsets[0];
+          setJobs(jobsData);
+          // Extracting unique locations from job details
+          const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
+          setLocations(uniqueLocations);
+        } else {
+          console.error('Error: Expected an object with recordsets array but got', typeof response.data);
+        }
       })
       .catch(error => {
         console.error('Error fetching job details:', error);
@@ -35,12 +41,16 @@ function JobSeekerDashboard() {
     setSearchQuery(event.target.value);
   };
 
+  // Normalize job type for consistent comparison
+  const normalizeJobType = (jobType) => jobType.trim().toLowerCase();
+
   // Filter jobs based on selected locations, work types, and search query
   const filteredJobs = jobs.filter(job => {
+    const normalizedJobType = normalizeJobType(job.jobType);
     if (selectedLocations.length > 0 && !selectedLocations.includes(job.location)) {
       return false;
     }
-    if (selectedWorkTypes.length > 0 && !selectedWorkTypes.includes(job.jobType)) {
+    if (selectedWorkTypes.length > 0 && !selectedWorkTypes.map(normalizeJobType).includes(normalizedJobType)) {
       return false;
     }
     if (searchQuery && !Object.values(job).some(value => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase()))) {
@@ -160,7 +170,7 @@ function JobSeekerDashboard() {
       {/* Search input */}
       <input type='text' placeholder='Search for jobs' className='search-bar' onChange={handleSearchChange} />
 
-      <h3>Jobs Available </h3>
+      <h3>Jobs Available</h3>
 
       {/* Render Carder component for each filtered job */}
       {filteredJobs.map((job, index) => (
