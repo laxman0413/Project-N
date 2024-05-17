@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Menu from '../Menu';
 import Carder from '../Carder';
 
 function JobSeekerDashboard() {
   const [jobs, setJobs] = useState([]);
+  const navigate=useNavigate()
   const [locations, setLocations] = useState([]);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedWorkTypes, setSelectedWorkTypes] = useState([]);
@@ -13,7 +15,11 @@ function JobSeekerDashboard() {
 
   useEffect(() => {
     // Fetch job details and available locations from the backend when the component mounts
-    axios.get('http://localhost:3001/jobSeeker/jobdetails')
+    const token=localStorage.getItem("token");
+    if(token===null){
+      navigate("/job-seeker/login")
+    }else{
+    axios.get('http://localhost:3001/jobSeeker/jobdetails',{headers:{Authorization:'Bearer '+token}})
       .then(response => {
         console.log(response.data);  // Log response data to debug
         if (response.data && response.data.recordsets && Array.isArray(response.data.recordsets[0])) {
@@ -29,7 +35,9 @@ function JobSeekerDashboard() {
       .catch(error => {
         console.error('Error fetching job details:', error);
       });
+    }
   }, []);
+
 
   // Function to toggle filter visibility
   const toggleFilterVisibility = () => {

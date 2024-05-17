@@ -4,6 +4,7 @@ job_seeker.use(express.json());
 const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const verifyToken=require('../middlewares/verifyToken');
 
 //jobseeker registration
 job_seeker.post('/register', async (req, res) => {
@@ -69,7 +70,7 @@ job_seeker.post('/login', async (req, res) => {
   });
 
 //To get list of jobs according to JobSeeker jobType and JobType
-job_seeker.get("/jobdetails",(req, res) => {
+job_seeker.get("/jobdetails",verifyToken,(req, res) => {
     const {location,jobtype}=req.body;
     const db=req.app.get("db");
     const request=new db.Request();
