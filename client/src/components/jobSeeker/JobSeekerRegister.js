@@ -31,7 +31,7 @@ function JobSeekerRegister() {
   return (
     <div>
       <h1>JobSeeker Register</h1>
-      {err===undefined}?<p></p>:<p>{err}</p>
+      {err===undefined?<p></p>:<p>{err}</p>}
         <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
           <form onSubmit={handleSubmit(forsubmit)}>
             <div className="mb-3">
