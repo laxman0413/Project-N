@@ -4,7 +4,7 @@ job_provider.use(express.json());
 const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const verifytoken=require('../middlewares/verifyToken');
+const verifytoken=require('../middlewares/verifyTokenProvider');
 
 //to register a Job_Provider
 job_provider.post('/register', async (req, res) => {
