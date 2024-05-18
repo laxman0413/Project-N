@@ -84,7 +84,27 @@ job_seeker.get("/jobdetails",verifyToken,(req, res) => {
         res.status(201).send(result);
     });
 });
+job_seeker.get('/profile', verifyToken, (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+  const { id } = req.res.locals.decode.id // Get user ID from decoded token
+  console.log('id: ', id);
 
+  const sqlQuery ='SELECT * FROM job_seeker WHERE seeker_id = @id';
+  request.input('id', sql.Int, id);
+  request.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send({ message: 'Internal Server Error' });
+    }
+
+    if (result.recordset.length === 0) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    res.status(200).send(result.recordset[0]);
+  });
+});
 
 //To get list of jobseekers 
 job_seeker.get("/job-seeker-details",(req, res) => {
