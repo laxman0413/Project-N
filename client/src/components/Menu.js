@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState ,useContext} from 'react';
 import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-
+import { useNavigate } from 'react-router-dom';
+import { Logincontex } from './jobSeeker/JobseekerloginContext/Logincontext';
 function Menu() {
   // State to manage drawer (sliding menu) visibility
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-
+  const navigate=useNavigate();
+  let [currentuser,error,userloginStatus,LoginUser,LogoutUser]=useContext(Logincontex)
   // Function to handle menu icon click and open drawer
   const handleMenuIconClick = () => {
     setDrawerOpen(true);
   };
 
   // Function to handle drawer close
+  const handleProfileDrawerClose = () => {
+    navigate('/job-seeker/profile')
+    setDrawerOpen(false);
+  };
+
+  // Function to handle drawer close
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
+  const handleLogoutDrawerClose = () => {
+    LogoutUser();
+    navigate('/job-seeker/login')
+    setDrawerOpen(false);
+  };
+
 
   return (
     <div>
@@ -40,13 +54,13 @@ function Menu() {
       <Drawer anchor="left" open={isDrawerOpen} onClose={handleDrawerClose}>
         {/* List of menu items */}
         <List>
-          <ListItem button onClick={handleDrawerClose}>
-            <ListItemText primary="Profile" />
+          <ListItem  onClick={handleProfileDrawerClose} >
+            <ListItemText  primary="Profile" />
           </ListItem>
-          <ListItem button onClick={handleDrawerClose}>
+          <ListItem  onClick={handleDrawerClose}>
             <ListItemText primary="Change Password" />
           </ListItem>
-          <ListItem button onClick={handleDrawerClose}>
+          <ListItem  onClick={handleLogoutDrawerClose}>
             <ListItemText primary="Log Out" />
           </ListItem>
           {/* Add more menu items as needed */}
