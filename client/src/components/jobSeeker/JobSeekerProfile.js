@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { LoginContext } from '../jobSeeker/LoginContext';
+import { Logincontex } from '../jobSeeker/JobseekerloginContext/Logincontext';  // Correct import
 
 function JobSeekerProfile() {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState('');
-  const [currentuser, , userloginStatus] = useContext(LoginContext);
+  const [currentuser, , userloginStatus] = useContext(Logincontex);
 
   useEffect(() => {
     const token = localStorage.getItem('token');

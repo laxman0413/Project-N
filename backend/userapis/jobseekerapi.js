@@ -90,11 +90,17 @@ job_seeker.get("/jobdetails",verifyToken,(req, res) => {
 job_seeker.get('/profile', verifyToken, (req, res) => {
   const db = req.app.get("db");
   const request = new db.Request();
-  const { id } = req.res.locals.decode.id // Get user ID from decoded token
+  
+  // Ensure the id is correctly extracted
+  const { id } = req.res.locals.decode;
+
   console.log('id: ', id);
 
   const sqlQuery = `SELECT * FROM job_seeker WHERE seeker_id = @id`;
-  request.input('id', sql.Int, id);
+
+  // Use sql.VarChar instead of sql.Int
+  request.input('id', sql.VarChar, id);
+
   request.query(sqlQuery, (err, result) => {
     if (err) {
       console.error('Error executing query:', err);
@@ -108,6 +114,5 @@ job_seeker.get('/profile', verifyToken, (req, res) => {
     res.status(200).send(result.recordset[0]);
   });
 });
-
 
 module.exports=job_seeker;

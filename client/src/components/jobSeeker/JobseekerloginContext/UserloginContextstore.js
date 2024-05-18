@@ -1,6 +1,6 @@
 import React,{useState} from "react"
-import { Logincontex } from "./Logincontext";
 import axios from "axios";
+import { Logincontex } from "../JobseekerloginContext/Logincontext";
 
 const UserLoginContextStore = ({children}) => {
 
