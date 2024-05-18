@@ -4,11 +4,7 @@ job_seeker.use(express.json());
 const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-<<<<<<< HEAD
 const verifyToken = require('../middlewares/verifytoken');
-=======
-const verifyToken=require('../middlewares/verifyToken');
->>>>>>> 6932e138794d73bada299fe03c1a2b000a0b68a2
 
 //jobseeker registration
 job_seeker.post('/register', async (req, res) => {
