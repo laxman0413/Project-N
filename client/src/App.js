@@ -15,6 +15,7 @@ import JobProviderRootLayout from './components/jobProvider/JobProviderRootLayou
 import JobSeekerRootLayout from './components/jobSeeker/JobSeekerRootLayout';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminDashboard from './components/admin/AdminDashboard';
+import JobSeekerProfile from './components/jobSeeker/JobSeekerProfile';
 
 function App() {
   const RouterObj=createBrowserRouter([
@@ -72,6 +73,10 @@ function App() {
             {
               path:'/job-seeker/dashboad',
               element:<JobSeekerDashboard/>
+            },
+            {
+              path:'/job-seeker/profile',
+              element:<JobSeekerProfile />
             }
           ]
         },

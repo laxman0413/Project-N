@@ -1,6 +1,6 @@
 const jwt=require('jsonwebtoken');
 
-const verifyToken=(req,res,next)=>{
+const verifyTokenProvider=(req,res,next)=>{
     //get baarrer token from req
     let bearerToken=req.headers.authorization;
     
@@ -22,4 +22,4 @@ const verifyToken=(req,res,next)=>{
     }
     
 }
-module.exports=verifyToken
+module.exports=verifyTokenProvider;
