@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Menu from '../Menu';
-import Carder from '../Carder';
+import CarderSeeker from './CarderSeeker';
 
 function JobSeekerDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -182,7 +182,7 @@ function JobSeekerDashboard() {
 
       {/* Render Carder component for each filtered job */}
       {filteredJobs.map((job, index) => (
-        <Carder key={index} job={job} />
+        <CarderSeeker key={index} job={job} />
       ))}
     </div>
   );

@@ -112,4 +112,29 @@ job_seeker.get('/profile', verifyToken, (req, res) => {
   });
 });
 
+
+job_seeker.post('/accept-job', verifyToken, (req, res) => {
+    const db = req.app.get("db");
+    const request = new db.Request();
+    const { job_id } = req.body;
+    const { id: seeker_id } = res.locals.decode; // Get seeker ID from token
+
+    const sqlQuery = `
+        INSERT INTO job_applications (seeker_id, job_id)
+        VALUES (@seeker_id, @job_id)
+    `;
+
+    request.input('seeker_id', sql.Int, seeker_id);
+    request.input('job_id', sql.Int, job_id);
+
+    request.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send({ message: 'Internal Server Error' });
+        }
+        res.status(201).send({ message: 'Job accepted successfully' });
+    });
+});
+
+
 module.exports=job_seeker;
