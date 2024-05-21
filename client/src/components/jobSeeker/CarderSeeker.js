@@ -25,22 +25,24 @@ function CarderSeeker({ job }) {
   };
 
   // Function to handle job acceptance
-  const handleAcceptJob = () => {
-    const token = localStorage.getItem('token');
-    axios.post('http://localhost:3001/jobseeker/accept-job', { job_id: job.job_id }, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then(response => {
-      console.log(response.data.message);
-      // Optionally, close the dialog and/or show a success message
-      handleCloseDialog();
-    })
-    .catch(error => {
-      console.error('Error accepting job:', error);
-    });
-  };
+// Function to handle job acceptance
+const handleAcceptJob = () => {
+  const token = localStorage.getItem('token');
+  axios.post('http://localhost:3001/jobseeker/accept-job', { id: job.id }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(response => {
+    console.log(response.data.message);
+    // Optionally, close the dialog and/or show a success message
+    handleCloseDialog();
+  })
+  .catch(error => {
+    console.error('Error accepting job:', error);
+  });
+};
+
 
   return (
     <div>

@@ -113,28 +113,34 @@ job_seeker.get('/profile', verifyToken, (req, res) => {
 });
 
 
+
 job_seeker.post('/accept-job', verifyToken, (req, res) => {
-    const db = req.app.get("db");
-    const request = new db.Request();
-    const { job_id } = req.body;
-    const { id: seeker_id } = res.locals.decode; // Get seeker ID from token
+  const db = req.app.get("db");
+  const request = new sql.Request();
+  const { id } = req.body; // Ensure this is correctly received from the request body
+  const { id: seeker_id } = res.locals.decode; // Get seeker ID from the token
 
-    const sqlQuery = `
-        INSERT INTO job_applications (seeker_id, job_id)
-        VALUES (@seeker_id, @job_id)
-    `;
+  if (!id) {
+    return res.status(400).send({ message: 'Job ID is required' });
+  }
 
-    request.input('seeker_id', sql.Int, seeker_id);
-    request.input('job_id', sql.Int, job_id);
+  const sqlQuery = `
+      INSERT INTO job_applications (seeker_id, id, application_date)
+      VALUES (@seeker_id, @job_id, GETDATE())
+  `;
 
-    request.query(sqlQuery, (err, result) => {
-        if (err) {
-            console.error('Error executing query:', err);
-            return res.status(500).send({ message: 'Internal Server Error' });
-        }
-        res.status(201).send({ message: 'Job accepted successfully' });
-    });
+  request.input('seeker_id', sql.VarChar, seeker_id);
+  request.input('job_id', sql.Int, id); // Ensure id is correctly passed as job_id
+
+  request.query(sqlQuery, (err, result) => {
+      if (err) {
+          console.error('Error executing query:', err);
+          return res.status(500).send({ message: 'Internal Server Error' });
+      }
+      res.status(201).send({ message: 'Job accepted successfully' });
+  });
 });
+
 
 
 module.exports=job_seeker;
