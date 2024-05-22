@@ -12,7 +12,7 @@ function JobProviderRegister() {
         axios
         .post("http://localhost:3001/jobProvider/register",userObj)
         console.log(userObj);
-        navigate("/login");
+        navigate("/job-provider/login");
     }
   return (
     <div>
@@ -21,19 +21,15 @@ function JobProviderRegister() {
           <form onSubmit={handleSubmit(forsubmit)}>
             <div className="mb-3">
               <label htmlFor="username">Username</label>
-              <input type="text" name="username" id="username" className="form-control" {...register("username")} required></input>
+              <input type="text" name="username" id="username" className="form-control" {...register("name")} required></input>
             </div>
             <div className="mb-3">
               <label htmlFor="phoneNo">Phone No</label>
-              <input type="number" onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}}name="phoneNo" id="phoneNo" className="form-control" {...register("phoneNo")} required></input>
+              <input type="number" onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}}name="phoneNo" id="phoneNo" className="form-control" {...register("phone")} required></input>
             </div>
             <div className="mb-3">
               <label htmlFor="dob">Password</label>
               <input type="password" name="pass" id="pass" className="form-control" {...register("password")}></input>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="location">Location</label>
-              <input type="text" name="location" id="location" className="form-control" {...register("location")} required></input>
             </div>
             <button className="btn btn-success" type="submit">Register</button>
           </form>

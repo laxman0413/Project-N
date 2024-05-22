@@ -8,7 +8,7 @@ const verifytoken=require('../middlewares/verifyTokenProvider');
 
 //to register a Job_Provider
 job_provider.post('/register', async (req, res) => {
-    const { name, phone, password } = req.body;
+    const { name, phone, password} = req.body;
     let id="JP"+(+phone);
     try {
       //connect to database
@@ -64,7 +64,7 @@ job_provider.post('/login', async (req, res) => {
               maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
               secure: process.env.NODE_ENV === "production" // send only over HTTPS in production
           });
-          res.status(200).json({ message: 'Logged in successfully!' });
+          res.status(200).json({ message: 'Logged in successfully!',token:token,payload:user});
       } else {
           res.status(401).send('Invalid credentials');
       }
@@ -72,7 +72,7 @@ job_provider.post('/login', async (req, res) => {
 });
 
 //to post a new job
-job_provider.post('/addJob', async (req, res) => {
+job_provider.post('/addJob',verifytoken,async (req, res) => {
   const {
     jobTitle,
     jobType,
@@ -82,9 +82,8 @@ job_provider.post('/addJob', async (req, res) => {
     location,
     date,
     time,
-    provider_id,
   } = req.body;
-
+  const provider_id=req.res.locals.decode.id
   try {
     const db=req.app.get("db");
     const request=new db.Request();

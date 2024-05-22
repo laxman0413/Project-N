@@ -1,10 +1,17 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import {useNavigate} from "react-router-dom";
 
 function JobProviderHome() {
+  const navigate=useNavigate();
   return (
     <div>JobProviderHome
-      <Outlet/>
+      <div>
+      <button onClick={() => navigate("/job-provider/register")}>Register</button>
+      </div>
+      <p>Already register? then </p>
+      <div>
+      <button onClick={() => navigate("/job-provider/login")}>Login</button>
+      </div>
     </div>
   )
 }

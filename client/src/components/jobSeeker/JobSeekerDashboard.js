@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Menu from '../Menu';
+import Menu from './Menu';
 import CarderSeeker from './CarderSeeker';
 
 function JobSeekerDashboard() {

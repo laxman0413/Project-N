@@ -42,8 +42,8 @@ POST  http://localhost:3001/jobProvider/login
 Content-Type: application/json
 
 {
-    "password":"ram12",
-    "phone":"9392650452"
+    "password":"ram",
+    "phone":"9392650460"
 }
 
 ###
@@ -65,7 +65,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3001/jobProvider/getjob
-Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpwOTM5MjY1MDQ1MiIsInBob25lIjoiOTM5MjY1MDQ1MiIsImlhdCI6MTcxNTYyNTQ0MCwiZXhwIjoxNzE1ODg0NjQwfQ.wd1k3NIKVWtrNt-CHMOQLScOMvjRn2NdJ0sLkk4LH8Q
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpwOTM5MjY1MDQ2MCIsInBob25lIjoiOTM5MjY1MDQ2MCIsImlhdCI6MTcxNjQwMzUyNCwiZXhwIjoxNzE2NjYyNzI0fQ.zkCFJhNIPL6kZzUW_kkIMALyzShEdPPk0J9QK-ZdA3k
 
 ###
 GET http://localhost:3001/jobProvider/job-provider-details

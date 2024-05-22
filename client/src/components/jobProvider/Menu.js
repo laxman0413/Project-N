@@ -2,7 +2,7 @@ import React, { useState ,useContext} from 'react';
 import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
-import { Logincontex } from './jobSeeker/JobseekerloginContext/Logincontext';
+import { Logincontex } from './JobProviderloginContext/Logincontext';
 function Menu() {
   // State to manage drawer (sliding menu) visibility
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -15,7 +15,7 @@ function Menu() {
 
   // Function to handle drawer close
   const handleProfileDrawerClose = () => {
-    navigate('/job-seeker/profile')
+    navigate('/job-provider/profile')
     setDrawerOpen(false);
   };
 
@@ -25,7 +25,7 @@ function Menu() {
   };
   const handleLogoutDrawerClose = () => {
     LogoutUser();
-    navigate('/job-seeker/login')
+    navigate('/job-provider/login')
     setDrawerOpen(false);
   };
 
