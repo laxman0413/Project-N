@@ -1,5 +1,5 @@
 // frontend/src/JobProvider.js
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import Menu from './Menu';
 import { useForm } from 'react-hook-form';
@@ -15,6 +15,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import CarderProvider from './CarderProvider';
 
 function JobProviderDashboard() {
   let {register,handleSubmit}=useForm();
@@ -32,6 +33,29 @@ function JobProviderDashboard() {
   const handlePostJobClick = () => {
     setModalOpen(true);
   };
+
+  const [jobs, setJobs] = useState([]);
+  useEffect(() => {
+    // Fetch job details and available locations from the backend when the component mounts
+    const token=localStorage.getItem("token");
+    if(token===null){
+      navigate("/job-provider/login")
+    }else{
+    axios.get('http://localhost:3001/jobProvider/getjobs',{headers:{Authorization:'Bearer '+token}})
+      .then(response => {
+        console.log(response.data);  // Log response data to debug
+        if (response.data && response.data.recordsets && Array.isArray(response.data.recordsets[0])) {
+          const jobsData = response.data.recordset;
+          setJobs(jobsData);
+        } else {
+          console.error('Error: Expected an object with recordsets array but got', typeof response.data);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching job details:', error);
+      });
+    }
+  }, []);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -138,7 +162,9 @@ function JobProviderDashboard() {
       </Dialog>
 
       <h2>Previous Jobs</h2>
-      
+      {jobs.map((job, index) => (
+        <CarderProvider key={index} job={job} />
+      ))}
     </div>
   );
 }
