@@ -1,5 +1,5 @@
 // frontend/src/JobProvider.js
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Menu from './Menu';
 import { useForm } from 'react-hook-form';
@@ -18,9 +18,15 @@ import { useNavigate } from 'react-router-dom';
 import CarderProvider from './CarderProvider';
 
 function JobProviderDashboard() {
-  let {register,handleSubmit}=useForm();
+  let { register, handleSubmit } = useForm({
+    defaultValues: {
+      jobType: 'construction',
+    }
+  });
   const [isModalOpen, setModalOpen] = useState(false);
-  const navigate=useNavigate();
+  const [showCustomJobType, setShowCustomJobType] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const navigate = useNavigate();
   const locations = [
     "Dobinala Junction",
     "Ara mile",
@@ -30,6 +36,31 @@ function JobProviderDashboard() {
     "City Tower",
     "D. C. Court"
   ];
+
+  const fetchJobs = useCallback(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.get('http://localhost:3001/jobProvider/jobs', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          setJobs(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching jobs:', error);
+        });
+    } else {
+      console.log("Please Login First");
+      navigate("/job-provider/login")
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
+
   const handlePostJobClick = () => {
     setModalOpen(true);
   };
@@ -59,28 +90,35 @@ function JobProviderDashboard() {
 
   const handleCloseModal = () => {
     setModalOpen(false);
+    setShowCustomJobType(false);
+  };
+
+  const handleJobTypeChange = (e) => {
+    setShowCustomJobType(e.target.value === 'others');
   };
 
   const formSubmit = (jobDetails) => {
     const token = localStorage.getItem('token');
-    if(token){
-    axios.post('http://localhost:3001/jobProvider/addJob',jobDetails,{
-      headers: {
-        Authorization: `Bearer ${token}`
-      }})
-      .then(response => {
-        console.log(response.data);
-        handleCloseModal();
+    if (token) {
+      axios.post('http://localhost:3001/jobProvider/addJob', jobDetails, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
-      .catch(error => {
-        console.error('Error submitting form:', error);
-      });
-    }else{
+        .then(response => {
+          console.log(response.data);
+          fetchJobs(); // Refresh the job list
+          handleCloseModal();
+        })
+        .catch(error => {
+          console.error('Error submitting form:', error);
+        });
+    } else {
       console.log("Please Login First");
-      navigate("/job-provider/login")
+      navigate("/job-provider/login");
     }
   };
-  let other=0;
+
   return (
     <div>
       <Menu />
@@ -88,73 +126,74 @@ function JobProviderDashboard() {
       <Dialog open={isModalOpen} onClose={handleCloseModal}>
         <DialogTitle>Post a Job</DialogTitle>
         <DialogContent>
-        <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
-          <form onSubmit={handleSubmit(formSubmit)}>
-            <div className="mb-3">
-              <label htmlFor="Job Title">Job Title</label>
-              <input type="text" name="Job Title" id="Job Title" className="form-control" {...register("jobTitle")} required></input>
-            </div>
-            <div className="mb-3">
-            <FormControl fullWidth margin="normal">
-              <label id="job-type-label">Type of Job</label>
-              <Select
-                labelId="job-type-label"
-                name="jobType"
-                {...register("jobType")}
-              >
-                <MenuItem value="construction">Construction</MenuItem>
-                <MenuItem value="factoryWork">Factory work</MenuItem>
-                <MenuItem value="agriculture">Agriculture</MenuItem>
-                <MenuItem value="transportation">Transportation</MenuItem>
-                <MenuItem value="domesticWork">Domestic work</MenuItem>
-                <MenuItem value="others" onClick={other=1}>Others</MenuItem>
-              </Select>
-            </FormControl>
-            {(other==1)?(
-              <TextField
-                fullWidth
-                label="Custom Job Type"
-                {...register("customJobType")}
-                margin="normal"
-              />
-            ):{}}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="Payment">Payment</label>
-              <input type="Text"  id="Payment" className="form-control" {...register("payment")} required></input>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="PeopleNeeded">PeopleNeeded</label>
-              <input type="number"  id="PeopleNeeded" className="form-control" {...register("peopleNeeded")} required></input>
-            </div>
-            <div className="mb-3">
+          <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
+            <form onSubmit={handleSubmit(formSubmit)}>
+              <div className="mb-3">
+                <label htmlFor="jobTitle">Job Title</label>
+                <input type="text" id="jobTitle" className="form-control" {...register("jobTitle")} required></input>
+              </div>
+              <div className="mb-3">
                 <FormControl fullWidth margin="normal">
-                <label id="location-label">Location</label>
-                <Select
-                  labelId="location-label"
-                  id="location"
-                  label="Location"
-                  {...register("location")}
-                >
-                  {locations.map((location, index) => (
-                    <MenuItem key={index} value={location}>
-                      {location}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="date">Job Date</label>
-              <input type="date"  id="date" className="form-control" {...register("date")} required></input>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="time">Time</label>
-              <input type="time" name="time" id="time" className="form-control" {...register("time")}></input>
-            </div>
-            <button className="btn btn-success" type="submit">Register</button>
-          </form>
-        </div>
+                  <label id="job-type-label">Type of Job</label>
+                  <Select
+                    labelId="job-type-label"
+                    name="jobType"
+                    {...register("jobType")}
+                    onChange={handleJobTypeChange}
+                  >
+                    <MenuItem value="construction">Construction</MenuItem>
+                    <MenuItem value="factoryWork">Factory work</MenuItem>
+                    <MenuItem value="agriculture">Agriculture</MenuItem>
+                    <MenuItem value="transportation">Transportation</MenuItem>
+                    <MenuItem value="domesticWork">Domestic work</MenuItem>
+                    <MenuItem value="others">Others</MenuItem>
+                  </Select>
+                </FormControl>
+                {showCustomJobType && (
+                  <TextField
+                    fullWidth
+                    label="Custom Job Type"
+                    {...register("customJobType")}
+                    margin="normal"
+                  />
+                )}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="payment">Payment</label>
+                <input type="text" id="payment" className="form-control" {...register("payment")} required></input>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="peopleNeeded">People Needed</label>
+                <input type="number" id="peopleNeeded" className="form-control" {...register("peopleNeeded")} required></input>
+              </div>
+              <div className="mb-3">
+                <FormControl fullWidth margin="normal">
+                  <label id="location-label">Location</label>
+                  <Select
+                    labelId="location-label"
+                    id="location"
+                    label="Location"
+                    {...register("location")}
+                  >
+                    {locations.map((location, index) => (
+                      <MenuItem key={index} value={location}>
+                        {location}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="date">Job Date</label>
+                <input type="date" id="date" className="form-control" {...register("date")} required></input>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="time">Time</label>
+                <input type="time" id="time" className="form-control" {...register("time")}></input>
+              </div>
+              <button className="btn btn-success" type="submit">Register</button>
+            </form>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal}>Cancel</Button>
@@ -162,9 +201,7 @@ function JobProviderDashboard() {
       </Dialog>
 
       <h2>Previous Jobs</h2>
-      {jobs.map((job, index) => (
-        <CarderProvider key={index} job={job} />
-      ))}
+      
     </div>
   );
 }
