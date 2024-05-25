@@ -102,7 +102,7 @@ job_provider.post('/addJob',verifytoken,async (req, res) => {
 
 //to get the list of jobs which the JobProvider Post which is the protected route and uses middle ware
 //only login user can have accessto there prev posted jobs
-job_provider.get('/getjob',verifytoken,(req, res) => {
+job_provider.get('/getjobs',verifytoken,(req, res) => {
   const db=req.app.get("db");
   const request=new db.Request();
   const provider_id=req.res.locals.decode.id
