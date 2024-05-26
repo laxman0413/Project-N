@@ -3,6 +3,7 @@ import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText } fro
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import { Logincontex } from './JobProviderloginContext/Logincontext';
+import Link from '@mui/material';
 function Menu() {
   // State to manage drawer (sliding menu) visibility
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -55,6 +56,7 @@ function Menu() {
         {/* List of menu items */}
         <List>
           <ListItem  onClick={handleProfileDrawerClose} >
+              <link to="/job-provider/profile" />
             <ListItemText  primary="Profile" />
           </ListItem>
           <ListItem  onClick={handleDrawerClose}>
@@ -63,12 +65,9 @@ function Menu() {
           <ListItem  onClick={handleLogoutDrawerClose}>
             <ListItemText primary="Log Out" />
           </ListItem>
-          {/* Add more menu items as needed */}
         </List>
       </Drawer>
 
-      {/* The rest of your application content goes here */}
-      {/* Add your components and content */}
     </div>
   );
 }
