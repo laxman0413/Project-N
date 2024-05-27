@@ -176,4 +176,33 @@ job_provider.get("/job-provider-details", (req, res) => {
   });
 });
 
+
+job_provider.delete('/deleteJob/:jobId', verifytoken, (req, res) => {
+  const jobId = req.params.jobId;
+  const provider_id = req.res.locals.decode.id;
+
+  const sqlQuery = `
+    DELETE FROM jobdetails
+    WHERE id = @jobId AND provider_id = @provider_id
+  `;
+
+  const db = req.app.get("db");
+  const request = new sql.Request();
+  request.input('jobId', sql.Int, jobId);
+  request.input('provider_id', sql.VarChar, provider_id);
+
+  request.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    if (result.rowsAffected[0] > 0) {
+      res.status(200).send('Job deleted successfully');
+    } else {
+      res.status(404).send('Job not found or you do not have permission to delete this job');
+    }
+  });
+});
+
+
 module.exports = job_provider;
