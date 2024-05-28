@@ -1,4 +1,3 @@
-// frontend/src/CarderProvider.js
 import React, { useState } from 'react';
 import {
   Card,
@@ -66,6 +65,26 @@ function CarderProvider({ job, locations, fetchJobs }) {
     }
   };
 
+  const handleDeleteClick = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.delete(`http://localhost:3001/jobProvider/deleteJob/${job.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          fetchJobs();
+        })
+        .catch(error => {
+          console.error('Error deleting job:', error);
+        });
+    } else {
+      console.log("Please Login First");
+    }
+  };
+
   return (
     <div>
       <Card sx={{ maxWidth: 345 }} className='card'>
@@ -89,6 +108,9 @@ function CarderProvider({ job, locations, fetchJobs }) {
         <CardActions>
           <Button size="small" color="primary" onClick={handleEditClick}>
             Edit
+          </Button>
+          <Button size="small" color="primary" onClick={handleDeleteClick}>
+            Delete
           </Button>
           <Button size="small" color="primary">
             Share
