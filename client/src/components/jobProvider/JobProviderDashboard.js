@@ -140,7 +140,7 @@ function JobProviderDashboard() {
               </div>
               <div className="mb-3">
                 <label htmlFor="peopleNeeded">People Needed</label>
-                <input type="number" id="peopleNeeded" className="form-control" {...register("peopleNeeded")} required></input>
+                <input type="text" id="peopleNeeded" className="form-control" {...register("peopleNeeded")} required></input>
               </div>
               <div className="mb-3">
                 <FormControl fullWidth margin="normal">

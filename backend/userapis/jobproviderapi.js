@@ -142,7 +142,7 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
   request.input('jobTitle', sql.VarChar, jobTitle);
   request.input('jobType', sql.VarChar, jobType);
   request.input('customJobType', sql.VarChar, customJobType || null); // Handle optional customJobType
-  request.input('payment', sql.VarChar, payment);
+  request.input('payment', sql.Int, payment);
   request.input('peopleNeeded', sql.Int, peopleNeeded);
   request.input('location', sql.VarChar, location);
   request.input('date', sql.Date, date);
