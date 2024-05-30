@@ -1,4 +1,4 @@
-import React,{useContext,useEffect,useState} from "react"
+import React,{useContext,useEffect} from "react"
 import {useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Logincontex } from './JobProviderloginContext/Logincontext';
@@ -18,9 +18,8 @@ function JobProviderLogin(){
     }
   },[userloginStatus,navigate])
   
-  console.log(currentuser)
   return (
-    <div>
+    <div className="container">
       <h1 className="text-center">Login</h1>
       {error.length!==0 && <p>{error}</p>}
       <div className="row">

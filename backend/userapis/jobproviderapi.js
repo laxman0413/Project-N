@@ -9,26 +9,35 @@ const verifytoken = require('../middlewares/verifyTokenProvider');
 // To register a Job_Provider
 job_provider.post('/register', async (req, res) => {
   const { name, phone, password } = req.body;
-  let id = "JP" + (+phone);
+  const id = "JP" + (+phone);
+  const sql = req.app.get("db");
+  const request = new sql.Request();
+
   try {
-    // Connect to database
+    // Check if user already exists
+    const sqlQuery = 'SELECT * FROM job_provider WHERE provider_id = @provider_id';
+    request.input('provider_id', sql.VarChar, id);
+    const result = await request.query(sqlQuery);
+
+    if (result.recordset.length > 0) {
+      return res.status(208).send({ message: "User already exists please login",flag:1});
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const db = req.app.get("db");
-    const request = new db.Request();
+
+    // Insert new user
     request.input('nameParam', sql.NVarChar, name);
     request.input('providerIdParam', sql.VarChar, id);
     request.input('passParam', sql.NVarChar, hashedPassword);
     request.input('phoneParam', sql.Numeric, phone);
-    request.query('INSERT INTO job_provider(name, provider_id, password, phone) VALUES (@nameParam, @providerIdParam, @passParam, @phoneParam)', (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        return res.status(500).send('Internal Server Error');
-      }
-      res.status(201).send('User registered successfully');
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Error registering user');
+
+    const insertQuery = 'INSERT INTO job_provider (name, provider_id, password, phone) VALUES (@nameParam, @providerIdParam, @passParam, @phoneParam)';
+    await request.query(insertQuery);
+    res.status(201).send('User registered successfully');
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -101,7 +110,7 @@ job_provider.post('/addJob', verifytoken, async (req, res) => {
 
 // To get the list of jobs posted by the JobProvider
 job_provider.get('/jobs', verifytoken, (req, res) => {
-  const db = req.app.get("db");
+  const sql = req.app.get("db");
   const request = new sql.Request();
   const provider_id = req.res.locals.decode.id;
   
@@ -138,7 +147,7 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
     WHERE id = @jobId AND provider_id = @provider_id
   `;
 
-  const db = req.app.get("db");
+  const sql = req.app.get("db");
   const request = new sql.Request();
   request.input('jobId', sql.Int, jobId);
   request.input('provider_id', sql.VarChar, provider_id);

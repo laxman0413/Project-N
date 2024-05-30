@@ -18,7 +18,6 @@ function JobSeekerLogin() {
     }
   },[userloginStatus])
   
-  console.log(currentuser)
   return (
     <div>
       <h1 className="text-center">Login</h1>
