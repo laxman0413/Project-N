@@ -64,8 +64,8 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3001/jobProvider/getjob
-Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpwOTM5MjY1MDQ2MCIsInBob25lIjoiOTM5MjY1MDQ2MCIsImlhdCI6MTcxNjQwMzUyNCwiZXhwIjoxNzE2NjYyNzI0fQ.zkCFJhNIPL6kZzUW_kkIMALyzShEdPPk0J9QK-ZdA3k
+GET http://localhost:3001/jobProvider/getjobs
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpwOTM5MjY1MDQ2MCIsInBob25lIjoiOTM5MjY1MDQ2MCIsImlhdCI6MTcxNjYyMTE1OSwiZXhwIjoxNzE2ODgwMzU5fQ.2BbJdszhmM7yIyQHCqrt0JJ28GhgoMRrUgZhq24ZK-M
 
 ###
 GET http://localhost:3001/jobProvider/job-provider-details

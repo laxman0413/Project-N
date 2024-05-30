@@ -44,32 +44,27 @@ function JobSeekerRegister() {
             </div>
             <div className="mb-3">
               <label htmlFor="phoneNo">Phone No</label>
-              <input type="number" onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}}name="phoneNo" id="phoneNo" className="form-control" {...register("phone")} required></input>
+              <input type="number" id="phoneNo" onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}} name="phoneNo" className="form-control" {...register("phone")} required></input>
             </div>
             <div className="mb-3">
               <label htmlFor="age">Age</label>
               <input type="number" name="age" id="age" className="form-control" {...register("age")}></input>
             </div>
-            <div className="mb-3">
+            <div >
               <p>Sex</p>
               <div className='form-check'>
-              <label htmlFor="sex">
-              <input type="radio" id="sex" value="male" className="form-check-input" {...register("sex")} />{' '}Male
-              </label>
+              <input type="radio" value="male" id="male" className="form-check-input" {...register("sex")} />
+              <label htmlFor='male' >Male</label>
               </div>
               <div className='form-check'>
-              <label htmlFor="sex">
-              <input type="radio" id="sex" value="female" className="form-check-input" {...register("sex")} />female
-              </label>
+              <input type="radio" value="female" className="form-check-input" {...register("sex")} />female
               </div>
               <div className='form-check'>
-              <label htmlFor="sex">
-              <input type="radio" id="sex" value="others" className="form-check-input" {...register("sex")} />others
-              </label>
+              <input type="radio" value="others" className="form-check-input" {...register("sex")} />others
               </div>
             </div>
             <div className="mb-3">
-                <label htmlFor="location">Type Of Job</label>
+                <label>Type Of Job</label>
                 <select className="mb-3"
                 {...register('jobType', {
                 required: true,

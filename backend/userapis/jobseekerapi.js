@@ -67,7 +67,7 @@ job_seeker.post('/login', async (req, res) => {
             res.status(401).send({message:'Invalid credentials'});
         }
     });
-  });
+});
 
 //To get list of jobs according to JobSeeker jobType and JobType
 job_seeker.get("/jobdetails",verifyToken,(req, res) => {
@@ -150,8 +150,7 @@ job_seeker.delete('/withdrawJob/:application_id', verifyToken, async (req, res) 
       res.status(500).send('Internal Server Error');
   }
 });
-
-
+//To apply for a particular job
 job_seeker.post('/accept-job', verifyToken, (req, res) => {
   const db = req.app.get("db");
   const request = new sql.Request();
@@ -179,6 +178,7 @@ job_seeker.post('/accept-job', verifyToken, (req, res) => {
   });
 });
 
+//any testing routes
 
 
 module.exports=job_seeker;
