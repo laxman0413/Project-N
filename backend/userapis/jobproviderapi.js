@@ -162,21 +162,7 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
   });
 });
 
-// To get the list of job providers
-job_provider.get("/job-provider-details", (req, res) => {
-  const db = req.app.get("db");
-  const request = new sql.Request();
-
-  request.query('SELECT * FROM job_provider', (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-    res.status(200).send(result.recordset);
-  });
-});
-
-
+// To delete any of the previously posted jobs by the JobProvider
 job_provider.delete('/deleteJob/:jobId', verifytoken, (req, res) => {
   const jobId = req.params.jobId;
   const provider_id = req.res.locals.decode.id;
@@ -203,6 +189,24 @@ job_provider.delete('/deleteJob/:jobId', verifytoken, (req, res) => {
     }
   });
 });
+
+
+//tesing purpose
+// To get the list of job providers
+job_provider.get("/job-provider-details", (req, res) => {
+  const db = req.app.get("db");
+  const request = new sql.Request();
+
+  request.query('SELECT * FROM job_provider', (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    res.status(200).send(result.recordset);
+  });
+});
+
+
 
 
 module.exports = job_provider;
