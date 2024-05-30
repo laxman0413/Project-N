@@ -1,0 +1,12 @@
+/* frontend/src/AppliedJobs.css */
+.applied-job-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+  
+  .applied-job-list .card {
+    margin: 8px;
+  }
+  

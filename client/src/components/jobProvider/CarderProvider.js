@@ -14,6 +14,8 @@ import {
   FormControl,
   Select,
   MenuItem,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import card1 from './assets/card1.jpg';
 import axios from 'axios';
@@ -22,6 +24,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [editedJob, setEditedJob] = useState({ ...job });
+  const [isNegotiable, setIsNegotiable] = useState(job.negotiability === 'Negotiable');
 
   const handleCardClick = () => {
     setDialogOpen(true);
@@ -44,6 +47,11 @@ function CarderProvider({ job, locations, fetchJobs }) {
     setEditedJob({ ...editedJob, [name]: value });
   };
 
+  const handleNegotiabilityChange = (e) => {
+    setIsNegotiable(e.target.checked);
+    setEditedJob({ ...editedJob, negotiability: e.target.checked ? 'Negotiable' : 'Non Negotiable' });
+  };
+
   const handleEditSubmit = () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -59,26 +67,6 @@ function CarderProvider({ job, locations, fetchJobs }) {
         })
         .catch(error => {
           console.error('Error updating job:', error);
-        });
-    } else {
-      console.log("Please Login First");
-    }
-  };
-
-  const handleDeleteClick = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.delete(`http://localhost:3001/jobProvider/deleteJob/${job.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(response => {
-          console.log(response.data);
-          fetchJobs();
-        })
-        .catch(error => {
-          console.error('Error deleting job:', error);
         });
     } else {
       console.log("Please Login First");
@@ -103,14 +91,12 @@ function CarderProvider({ job, locations, fetchJobs }) {
             <h4 className='card_header_comp'>Payment: {job.payment}</h4>
             <h4 className='card_header_comp'>Location: {job.location}</h4>
             <h4 className='card_header_comp'>Worker Capacity: {job.peopleNeeded}</h4>
+            <h4 className='card_header_comp'>Negotiability: {job.negotiability}</h4>
           </CardContent>
         </CardActionArea>
         <CardActions>
           <Button size="small" color="primary" onClick={handleEditClick}>
             Edit
-          </Button>
-          <Button size="small" color="primary" onClick={handleDeleteClick}>
-            Delete
           </Button>
           <Button size="small" color="primary">
             Share
@@ -217,6 +203,16 @@ function CarderProvider({ job, locations, fetchJobs }) {
             value={editedJob.description}
             onChange={handleEditChange}
             margin="normal"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isNegotiable}
+                onChange={handleNegotiabilityChange}
+                name="negotiability"
+              />
+            }
+            label="Negotiable"
           />
         </DialogContent>
         <DialogActions>

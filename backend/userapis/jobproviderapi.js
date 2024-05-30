@@ -80,6 +80,8 @@ job_provider.post('/addJob', verifytoken, async (req, res) => {
     location,
     date,
     time,
+    description,
+    negotiability
   } = req.body;
   const provider_id = req.res.locals.decode.id;
   try {
@@ -87,8 +89,8 @@ job_provider.post('/addJob', verifytoken, async (req, res) => {
     const request = new db.Request();
     const result = await request.query`
       INSERT INTO jobdetails
-      (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, provider_id)
-      VALUES (${jobTitle}, ${jobType}, ${customJobType}, ${payment}, ${peopleNeeded}, ${location}, ${date}, ${time}, ${provider_id})
+      (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, description, negotiability, provider_id)
+      VALUES (${jobTitle}, ${jobType}, ${customJobType}, ${payment}, ${peopleNeeded}, ${location}, ${date}, ${time}, ${description}, ${negotiability}, ${provider_id})
     `;
     res.status(200).send('Job added successfully');
   } catch (error) {
@@ -118,7 +120,7 @@ job_provider.get('/jobs', verifytoken, (req, res) => {
 // To modify any of the previously posted jobs by the JobProvider
 job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
   const jobId = req.params.jobId;
-  const { jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, description } = req.body;
+  const { jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, description, negotiability } = req.body;
   const provider_id = req.res.locals.decode.id;
 
   const sqlQuery = `
@@ -131,7 +133,8 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
         location = @location,
         date = @date,
         time = @time,
-        description = @description
+        description = @description,
+        negotiability = @negotiability
     WHERE id = @jobId AND provider_id = @provider_id
   `;
 
@@ -148,6 +151,7 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
   request.input('date', sql.Date, date);
   request.input('time', sql.Time, time);
   request.input('description', sql.VarChar, description);
+  request.input('negotiability', sql.VarChar, negotiability);
 
   request.query(sqlQuery, (err, result) => {
     if (err) {
@@ -161,6 +165,7 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
     }
   });
 });
+
 
 // To get the list of job providers
 job_provider.get("/job-provider-details", (req, res) => {

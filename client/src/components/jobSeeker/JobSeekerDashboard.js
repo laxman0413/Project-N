@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Menu from './Menu';
 import CarderSeeker from './CarderSeeker';
+import { Link } from 'react-router-dom';
+
 
 function JobSeekerDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -92,6 +94,11 @@ function JobSeekerDashboard() {
   return (
     <div>
       <Menu />
+      <br />
+
+      <button><Link to="/job-seeker/applied-jobs">Applied Jobs</Link></button>
+      <br />
+      <br />
       <button onClick={toggleFilterVisibility}>Filter</button>
       {isFilterVisible && (
         <div>

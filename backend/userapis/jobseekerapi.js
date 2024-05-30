@@ -85,6 +85,23 @@ job_seeker.get("/jobdetails",verifyToken,(req, res) => {
     });
 });
 
+job_seeker.get('/appliedJobs', verifyToken, async (req, res) => {
+  const seekerId = req.res.locals.decode.id;
+  
+  try {
+    const db = req.app.get("db");
+    const request = new db.Request();
+    const result = await request.input('seeker_id', sql.VarChar, seekerId)
+                                .query('select jd.jobTitle,jd.peopleNeeded,jd.jobType,jd.date,jd.time,jd.payment,jd.customJobType,jd.description,jd.location,jd.negotiability,jd.payment,jd.provider_id,ja.application_id from job_applications ja, job_seeker js, jobdetails jd where jd.id=ja.id and ja.seeker_id=js.seeker_id and ja.seeker_id=@seeker_id;');
+
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('Error fetching applied jobs:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 //To get list of jobseekers 
 job_seeker.get('/profile', verifyToken, (req, res) => {
   const db = req.app.get("db");
@@ -112,6 +129,27 @@ job_seeker.get('/profile', verifyToken, (req, res) => {
   });
 });
 
+job_seeker.delete('/withdrawJob/:application_id', verifyToken, async (req, res) => {
+  const { application_id } = req.params;
+  const seekerId = req.res.locals.decode.id;
+
+  try {
+      const db = req.app.get("db");
+      const request = new db.Request();
+      const result = await request.input('application_id', sql.Int, application_id)
+          .input('seeker_id', sql.VarChar, seekerId)
+          .query('DELETE FROM job_applications WHERE application_id = @application_id AND seeker_id = @seeker_id');
+
+      if (result.rowsAffected[0] > 0) {
+          res.status(200).send({ message: 'Application withdrawn successfully' });
+      } else {
+          res.status(404).send({ message: 'Application not found' });
+      }
+  } catch (error) {
+      console.error('Error withdrawing job application:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
 
 
 job_seeker.post('/accept-job', verifyToken, (req, res) => {

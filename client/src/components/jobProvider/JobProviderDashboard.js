@@ -12,6 +12,8 @@ import {
   FormControl,
   Select,
   MenuItem,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CarderProvider from './CarderProvider';
@@ -20,6 +22,7 @@ function JobProviderDashboard() {
   let { register, handleSubmit } = useForm({
     defaultValues: {
       jobType: 'construction',
+      negotiability: false
     }
   });
   const [isModalOpen, setModalOpen] = useState(false);
@@ -75,6 +78,7 @@ function JobProviderDashboard() {
 
   const formSubmit = (jobDetails) => {
     const token = localStorage.getItem('token');
+    jobDetails.negotiability = jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable';
     if (token) {
       axios.post('http://localhost:3001/jobProvider/addJob', jobDetails, {
         headers: {
@@ -166,6 +170,16 @@ function JobProviderDashboard() {
               <div className="mb-3">
                 <label htmlFor="time">Time</label>
                 <input type="time" id="time" className="form-control" {...register("time")}></input>
+              </div>
+              <div className="mb-3">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      {...register("negotiability")}
+                    />
+                  }
+                  label="Negotiable"
+                />
               </div>
               <button className="btn btn-success" type="submit">Register</button>
             </form>

@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import card1 from '../jobSeeker/assets/card1.jpg';
+import card1 from '../assets/card1.jpg';
 import './CarderSeeker.css';
 import axios from 'axios';
 import { Logincontex } from './JobseekerloginContext/Logincontext';
