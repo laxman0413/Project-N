@@ -78,11 +78,13 @@ function JobSeekerRegister() {
                 ))}
                 </select>
             </div>
-
             <button className="btn btn-success" type="submit">Register</button>
           </form>
         </div>
-
+        <div className="alternative-signup">
+          <p>or</p>
+        </div>
+        <p>Already have an account? <a href="/job-seeker/login">Log in</a></p>
     </div>
   )
 }

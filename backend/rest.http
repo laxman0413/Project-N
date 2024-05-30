@@ -26,6 +26,7 @@ GET http://localhost:3001/jobSeeker/jobdetails
 GET http://localhost:3001/jobSeeker/job-seeker-details
 
 
+
 //job-provider routes
 ###
 POST  http://localhost:3001/jobProvider/register

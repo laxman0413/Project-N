@@ -5,18 +5,30 @@ import { useNavigate } from "react-router-dom";
 
 function JobProviderRegister() {
   let {register,handleSubmit}=useForm();
-    let [user,setUser]=useState({})
+    let [err,setErr]=useState("")
     const navigate=useNavigate()
     const forsubmit=(userObj)=>{
-        setUser(userObj);
-        axios
-        .post("http://localhost:3001/jobProvider/register",userObj)
-        console.log(userObj);
-        navigate("/job-provider/login");
+        axios.post("http://localhost:3001/jobProvider/register",userObj)
+        .then(res=>{
+          console.log(res.data);
+          if(res.status===201){
+            navigate("/job-provider/login");
+          }else{
+            setErr(res.data.message);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          setErr("Registration failed. Please try again.");
+        })
     }
   return (
+    
     <div>
-      <h1>JobProvider SignUp</h1>
+      <div className="signup-container">
+      <div className="form-section">
+        <h2>Join us</h2>
+        {err.length!==0 && <p>{err}</p>}
         <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
           <form onSubmit={handleSubmit(forsubmit)}>
             <div className="mb-3">
@@ -34,6 +46,12 @@ function JobProviderRegister() {
             <button className="btn btn-success" type="submit">Register</button>
           </form>
         </div>
+        <div className="alternative-signup">
+          <p>or</p>
+        </div>
+        <p>Already have an account? <a href="/job-provider/login">Log in</a></p>
+      </div>
+      </div>
     </div>
   );
 }

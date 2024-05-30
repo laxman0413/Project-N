@@ -12,6 +12,10 @@ job_seeker.post('/register', async (req, res) => {
     const db=req.app.get("db");
     const request=new db.Request();
   try {
+    const result = await request.query(`select * from job_seeker where phone='${phone}'`);
+    if (result.recordset.length > 0) {
+      return res.status(208).json({ message: "user already exists please login" });
+    }
     const hashedPassword = await bcrypt.hash(pass, 10); // Hash the password
     const sqlQuery = 'INSERT INTO job_seeker (name, password, phone, age, sex, jobType) VALUES (@name, @hashedPassword, @phone, @age, @sex, @jobType)';
       //console.log('name: ',username, 'password: ',hashedPassword, 'phone: ',phone, 'age: ',age );
