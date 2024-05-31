@@ -4,7 +4,7 @@ job_provider.use(express.json());
 const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const verifytoken = require('../middlewares/verifyTokenProvider');
+const verifyToken = require('../middlewares/verifytoken');
 
 // To register a Job_Provider
 job_provider.post('/register', async (req, res) => {
@@ -79,7 +79,7 @@ job_provider.post('/login', async (req, res) => {
 });
 
 // To post a new job
-job_provider.post('/addJob', verifytoken, async (req, res) => {
+job_provider.post('/addJob', verifyToken, async (req, res) => {
   const {
     jobTitle,
     jobType,
@@ -109,7 +109,7 @@ job_provider.post('/addJob', verifytoken, async (req, res) => {
 });
 
 // To get the list of jobs posted by the JobProvider
-job_provider.get('/jobs', verifytoken, (req, res) => {
+job_provider.get('/jobs', verifyToken, (req, res) => {
   const sql = req.app.get("db");
   const request = new sql.Request();
   const provider_id = req.res.locals.decode.id;
@@ -127,7 +127,7 @@ job_provider.get('/jobs', verifytoken, (req, res) => {
 });
 
 // To modify any of the previously posted jobs by the JobProvider
-job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
+job_provider.put('/editJob/:jobId', verifyToken, (req, res) => {
   const jobId = req.params.jobId;
   const { jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, description, negotiability } = req.body;
   const provider_id = req.res.locals.decode.id;
@@ -177,7 +177,7 @@ job_provider.put('/editJob/:jobId', verifytoken, (req, res) => {
 
 
 // To delete any of the previously posted jobs by the JobProvider
-job_provider.delete('/deleteJob/:jobId', verifytoken, (req, res) => {
+job_provider.delete('/deleteJob/:jobId', verifyToken, (req, res) => {
   const jobId = req.params.jobId;
   const provider_id = req.res.locals.decode.id;
 
@@ -204,6 +204,21 @@ job_provider.delete('/deleteJob/:jobId', verifytoken, (req, res) => {
   });
 });
 
+
+//To get the list of applications for a patticular job
+job_provider.get('/applications/:jobId', verifyToken, async(req, res) =>{
+ const jobId = req.params.jobId;
+ try {
+  const db = req.app.get("db");
+  const request = new db.Request();
+  const result = await request.input('jobId', sql.VarChar, jobId)
+                              .query('select js.name,js.phone,js.sex,js.age from job_applications ja, job_seeker js where ja.id=@jobId and ja.seeker_id=js.seeker_id');
+  res.status(200).json(result.recordset);
+} catch (err) {
+  console.error('Error fetching applied jobs:', err);
+  res.status(500).send('Internal Server Error');
+}
+})
 
 //tesing purpose
 // To get the list of job providers

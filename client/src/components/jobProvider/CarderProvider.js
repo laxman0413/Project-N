@@ -19,12 +19,15 @@ import {
 } from '@mui/material';
 import card1 from './assets/card1.jpg';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function CarderProvider({ job, locations, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [editedJob, setEditedJob] = useState({ ...job });
   const [isNegotiable, setIsNegotiable] = useState(job.negotiability === 'Negotiable');
+  const [jobid,setJobid]=useState("")
+  const navigate=useNavigate()
 
   const handleCardClick = () => {
     setDialogOpen(true);
@@ -91,6 +94,9 @@ function CarderProvider({ job, locations, fetchJobs }) {
       console.log("Please Login First");
     }
   };
+  const handleApplications=()=>{
+    navigate(`/job-provider/application/${job.id}`);
+  }
 
   return (
     <div>
@@ -120,8 +126,8 @@ function CarderProvider({ job, locations, fetchJobs }) {
           <Button size="small" color="primary" onClick={handleDeleteClick}>
             Delete
           </Button>
-          <Button size="small" color="primary">
-            Share
+          <Button size="small" color="primary" onClick={handleApplications}>
+            Applications
           </Button>
         </CardActions>
       </Card>

@@ -39,7 +39,7 @@ function JobProviderDashboard() {
     "D. C. Court"
   ];
 
-  const fetchJobs = useCallback(() => {
+  const fetchJobs =() => {
     const token = localStorage.getItem('token');
     if (token) {
       axios.get('http://localhost:3001/jobProvider/jobs', {
@@ -57,11 +57,11 @@ function JobProviderDashboard() {
       console.log("Please Login First");
       navigate("/job-provider/login")
     }
-  }, [navigate]);
+  };
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+  });
 
   const handlePostJobClick = () => {
     setModalOpen(true);
@@ -191,7 +191,7 @@ function JobProviderDashboard() {
       </Dialog>
 
       <h2>Previous Jobs</h2>
-      <div className="job-list">
+      <div className="job-list" >
         {jobs.map(job => (
           <CarderProvider key={job.id} job={job} locations={locations} fetchJobs={fetchJobs} />
         ))}
