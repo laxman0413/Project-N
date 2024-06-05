@@ -1,0 +1,73 @@
+POST  http://localhost:3001/jobSeeker/register
+Content-Type: application/json
+
+{
+    "name":"ram1",
+    "pass":"ram1",
+    "phone":"9392650452",
+    "age":"20",
+    "sex":"Male",
+    "jobType":"Agriculture"
+}
+
+###
+POST  http://localhost:3001/jobSeeker/login
+Content-Type: application/json
+
+{
+    "password":"ram",
+    "phone":"9392650450"
+}
+###
+GET http://localhost:3001/jobSeeker/jobdetails
+
+
+###
+GET http://localhost:3001/jobSeeker/job-seeker-details
+
+
+
+//job-provider routes
+###
+POST  http://localhost:3001/jobProvider/register
+Content-Type: application/json
+
+{
+    "name":"laxman12",
+    "password":"ram12",
+    "phone":"9392650452"
+}
+
+###
+POST  http://localhost:3001/jobProvider/login
+Content-Type: application/json
+
+{
+    "password":"ram",
+    "phone":"9392650460"
+}
+
+###
+POST  http://localhost:3001/jobProvider/addjob
+Content-Type: application/json
+
+{
+  "jobTitle": "House building",
+  "jobType": "plumbing",
+  "customJobType": "plumbing",
+  "payment": "2000",
+  "peopleNeeded": 10,
+  "location": "Dimapur",
+  "date": "01-01-2024",
+  "time": "12:30",
+  "provider_id":"jp9392650452"
+}
+
+
+###
+GET http://localhost:3001/jobProvider/getjobs
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpwOTM5MjY1MDQ2MCIsInBob25lIjoiOTM5MjY1MDQ2MCIsImlhdCI6MTcxNjYyMTE1OSwiZXhwIjoxNzE2ODgwMzU5fQ.2BbJdszhmM7yIyQHCqrt0JJ28GhgoMRrUgZhq24ZK-M
+
+###
+GET http://localhost:3001/jobProvider/job-provider-details
+
