@@ -18,6 +18,7 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import JobSeekerProfile from './components/jobSeeker/JobSeekerProfile';
 import AppliedJobs from './components/jobSeeker/AppliedJobs';
 import ListOfApplications from './components/jobProvider/ListOfApplications';
+import Chat from './components/chat/Chat';
 
 function App() {
   const RouterObj=createBrowserRouter([
@@ -56,6 +57,10 @@ function App() {
             {
               path:'/job-provider/application/:jobId',
               element:<ListOfApplications/>
+            },
+            {
+              path:'/job-provider/chat',
+              element:<Chat/>
             }
           ]
         },
@@ -87,6 +92,10 @@ function App() {
             {
               path:'/job-seeker/applied-jobs',
               element:<AppliedJobs />
+            },
+            {
+              path:'/job-seeker/chat',
+              element:<Chat/>
             }
           ]
         },
