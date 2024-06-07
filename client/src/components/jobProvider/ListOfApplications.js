@@ -25,6 +25,10 @@ function ListOfApplications() {
       console.log("Please Login First");
     }
   }, [jobId]);
+  function  handlechat(phonenum) {
+    console.log(phonenum)
+    return `https://wa.me/+91${phonenum}`
+  }
 
   return (
     <div>
@@ -50,11 +54,13 @@ function ListOfApplications() {
                     <Typography variant="body2" color="textSecondary">
                     <strong>Phone:</strong> {application.phone}
                     </Typography>
+                    <a className="btn btn-success" href={handlechat(application.phone)} target="_blank" rel="noopener noreferrer">Chat</a>
                 </CardContent>
                 </Card>
             </Grid>
             ))}
         </Grid>
+        
         </Container>
       )}
     </div>
