@@ -10,6 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(cors({
+  origin: 'https://project-n-git-main-laxman0413s-projects.vercel.app/'
+}));
 
 const config = {
   server: process.env.SERVER,
