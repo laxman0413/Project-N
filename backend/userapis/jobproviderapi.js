@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
-
+const verifyToken = require('../middlewares/verifyToken');
 console.log("Current directory:", __dirname);
 console.log("Attempting to require verifytoken from:", path.resolve(__dirname, '../middlewares/verifytoken'));
 
