@@ -10,7 +10,7 @@ function JobSeekerProfile() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.get('http://localhost:3001/jobseeker/profile', {
+      axios.get('https://nagaconnect-iitbilai.onrender.com/jobseeker/profile', {
         headers: {
           Authorization: `Bearer ${token}`
         }

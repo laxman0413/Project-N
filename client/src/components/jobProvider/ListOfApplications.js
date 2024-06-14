@@ -10,7 +10,7 @@ function ListOfApplications() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.get(`http://localhost:3001/jobProvider/applications/${jobId}`, {
+      axios.get(`https://nagaconnect-iitbilai.onrender.com/jobProvider/applications/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

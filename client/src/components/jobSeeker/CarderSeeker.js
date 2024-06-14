@@ -28,7 +28,7 @@ function CarderSeeker({ job }) {
 // Function to handle job acceptance
 const handleAcceptJob = () => {
   const token = localStorage.getItem('token');
-  axios.post('http://localhost:3001/jobseeker/accept-job', { id: job.id }, {
+  axios.post('https://nagaconnect-iitbilai.onrender.com/jobseeker/accept-job', { id: job.id }, {
     headers: {
       Authorization: `Bearer ${token}`
     }

@@ -9,7 +9,7 @@ function JobSeekerRegister() {
     let [err,setError]=useState("")
     const forsubmit=(userObj)=>{
       axios
-      .post("http://localhost:3001/jobSeeker/register",userObj)
+      .post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register",userObj)
       .then((response)=>{
         if(response.status===201){
           navigate("/job-seeker/login")

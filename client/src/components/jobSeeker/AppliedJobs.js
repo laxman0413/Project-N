@@ -15,7 +15,7 @@ function AppliedJobs() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const response = await axios.get('http://localhost:3001/jobseeker/appliedJobs', {
+        const response = await axios.get('https://nagaconnect-iitbilai.onrender.com/jobseeker/appliedJobs', {
           headers: {
             Authorization: `Bearer ${token}`
           }

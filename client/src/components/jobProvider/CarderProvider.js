@@ -57,7 +57,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
   const handleDeleteClick = () => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.delete(`http://localhost:3001/jobProvider/deleteJob/${job.id}`, {
+      axios.delete(`https://nagaconnect-iitbilai.onrender.com/jobProvider/deleteJob/${job.id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -77,7 +77,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
   const handleEditSubmit = () => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.put(`http://localhost:3001/jobProvider/editJob/${job.id}`, editedJob, {
+      axios.put(`https://nagaconnect-iitbilai.onrender.com/jobProvider/editJob/${job.id}`, editedJob, {
         headers: {
           Authorization: `Bearer ${token}`
         }

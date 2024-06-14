@@ -8,7 +8,7 @@ function JobProviderRegister() {
     let [err,setErr]=useState("")
     const navigate=useNavigate()
     const forsubmit=(userObj)=>{
-        axios.post("http://localhost:3001/jobProvider/register",userObj)
+        axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register",userObj)
         .then(res=>{
           console.log(res.data);
           if(res.status===201){

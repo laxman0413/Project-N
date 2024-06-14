@@ -5,7 +5,6 @@ import JobProviderHome from './components/jobProvider/JobProviderHome';
 import JobProviderRegister from './components/jobProvider/JobProviderRegister';
 import JobProviderLogin from './components/jobProvider/JobProviderLogin';
 import JobSeekerDashboard from './components/jobSeeker/JobSeekerDashboard';
-import PostNewJob from './components/jobProvider/PostNewJob';
 import JobSeekerHome from './components/jobSeeker/JobSeekerHome';
 import JobSeekerRegister from './components/jobSeeker/JobSeekerRegister';
 import JobSeekerLogin from './components/jobSeeker/JobSeekerLogin';
@@ -48,10 +47,6 @@ function App() {
             {
               path:'/job-provider/dashboard',
               element:<JobProviderDashboard />
-            },
-            {
-              path:'/job-provider/post-job',
-              element:<PostNewJob/>
             },
             {
               path:'/job-provider/application/:jobId',

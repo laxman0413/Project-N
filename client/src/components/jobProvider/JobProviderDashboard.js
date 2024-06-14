@@ -42,7 +42,7 @@ function JobProviderDashboard() {
   const fetchJobs =() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.get('http://localhost:3001/jobProvider/jobs', {
+      axios.get('https://nagaconnect-iitbilai.onrender.com/jobProvider/jobs', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -80,7 +80,7 @@ function JobProviderDashboard() {
     const token = localStorage.getItem('token');
     jobDetails.negotiability = jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable';
     if (token) {
-      axios.post('http://localhost:3001/jobProvider/addJob', jobDetails, {
+      axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob', jobDetails, {
         headers: {
           Authorization: `Bearer ${token}`
         }

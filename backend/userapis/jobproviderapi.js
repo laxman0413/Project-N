@@ -4,22 +4,7 @@ job_provider.use(express.json());
 const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
-
-console.log("Current directory:", __dirname);
-console.log("Attempting to require verifytoken from:", path.resolve(__dirname, '../middlewares/verifytoken'));
-
-const verifyTokenPath = path.resolve(__dirname, '../middlewares/verifytoken.js');
-fs.access(verifyTokenPath, fs.constants.F_OK, (err) => {
-  if (err) {
-    console.error('verifytoken.js does NOT exist');
-  } else {
-    console.log('verifytoken.js exists');
-  }
-});
 const verifyToken = require('../middlewares/verifytoken');
-console.log(verifyToken)
 
 // To register a Job_Provider
 job_provider.post('/register', async (req, res) => {

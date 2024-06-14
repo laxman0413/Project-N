@@ -23,7 +23,7 @@ function CarderSeekerApp({ job, onWithdraw }) {
     if (token) {
       try {
         console.log('Withdrawing job application:', job.application_id);
-        await axios.delete(`http://localhost:3001/jobseeker/withdrawJob/${job.application_id}`, {
+        await axios.delete(`https://nagaconnect-iitbilai.onrender.com/jobseeker/withdrawJob/${job.application_id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
