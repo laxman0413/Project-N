@@ -5,9 +5,9 @@ const sql = require('mssql');
 const mysql=require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const cors = require('cors');
 const app = express();
 app.use(express.json());
+var cors = require('cors')
 app.use(cors());
 
 const config = {
