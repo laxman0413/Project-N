@@ -10,7 +10,7 @@ const UserLoginContextStore = ({children}) => {
 
     const LoginUser=(userObj)=>{
       axios
-      .post("http://localhost:3001/jobProvider/login",userObj)
+      .post("https://nagaconnect-iitbilai.onrender.com/jobProvider/login",userObj)
       .then((response)=>{
         if(response.status===200){
           setcurrentuser({...response.data.payload});

@@ -11,12 +11,12 @@ Content-Type: application/json
 }
 
 ###
-POST  http://localhost:3001/jobSeeker/login
+POST  https://nagaconnect-iitbilai.onrender.com/jobSeeker/login
 Content-Type: application/json
 
 {
     "password":"ram",
-    "phone":"9392650450"
+    "phone":"9392650460"
 }
 ###
 GET http://localhost:3001/jobSeeker/jobdetails
@@ -29,7 +29,7 @@ GET http://localhost:3001/jobSeeker/job-seeker-details
 
 //job-provider routes
 ###
-POST  http://localhost:3001/jobProvider/register
+POST  https://nagaconnect-iitbilai.onrender.com/jobProvider/register
 Content-Type: application/json
 
 {
@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ###
-POST  http://localhost:3001/jobProvider/login
+POST  https://nagaconnect-iitbilai.onrender.com/jobProvider/login
 Content-Type: application/json
 
 {
@@ -65,7 +65,7 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3001/jobProvider/getjobs
+GET https://nagaconnect-iitbilai.onrender.com/jobProvider/getjobs
 Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpwOTM5MjY1MDQ2MCIsInBob25lIjoiOTM5MjY1MDQ2MCIsImlhdCI6MTcxNjYyMTE1OSwiZXhwIjoxNzE2ODgwMzU5fQ.2BbJdszhmM7yIyQHCqrt0JJ28GhgoMRrUgZhq24ZK-M
 
 ###
