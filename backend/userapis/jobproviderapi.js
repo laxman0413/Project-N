@@ -18,7 +18,7 @@ fs.access(verifyTokenPath, fs.constants.F_OK, (err) => {
     console.log('verifytoken.js exists');
   }
 });
-const verifyToken = require('../middlewares/verifytoken');
+//const verifyToken = require('../middlewares/verifytoken');
 console.log(verifyToken)
 
 // To register a Job_Provider
