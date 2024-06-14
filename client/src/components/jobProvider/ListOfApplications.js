@@ -26,7 +26,6 @@ function ListOfApplications() {
     }
   }, [jobId]);
   function  handlechat(phonenum) {
-    console.log(phonenum)
     return `https://wa.me/+91${phonenum}`
   }
 
