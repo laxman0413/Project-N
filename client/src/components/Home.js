@@ -11,7 +11,6 @@ function Home() {
         <div className="icon"><h1><b>NagaConnect</b></h1></div>
       </div>
       <h3><b>How do you want to use NagaConnect?</b></h3>
-      <p>We’ll personalize your setup experience accordingly.</p>
       <div className="options">
         <div className="option" onClick={() => { navigate('/job-provider/register') }}>
           <div className="icon-search">🔍</div>
