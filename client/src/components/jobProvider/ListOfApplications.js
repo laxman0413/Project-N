@@ -26,10 +26,6 @@ function ListOfApplications() {
     }
   }, [jobId]);
   function  handlechat(phonenum) {
-<<<<<<< HEAD
-    console.log(phonenum)
-=======
->>>>>>> dcbbcd7349d1fd7cbdb9be5db190eb8fbc374ffc
     return `https://wa.me/+91${phonenum}`
   }
 
