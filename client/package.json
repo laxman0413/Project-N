@@ -33,6 +33,7 @@
     "postcss": "^8.4.35"
   },
   "scripts": {
+    "start": "react-scripts start",
     "predeploy": "npm run build",
     "build": "react-scripts build",
     "test": "react-scripts test",
