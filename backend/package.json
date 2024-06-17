@@ -3,6 +3,7 @@
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
@@ -15,8 +16,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "build": "npm install && npm run build-server",
-    "build-server":"echo 'Building server ...' && npm run compile-server",
-    "compile-server":"echo 'Compiling server...'"
+    "build-server": "echo 'Building server ...' && npm run compile-server",
+    "compile-server": "echo 'Compiling server...'"
   },
   "name": "backend",
   "version": "1.0.0",

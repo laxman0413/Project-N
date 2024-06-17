@@ -5,11 +5,12 @@ const sql = require('mssql');
 const mysql=require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const app = express();
 app.use(express.json());
 var cors = require('cors')
 app.use(cors());
-
+app.use(cookieParser());
 const config = {
   server: process.env.SERVER,
   database: process.env.DATABASE,
@@ -41,6 +42,9 @@ app.use('/jobProvider',job_provider);
 //jobseekers apis
 const job_seeker=require('./userapis/jobseekerapi');
 app.use('/jobseeker',job_seeker);
+
+const advertisement=require('./userapis/advertiseapi');
+app.use('/advertise',advertisement);
 
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);

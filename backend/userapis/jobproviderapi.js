@@ -7,19 +7,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const verifyToken = require('../middlewares/verifyToken');
-console.log("Current directory:", __dirname);
-console.log("Attempting to require verifyToken from:", path.resolve(__dirname, '../middlewares/verifyToken'));
 
-const verifyTokenPath = path.resolve(__dirname, '../middlewares/verifyToken.js');
-fs.access(verifyTokenPath, fs.constants.F_OK, (err) => {
-  if (err) {
-    console.error('verifyToken.js does NOT exist');
-  } else {
-    console.log('verifyToken.js exists');
-  }
-});
-//const verifyToken = require('../middlewares/verifyToken');
-console.log(verifyToken)
 
 // To register a Job_Provider
 job_provider.post('/register', async (req, res) => {

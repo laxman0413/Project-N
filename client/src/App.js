@@ -17,6 +17,9 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import JobSeekerProfile from './components/jobSeeker/JobSeekerProfile';
 import AppliedJobs from './components/jobSeeker/AppliedJobs';
 import ListOfApplications from './components/jobProvider/ListOfApplications';
+import Advertise from './components/advertisement/Advertise';
+import Theme from './components/advertisement/Theme';
+import { ThemeProvider } from '@mui/material/styles';
 
 function App() {
   const RouterObj=createBrowserRouter([
@@ -84,6 +87,10 @@ function App() {
               element:<AppliedJobs />
             }
           ]
+        },
+        {
+          path:'/advertise',
+          element:<ThemeProvider theme={Theme}><Advertise /></ThemeProvider>
         },
         {
           path:'/admin',
