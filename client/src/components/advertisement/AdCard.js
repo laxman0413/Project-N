@@ -1,29 +1,20 @@
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Typography
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginBottom: theme.spacing(2),
-    padding: theme.spacing(2),
-    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-  },
-  deleteButton: {
-    marginLeft: 'auto',
-  }
-}));
+import { Card, CardContent, CardActions, Button, Typography } from '@mui/material';
 
 function AdCard({ ad, onDelete }) {
-  const classes = useStyles();
+  const styles = {
+    card: {
+      marginBottom: '16px',
+      padding: '16px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+    },
+    deleteButton: {
+      marginLeft: 'auto',
+    }
+  };
 
   return (
-    <Card className={classes.card}>
+    <Card style={styles.card}>
       <CardContent>
         <Typography variant="h6">{ad.shop_name}</Typography>
         <Typography variant="body2" color="textSecondary">
@@ -37,8 +28,8 @@ function AdCard({ ad, onDelete }) {
         <Button
           size="small"
           color="secondary"
-          className={classes.deleteButton}
-          onClick={() => onDelete(ad.id)}
+          style={styles.deleteButton}
+          onClick={() => onDelete(ad.advertisement_id)}
         >
           Delete
         </Button>
