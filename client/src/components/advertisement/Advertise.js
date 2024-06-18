@@ -12,22 +12,10 @@ import {
   Typography,
   Grid
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { useForm } from 'react-hook-form';
 import AdCard from './AdCard';
 
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  }
-}));
-
 function Advertise() {
-  const classes = useStyles();
   const { register, handleSubmit, reset } = useForm();
   const [isModalOpen, setModalOpen] = useState(false);
   const [ads, setAds] = useState([]);
@@ -110,7 +98,7 @@ function Advertise() {
           fullWidth
           variant="contained"
           color="primary"
-          className={classes.submit}
+          style={{ marginTop: '24px', marginBottom: '16px' }}
           onClick={handlePostAdClick}
         >
           Post an Advertisement
@@ -118,7 +106,7 @@ function Advertise() {
         <Dialog open={isModalOpen} onClose={handleCloseModal}>
           <DialogTitle>Post an Advertisement</DialogTitle>
           <DialogContent>
-            <form className={classes.form} onSubmit={handleSubmit(formSubmit)}>
+            <form onSubmit={handleSubmit(formSubmit)} style={{ width: '100%', marginTop: '8px' }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -158,7 +146,7 @@ function Advertise() {
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit}
+                style={{ marginTop: '24px', marginBottom: '16px' }}
               >
                 Submit
               </Button>
