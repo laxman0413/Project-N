@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Menu from './Menu';
 import CarderSeeker from './CarderSeeker';
+import AdCard from '../advertisement/AdCard'; // Import AdCard component
 import { Link } from 'react-router-dom';
-
 
 function JobSeekerDashboard() {
   const [jobs, setJobs] = useState([]);
-  const navigate=useNavigate()
+  const [ads, setAds] = useState([]); // State to store ads
+  const navigate = useNavigate();
   const [locations, setLocations] = useState([]);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedWorkTypes, setSelectedWorkTypes] = useState([]);
@@ -17,29 +18,37 @@ function JobSeekerDashboard() {
 
   useEffect(() => {
     // Fetch job details and available locations from the backend when the component mounts
-    const token=localStorage.getItem("token");
-    if(token===null){
-      navigate("/job-seeker/login")
-    }else{
-    axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails',{headers:{Authorization:'Bearer '+token}})
-      .then(response => {
-        console.log(response.data);  // Log response data to debug
-        if (response.data && response.data.recordsets && Array.isArray(response.data.recordsets[0])) {
-          const jobsData = response.data.recordsets[0];
-          setJobs(jobsData);
-          // Extracting unique locations from job details
-          const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
-          setLocations(uniqueLocations);
-        } else {
-          console.error('Error: Expected an object with recordsets array but got', typeof response.data);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching job details:', error);
-      });
-    }
-  }, []);
+    const token = localStorage.getItem("token");
+    if (token === null) {
+      navigate("/job-seeker/login");
+    } else {
+      axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', { headers: { Authorization: 'Bearer ' + token } })
+        .then(response => {
+          console.log(response.data);  // Log response data to debug
+          if (response.data && response.data.recordsets && Array.isArray(response.data.recordsets[0])) {
+            const jobsData = response.data.recordsets[0];
+            setJobs(jobsData);
+            // Extracting unique locations from job details
+            const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
+            setLocations(uniqueLocations);
+          } else {
+            console.error('Error: Expected an object with recordsets array but got', typeof response.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching job details:', error);
+        });
 
+      // Fetch ads from the backend
+      axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', { headers: { Authorization: 'Bearer ' + token } })
+        .then(response => {
+          setAds(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching ads:', error);
+        });
+    }
+  }, [navigate]);
 
   // Function to toggle filter visibility
   const toggleFilterVisibility = () => {
@@ -189,7 +198,12 @@ function JobSeekerDashboard() {
 
       {/* Render Carder component for each filtered job */}
       {filteredJobs.map((job, index) => (
-        <CarderSeeker key={index} job={job} />
+        <div key={index}>
+          <CarderSeeker job={job} />
+          {(index + 1) % 5 === 0 && ads.length > index / 5 && (
+            <AdCard ad={ads[Math.floor(index / 5)]} />
+          )}
+        </div>
       ))}
     </div>
   );

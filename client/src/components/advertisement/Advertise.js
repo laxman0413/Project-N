@@ -27,7 +27,7 @@ function Advertise() {
         if (!token) {
           throw new Error('No token found');
         }
-        const response = await axios.get('http://localhost:3001/advertise/getUserAds', {
+        const response = await axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getUserAds', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -56,7 +56,7 @@ function Advertise() {
       if (!token) {
         throw new Error('No token found');
       }
-      const response = await axios.post('http://localhost:3001/advertise/addAd', adDetails, {
+      const response = await axios.post('https://nagaconnect-iitbilai.onrender.com/advertise/addAd', adDetails, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -75,7 +75,7 @@ function Advertise() {
       if (!token) {
         throw new Error('No token found');
       }
-      await axios.delete(`http://localhost:3001/advertise/deleteAd/${id}`, {
+      await axios.delete(`https://nagaconnect-iitbilai.onrender.com/advertise/deleteAd/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
