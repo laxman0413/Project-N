@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ###
-POST  https://nagaconnect-iitbilai.onrender.com/jobProvider/login
+POST  http://localhost:3001/ad
 Content-Type: application/json
 
 {

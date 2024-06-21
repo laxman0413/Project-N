@@ -19,6 +19,11 @@ function Advertise() {
   const { register, handleSubmit, reset } = useForm();
   const [isModalOpen, setModalOpen] = useState(false);
   const [ads, setAds] = useState([]);
+  const [selectedImg,SetselectedImg]=useState(null)
+
+  const handleImg=(e)=>{
+    SetselectedImg(e.target.files[0]);
+  }
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -32,12 +37,11 @@ function Advertise() {
             Authorization: `Bearer ${token}`
           }
         });
-        setAds(response.data);
+        setAds(response.data.payload);
       } catch (error) {
         console.error('Error fetching ads:', error);
       }
     };
-
     fetchAds();
   }, []);
 
@@ -56,7 +60,10 @@ function Advertise() {
       if (!token) {
         throw new Error('No token found');
       }
-      const response = await axios.post('https://nagaconnect-iitbilai.onrender.com/advertise/addAd', adDetails, {
+      const formData=new FormData();
+      formData.append("adver",JSON.stringify(adDetails));
+      formData.append("image",selectedImg);
+      const response = await axios.post('https://nagaconnect-iitbilai.onrender.com/advertise/addAd', formData,{
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -141,6 +148,10 @@ function Advertise() {
                 autoComplete="phoneNumber"
                 {...register("phoneNumber")}
               />
+              <div className="mb-3">
+                <label htmlFor="img">Profilepic</label>
+                <input type="file" name="img" id="image" className="form-control" onInput={handleImg} required></input>
+              </div>
               <Button
                 type="submit"
                 fullWidth
@@ -163,7 +174,7 @@ function Advertise() {
       <Grid container spacing={2}>
         {ads.map((ad) => (
           <Grid item xs={12} key={ad.advertisement_id}>
-            <AdCard ad={ad} onDelete={handleDeleteAd} />
+            <AdCard  ad={ad} onDelete={handleDeleteAd} />
           </Grid>
         ))}
       </Grid>

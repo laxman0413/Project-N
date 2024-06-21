@@ -20,7 +20,6 @@ function AppliedJobs() {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log('Fetched applied jobs:', response.data);
 
         // Ensuring each job has a unique application_id
         const jobsData = response.data.map((job, index) => ({
