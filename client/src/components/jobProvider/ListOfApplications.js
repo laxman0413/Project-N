@@ -25,8 +25,9 @@ function ListOfApplications() {
       console.log("Please Login First");
     }
   }, [jobId]);
-  function  handlechat(phonenum) {
-    return `https://wa.me/+91${phonenum}`
+
+  function handleChat(phoneNum) {
+    return `https://wa.me/+91${phoneNum}`;
   }
 
   return (
@@ -36,30 +37,36 @@ function ListOfApplications() {
         <p>No applications found</p>
       ) : (
         <Container>
-        <Grid container spacing={3}>
-            {applications.map(application => (
-            <Grid item xs={12} sm={6} md={4} key={application.id}>
+          <Grid container spacing={3}>
+            {applications.map(application => ( 
+              <Grid item xs={12} sm={6} md={4} key={application.id}>
                 <Card>
-                <CardContent>
+                  <CardContent>
                     <Typography variant="h6" gutterBottom>
-                    {application.name}
+                      {application.name}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                    <strong>Sex:</strong> {application.sex}
+                      <strong>Sex:</strong> {application.sex}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                    <strong>Age:</strong> {application.age}
+                      <strong>Age:</strong> {application.age}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                    <strong>Phone:</strong> {application.phone}
+                      <strong>Phone:</strong> {application.phone}
                     </Typography>
-                    <a className="btn btn-success" href={handlechat(application.phone)} target="_blank" rel="noopener noreferrer">Chat</a>
-                </CardContent>
+                    <a
+                      className="btn btn-success"
+                      href={handleChat(application.phone)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Chat
+                    </a>
+                  </CardContent>
                 </Card>
-            </Grid>
+              </Grid>
             ))}
-        </Grid>
-        
+          </Grid>
         </Container>
       )}
     </div>

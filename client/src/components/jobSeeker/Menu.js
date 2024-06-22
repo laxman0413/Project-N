@@ -28,6 +28,9 @@ function Menu() {
     navigate('/job-seeker/login')
     setDrawerOpen(false);
   };
+  const handleAdvertise=()=>{
+    navigate('/advertise')
+  }
 
 
   return (
@@ -62,6 +65,9 @@ function Menu() {
           </ListItem>
           <ListItem  onClick={handleLogoutDrawerClose}>
             <ListItemText primary="Log Out" />
+          </ListItem>
+          <ListItem  onClick={handleAdvertise}>
+            <ListItemText primary="Advertise" />
           </ListItem>
           {/* Add more menu items as needed */}
         </List>

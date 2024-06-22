@@ -102,7 +102,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
     <div>
       <Card sx={{ maxWidth: 345 }} className='card'>
         <CardActionArea onClick={handleCardClick}>
-          <img src={card1} alt="Avatar" className='image' />
+          <img src={job.images || card1} alt="Avatar" className='image' />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {job.jobTitle}

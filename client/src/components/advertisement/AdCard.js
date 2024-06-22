@@ -38,7 +38,7 @@ function AdCard({ ad, onDelete }) {
           <strong>Phone:</strong> {ad.phone_number}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          <strong>Name:</strong> {ad.owner_name}
+          <strong>Name:</strong> {ad.shop_name}
         </Typography>
       </CardContent>
       <CardActions>

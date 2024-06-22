@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const verifyToken = require('../middlewares/verifyToken');
+const multerObj=require('../middlewares/Cloudinary')
 
 
 // To register a Job_Provider
@@ -82,7 +83,7 @@ job_provider.post('/login', async (req, res) => {
 });
 
 // To post a new job
-job_provider.post('/addJob', verifyToken, async (req, res) => {
+job_provider.post('/addJob', verifyToken, multerObj.single("image"), async (req, res) => {
   const {
     jobTitle,
     jobType,
@@ -94,15 +95,16 @@ job_provider.post('/addJob', verifyToken, async (req, res) => {
     time,
     description,
     negotiability
-  } = req.body;
+  } = JSON.parse(req.body.jobDetails);
   const provider_id = req.res.locals.decode.id;
+  const images = req.file.path;
   try {
     const db = req.app.get("db");
     const request = new db.Request();
     const result = await request.query`
       INSERT INTO jobdetails
-      (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, description, negotiability, provider_id)
-      VALUES (${jobTitle}, ${jobType}, ${customJobType}, ${payment}, ${peopleNeeded}, ${location}, ${date}, ${time}, ${description}, ${negotiability}, ${provider_id})
+      (jobTitle, jobType, customJobType, payment, peopleNeeded, location, date, time, description, negotiability, provider_id,images)
+      VALUES (${jobTitle}, ${jobType}, ${customJobType}, ${payment}, ${peopleNeeded}, ${location}, ${date}, ${time}, ${description}, ${negotiability}, ${provider_id},${images})
     `;
     res.status(200).send('Job added successfully');
   } catch (error) {
@@ -181,8 +183,13 @@ job_provider.put('/editJob/:jobId', verifyToken, (req, res) => {
 
 // To delete any of the previously posted jobs by the JobProvider
 job_provider.delete('/deleteJob/:jobId', verifyToken, (req, res) => {
-  const jobId = req.params.jobId;
+  const {jobId} = req.params;
   const provider_id = req.res.locals.decode.id;
+
+  const sqlQuery1 = `
+    DELETE FROM job_applications
+    WHERE id = @jobId;
+  `;
 
   const sqlQuery = `
     DELETE FROM jobdetails

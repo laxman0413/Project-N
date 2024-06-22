@@ -19,12 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import CarderProvider from './CarderProvider';
 
 function JobProviderDashboard() {
-  let { register, handleSubmit } = useForm({
-    defaultValues: {
-      jobType: 'construction',
-      negotiability: false
-    }
-  });
+  const [selectedImg, setSelectedImg] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [showCustomJobType, setShowCustomJobType] = useState(false);
   const [jobs, setJobs] = useState([]);
@@ -39,7 +34,21 @@ function JobProviderDashboard() {
     "D. C. Court"
   ];
 
-  const fetchJobs =() => {
+  let { register, handleSubmit, watch, setValue } = useForm({
+    defaultValues: {
+      jobType: 'construction',
+      negotiability: false,
+      location: '',
+      jobTitle: '',
+      payment: '',
+      peopleNeeded: '',
+      date: '',
+      time: '',
+      customJobType: '',
+    }
+  });
+
+  const fetchJobs = useCallback(() => {
     const token = localStorage.getItem('token');
     if (token) {
       axios.get('https://nagaconnect-iitbilai.onrender.com/jobProvider/jobs', {
@@ -55,13 +64,13 @@ function JobProviderDashboard() {
         });
     } else {
       console.log("Please Login First");
-      navigate("/job-provider/login")
+      navigate("/job-provider/login");
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchJobs();
-  });
+  }, [fetchJobs]);
 
   const handlePostJobClick = () => {
     setModalOpen(true);
@@ -73,14 +82,24 @@ function JobProviderDashboard() {
   };
 
   const handleJobTypeChange = (e) => {
-    setShowCustomJobType(e.target.value === 'others');
+    const jobType = e.target.value;
+    setShowCustomJobType(jobType === 'others');
+    setValue('jobType', jobType);
+  };
+
+  const handleImg = (e) => {
+    setSelectedImg(e.target.files[0]);
   };
 
   const formSubmit = (jobDetails) => {
     const token = localStorage.getItem('token');
     jobDetails.negotiability = jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable';
+    const formData = new FormData();
+    formData.append("jobDetails", JSON.stringify(jobDetails));
+    formData.append("image", selectedImg);
+
     if (token) {
-      axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob', jobDetails, {
+      axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob', formData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -99,10 +118,12 @@ function JobProviderDashboard() {
     }
   };
 
+  const jobType = watch("jobType");
+
   return (
     <div>
       <Menu />
-      <button className='btn btn-primary' onClick={handlePostJobClick}>Post a Job </button>
+      <button className='btn btn-primary' onClick={handlePostJobClick}>Post a Job</button>
       <Dialog open={isModalOpen} onClose={handleCloseModal}>
         <DialogTitle>Post a Job</DialogTitle>
         <DialogContent>
@@ -110,7 +131,7 @@ function JobProviderDashboard() {
             <form onSubmit={handleSubmit(formSubmit)}>
               <div className="mb-3">
                 <label htmlFor="jobTitle">Job Title</label>
-                <input type="text" id="jobTitle" className="form-control" {...register("jobTitle")} required></input>
+                <input type="text" id="jobTitle" className="form-control" {...register("jobTitle")} required />
               </div>
               <div className="mb-3">
                 <FormControl fullWidth margin="normal">
@@ -118,7 +139,7 @@ function JobProviderDashboard() {
                   <Select
                     labelId="job-type-label"
                     name="jobType"
-                    {...register("jobType")}
+                    value={jobType}
                     onChange={handleJobTypeChange}
                   >
                     <MenuItem value="construction">Construction</MenuItem>
@@ -140,11 +161,11 @@ function JobProviderDashboard() {
               </div>
               <div className="mb-3">
                 <label htmlFor="payment">Payment</label>
-                <input type="text" id="payment" className="form-control" {...register("payment")} required></input>
+                <input type="text" id="payment" className="form-control" {...register("payment")} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="peopleNeeded">People Needed</label>
-                <input type="text" id="peopleNeeded" className="form-control" {...register("peopleNeeded")} required></input>
+                <input type="text" id="peopleNeeded" className="form-control" {...register("peopleNeeded")} required />
               </div>
               <div className="mb-3">
                 <FormControl fullWidth margin="normal">
@@ -152,7 +173,6 @@ function JobProviderDashboard() {
                   <Select
                     labelId="location-label"
                     id="location"
-                    label="Location"
                     {...register("location")}
                   >
                     {locations.map((location, index) => (
@@ -165,11 +185,11 @@ function JobProviderDashboard() {
               </div>
               <div className="mb-3">
                 <label htmlFor="date">Job Date</label>
-                <input type="date" id="date" className="form-control" {...register("date")} required></input>
+                <input type="date" id="date" className="form-control" {...register("date")} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="time">Time</label>
-                <input type="time" id="time" className="form-control" {...register("time")}></input>
+                <input type="time" id="time" className="form-control" {...register("time")} />
               </div>
               <div className="mb-3">
                 <FormControlLabel
@@ -181,6 +201,10 @@ function JobProviderDashboard() {
                   label="Negotiable"
                 />
               </div>
+              <div className="mb-3">
+                <label htmlFor="img">Job Image</label>
+                <input type="file" name="img" id="image" className="form-control" onChange={handleImg} required />
+              </div>
               <button className="btn btn-success" type="submit">Register</button>
             </form>
           </div>
@@ -191,7 +215,7 @@ function JobProviderDashboard() {
       </Dialog>
 
       <h2>Previous Jobs</h2>
-      <div className="job-list" >
+      <div className="job-list">
         {jobs.map(job => (
           <CarderProvider key={job.id} job={job} locations={locations} fetchJobs={fetchJobs} />
         ))}

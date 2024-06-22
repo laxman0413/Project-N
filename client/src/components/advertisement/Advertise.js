@@ -149,7 +149,7 @@ function Advertise() {
                 {...register("phoneNumber")}
               />
               <div className="mb-3">
-                <label htmlFor="img">Profilepic</label>
+                <label htmlFor="img">advertise</label>
                 <input type="file" name="img" id="image" className="form-control" onInput={handleImg} required></input>
               </div>
               <Button

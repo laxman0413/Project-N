@@ -49,7 +49,7 @@ const handleAcceptJob = () => {
       {/* Card with clickable area */}
       <Card sx={{ maxWidth: 345 }} className='card'>
         <CardActionArea onClick={handleCardClick}>
-          <img src={card1} alt="Avatar" className='image' />
+          <img src={job.images || card1} alt="Avatar" className='image' />
           <CardContent>
             {/* Title */}
             <Typography gutterBottom variant="h5" component="div">
