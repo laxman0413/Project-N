@@ -1,15 +1,42 @@
-.card{
-    border: 2px solid black;
+/* CarderProvider.css */
+.custom-card {
+    max-width: 345px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: auto;
-    margin-top: 20px;
-}
-.card_header_comp{
-
-    flex: 1;
-    text-align: left;
-    padding: 10px;
-}
-.image{
-    max-height:200px ;
-    max-width: 300px;
-}
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .custom-image {
+    height: 140px;
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+  
+  .custom-content {
+    padding: 16px;
+  }
+  
+  .custom-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px;
+  }
+  
+  .ignore-button {
+    border: 1px solid #6200ea;
+    color: #6200ea;
+  }
+  
+  .apply-button {
+    background-color: #6200ea;
+    color: white;
+  }
+  
+  .ignore-button, .apply-button {
+    width: 48%;
+  }
+  

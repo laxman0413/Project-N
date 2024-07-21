@@ -10,24 +10,24 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
   FormControl,
+  TextField,
   Select,
   MenuItem,
-  Checkbox,
   FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import card1 from './assets/card1.jpg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './CarderProvider.css'; // Import the CSS file for custom styles
 
 function CarderProvider({ job, locations, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [editedJob, setEditedJob] = useState({ ...job });
   const [isNegotiable, setIsNegotiable] = useState(job.negotiability === 'Negotiable');
-  const [jobid,setJobid]=useState("")
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     setDialogOpen(true);
@@ -54,6 +54,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
     setIsNegotiable(e.target.checked);
     setEditedJob({ ...editedJob, negotiability: e.target.checked ? 'Negotiable' : 'Non Negotiable' });
   };
+
   const handleDeleteClick = () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -94,54 +95,77 @@ function CarderProvider({ job, locations, fetchJobs }) {
       console.log("Please Login First");
     }
   };
-  const handleApplications=()=>{
+
+  const handleApplications = () => {
     navigate(`/job-provider/application/${job.id}`);
-  }
+  };
 
   return (
     <div>
-      <Card sx={{ maxWidth: 345 }} className='card'>
+      <Card className='custom-card'>
         <CardActionArea onClick={handleCardClick}>
-          <img src={job.images || card1} alt="Avatar" className='image' />
+          <img src={job.images || card1} alt="Avatar" className='custom-image' />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography variant="body2" color="text.secondary">
+              Title
+            </Typography>
+            <Typography gutterBottom variant="h6" component="div">
               {job.jobTitle}
             </Typography>
-            <p className='card_header_comp'>Job Type: {job.jobType}</p>
-            <p className='card_header_comp'>Date: {job.date}</p>
-            <p className='card_header_comp'>Time: {job.time}</p>
             <Typography variant="body2" color="text.secondary">
-              {job.description}
+              Subtitle
             </Typography>
-            <h4 className='card_header_comp'>Payment: {job.payment}</h4>
-            <h4 className='card_header_comp'>Location: {job.location}</h4>
-            <h4 className='card_header_comp'>Worker Capacity: {job.peopleNeeded}</h4>
-            <h4 className='card_header_comp'>Negotiability: {job.negotiability}</h4>
+            <Typography variant="body2" color="text.secondary">
+              Cost: {job.payment}
+            </Typography>
           </CardContent>
         </CardActionArea>
-        <CardActions>
-          <Button size="small" color="primary" onClick={handleEditClick}>
-            Edit
-          </Button>
-          <Button size="small" color="primary" onClick={handleDeleteClick}>
+        <CardActions className='custom-actions'>
+          <Button size="small" className='ignore-button' onClick={handleDeleteClick}>
             Delete
           </Button>
-          <Button size="small" color="primary" onClick={handleApplications}>
-            Applications
+          <Button size="small" className='apply-button' onClick={handleApplications}>
+            View Applications
           </Button>
         </CardActions>
       </Card>
 
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Additional Details</DialogTitle>
+        <DialogTitle>Job Details</DialogTitle>
         <DialogContent>
-          <h2>Description</h2>
-          <p>{job.additionalDetails}</p>
           <Typography variant="body2" color="text.secondary">
-            {/* Additional details content */}
+            <strong>Job Title:</strong> {job.jobTitle}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Type of Job:</strong> {job.jobType}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Payment:</strong> {job.payment}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>People Needed:</strong> {job.peopleNeeded}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Location:</strong> {job.location}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Date:</strong> {job.date}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Time:</strong> {job.time}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Negotiability:</strong> {job.negotiability}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Description:</strong> {job.description}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Additional Details:</strong> {job.additionalDetails}
           </Typography>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleEditClick}>Edit</Button>
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
