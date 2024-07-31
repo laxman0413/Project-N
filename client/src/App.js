@@ -19,6 +19,7 @@ import AppliedJobs from './components/jobSeeker/AppliedJobs';
 import ListOfApplications from './components/jobProvider/ListOfApplications';
 import Advertise from './components/advertisement/Advertise';
 import Theme from './components/advertisement/Theme';
+import ResetPassword from './components/jobSeeker/ResetPassword';
 import { ThemeProvider } from '@mui/material/styles';
 
 function App() {
@@ -85,6 +86,10 @@ function App() {
             {
               path:'/job-seeker/applied-jobs',
               element:<AppliedJobs />
+            },
+            {
+              path:'/job-seeker/reset-password',
+              element:<ResetPassword />
             }
           ]
         },
