@@ -1,5 +1,6 @@
 require('dotenv').config({ path: './token.env' }); // Load JWT secret from token.env
 require('dotenv').config({ path: './credentials.env' }); 
+require('dotenv').config({ path: './twilio.env' });
 const express = require('express');
 const sql = require('mssql');
 const mysql=require('mysql');
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.json());
 var cors = require('cors')
 app.use(cors());
+const twilio = require('twilio');
 app.use(cookieParser());
 const config = {
   server: process.env.SERVER,
@@ -21,6 +23,9 @@ const config = {
     trustedConnection: process.env.TRUSTED_CONNECTION === 'true'
   }
 };
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = twilio(accountSid, authToken);
 
 sql.connect(config, err => {
   if (err) {
