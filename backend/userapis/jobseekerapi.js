@@ -187,8 +187,6 @@ job_seeker.post('/accept-job', verifyToken, (req, res) => {
 
 //any testing routes
 require('dotenv').config({ path: './twilio.env' });
-console.log('TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID);
-console.log('TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN);
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
