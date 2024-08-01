@@ -7,9 +7,16 @@ function JobSeekerRegister() {
   const navigate=useNavigate()
     let {register,handleSubmit}=useForm();
     let [err,setError]=useState("")
+    const [selectedImg, setSelectedImg] = useState(null);
+    const handleImg = (e) => {
+      setSelectedImg(e.target.files[0]);
+    };
     const forsubmit=(userObj)=>{
+      const formData = new FormData();
+      formData.append("userObj", JSON.stringify(userObj));
+      formData.append("image", selectedImg);
       axios
-      .post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register",userObj)
+      .post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register",formData)
       .then((response)=>{
         if(response.status===201){
           navigate("/job-seeker/login")
@@ -78,6 +85,10 @@ function JobSeekerRegister() {
                 ))}
                 </select>
             </div>
+            <div className="mb-3">
+                <label htmlFor="img">Profile Image</label>
+                <input type="file" name="img" id="image" className="form-control" onChange={handleImg} required />
+              </div>
             <button className="btn btn-success" type="submit">Register</button>
           </form>
         </div>

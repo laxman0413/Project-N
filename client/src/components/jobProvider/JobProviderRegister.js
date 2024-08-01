@@ -7,8 +7,15 @@ function JobProviderRegister() {
   let {register,handleSubmit}=useForm();
     let [err,setErr]=useState("")
     const navigate=useNavigate()
+    const [selectedImg, setSelectedImg] = useState(null);
+    const handleImg = (e) => {
+      setSelectedImg(e.target.files[0]);
+    };
     const forsubmit=(userObj)=>{
-        axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register",userObj)
+      const formData = new FormData();
+      formData.append("userObj", JSON.stringify(userObj));
+      formData.append("image", selectedImg);
+        axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register",formData)
         .then(res=>{
           console.log(res.data);
           if(res.status===201){
@@ -43,6 +50,10 @@ function JobProviderRegister() {
               <label htmlFor="dob">Password</label>
               <input type="password" name="pass" id="pass" className="form-control" {...register("password")}></input>
             </div>
+            <div className="mb-3">
+                <label htmlFor="img">Profile Image</label>
+                <input type="file" name="img" id="image" className="form-control" onChange={handleImg} required />
+              </div>
             <button className="btn btn-success" type="submit">Register</button>
           </form>
         </div>

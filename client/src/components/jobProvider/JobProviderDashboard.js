@@ -202,7 +202,7 @@ function JobProviderDashboard() {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="img">Job Image</label>
+                <label htmlFor="img">Profile Image</label>
                 <input type="file" name="img" id="image" className="form-control" onChange={handleImg} required />
               </div>
               <button className="btn btn-success" type="submit">Register</button>

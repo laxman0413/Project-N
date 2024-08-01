@@ -5,13 +5,15 @@ const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middlewares/verifyToken');
+const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
 
 
 
 //jobseeker registration
-job_seeker.post('/register', async (req, res) => {
-    const { name, pass, phone, jobType, age, sex } = req.body;
+job_seeker.post('/register',multerObj.single("image"), async (req, res) => {
+    const { name, pass, phone, jobType, age, sex } = JSON.parse(req.body.userObj);
+    const image = req.file.path;
     const db=req.app.get("db");
     const request=new db.Request();
   try {
@@ -20,9 +22,10 @@ job_seeker.post('/register', async (req, res) => {
       return res.status(208).json({ message: "user already exists please login" });
     }
     const hashedPassword = await bcrypt.hash(pass, 10); // Hash the password
-    const sqlQuery = 'INSERT INTO job_seeker (name, password, phone, age, sex, jobType) VALUES (@name, @hashedPassword, @phone, @age, @sex, @jobType)';
+    const sqlQuery = `INSERT INTO job_seeker (name, password, phone, age, sex, jobType,image) VALUES (@name, @hashedPassword, @phone, @age, @sex, @jobType,@image)`;
       //console.log('name: ',username, 'password: ',hashedPassword, 'phone: ',phone, 'age: ',age );
-    let values = { name, hashedPassword, phone, jobType, age, sex };
+      //console.log(image,typeof(image))
+    let values = { name, hashedPassword, phone, jobType, age, sex ,image};
     for (let key in values) {
       request.input(key, values[key]);
     }

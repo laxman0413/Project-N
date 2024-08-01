@@ -9,15 +9,16 @@ const path = require('path');
 const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
+const { type } = require('os');
 
 
 // To register a Job_Provider
-job_provider.post('/register', async (req, res) => {
-  const { name, phone, password } = req.body;
+job_provider.post('/register', multerObj.single("image"),async (req, res) => {
+  const { name, phone, password } = JSON.parse(req.body.userObj);
+  const image = req.file.path;
   const id = "JP" + (+phone);
-  const sql = req.app.get("db");
-  const request = new sql.Request();
-
+  const db = req.app.get("db");
+  const request = new db.Request();
   try {
     // Check if user already exists
     const sqlQuery = 'SELECT * FROM job_provider WHERE provider_id = @provider_id';
@@ -36,8 +37,9 @@ job_provider.post('/register', async (req, res) => {
     request.input('providerIdParam', sql.VarChar, id);
     request.input('passParam', sql.NVarChar, hashedPassword);
     request.input('phoneParam', sql.Numeric, phone);
-
-    const insertQuery = 'INSERT INTO job_provider (name, provider_id, password, phone) VALUES (@nameParam, @providerIdParam, @passParam, @phoneParam)';
+    request.input('imageParam', sql.VarChar, image);
+    //console.log(image,typeof(image))
+    const insertQuery = `INSERT INTO job_provider (name, provider_id, password, phone, image) VALUES (@nameParam, @providerIdParam, @passParam, @phoneParam, @imageParam)`;
     await request.query(insertQuery);
     res.status(201).send('User registered successfully');
   } catch (err) {
