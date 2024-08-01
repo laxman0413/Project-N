@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
+const twilio = require('twilio');
 
 
 // To register a Job_Provider
@@ -244,6 +245,155 @@ job_provider.get("/job-provider-details", (req, res) => {
     res.status(200).send(result.recordset);
   });
 });
+
+require('dotenv').config({ path: './twilio.env' });
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = twilio(accountSid, authToken);
+
+// Route to send OTP
+job_provider.post('/send-otp', async (req, res) => {
+    const { phone } = req.body;
+    //check if the account exists in the database
+    
+    
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const db = req.app.get("db");
+    const request = new db.Request();
+    const timestamp = new Date();
+
+    const checkQuery = `SELECT * FROM otp_verification WHERE phone = @phone`;
+    const insertQuery = `INSERT INTO otp_verification (phone, otp, created_at) VALUES (@phone, @otp, @timestamp)`;
+    const updateQuery = `UPDATE otp_verification SET otp = @otp, created_at = @timestamp WHERE phone = @phone`;
+    const deleteQuery = `DELETE FROM otp_verification WHERE phone = @phone`;
+    const sqlCheck ='SELECT * FROM job_provider WHERE phone = @phone';
+    request.input('phone', sql.VarChar, phone);
+    request.input('otp', sql.VarChar, otp);
+    request.input('timestamp', sql.DateTime, timestamp);
+    var usercount=0;
+    request.query(sqlCheck, (err, results) => {
+      
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send({ message: 'Internal Server Error' });
+        }
+        
+        if(results.recordset.length>0){
+          usercount=1;
+          console.log(usercount+"usercountincode");
+          request.query(checkQuery, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                return res.status(500).send({ message: 'Internal Server Error' });
+            }
+    
+            if (results.recordset.length > 0) {
+                request.query(deleteQuery, (err) => {
+                    if (err) {
+                        console.error('Error deleting previous OTP:', err);
+                        return res.status(500).send({ message: 'Internal Server Error' });
+                    }
+    
+                    request.query(insertQuery, (err) => {
+                        if (err) {
+                            console.error('Error inserting new OTP:', err);
+                            return res.status(500).send({ message: 'Internal Server Error' });
+                        }
+    
+                        sendOtpMessage(phone, otp, res);
+                    });
+                });
+            } else {
+                request.query(insertQuery, (err) => {
+                    if (err) {
+                        console.error('Error inserting OTP:', err);
+                        return res.status(500).send({ message: 'Internal Server Error' });
+                    }
+    
+                    sendOtpMessage(phone, otp, res);
+                });
+            }
+        });
+        }else{
+          return res.status(404).send({ message: 'User not found' });
+        }
+        
+    });
+    console.log(usercount+"usercount");
+
+
+    if(usercount!==0){
+    
+  }
+});
+
+const sendOtpMessage = async (phone, otp, res) => {
+    try {
+        await client.messages.create({
+            from: '+12517650937',
+            to: "+91"+phone,
+            body: `Your OTP code is ${otp}`
+        });
+        res.status(200).send({ message: 'OTP sent successfully' });
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        res.status(500).send({ message: 'Error sending OTP' });
+    }
+};
+
+// Route to verify OTP
+job_provider.post('/verify-otp', async (req, res) => {
+    const { phone, otp } = req.body;
+    const db = req.app.get("db");
+    const request = new db.Request();
+
+    const sqlQuery = `SELECT * FROM otp_verification WHERE phone = @phone AND otp = @otp`;
+    request.input('phone', sql.VarChar, phone);
+    request.input('otp', sql.VarChar, otp);
+
+    request.query(sqlQuery, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send({ message: 'Internal Server Error' });
+        }
+
+        if (results.recordset.length === 0) {
+            return res.status(404).send({ message: 'Invalid OTP' });
+        }
+
+        const otpRecord = results.recordset[0];
+        const currentTime = new Date();
+        const otpTimestamp = new Date(otpRecord.created_at);
+        const timeDifference = (currentTime - otpTimestamp) / 1000 / 60; // Difference in minutes
+
+        if (timeDifference > 10) {
+            return res.status(400).send({ message: 'OTP has expired' });
+        }
+
+        res.status(200).send({ message: 'OTP verified successfully' });
+    });
+});
+
+// Route to reset password
+job_provider.post('/reset-password', async (req, res) => {
+    const { phone, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const db = req.app.get("db");
+    const request = new db.Request();
+
+    const sqlQuery = `UPDATE job_provider SET password = @password WHERE phone = @phone`;
+    request.input('phone', sql.VarChar, phone);
+    request.input('password', sql.VarChar, hashedPassword);
+
+    request.query(sqlQuery, (err) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send({ message: 'Internal Server Error' });
+        }
+        res.status(200).send({ message: 'Password reset successfully' });
+    });
+});
+
 
 
 

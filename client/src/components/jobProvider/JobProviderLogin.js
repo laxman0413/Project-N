@@ -34,6 +34,8 @@ function JobProviderLogin(){
               <input type="password" name="password" id="password" className="form-control" {...register("password")} required></input>
             </div>
             <button type="submit" className="btn btn-success">Login</button>
+
+            
           </form>
         </div>
       </div>
