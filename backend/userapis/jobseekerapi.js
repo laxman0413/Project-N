@@ -197,6 +197,9 @@ const client = twilio(accountSid, authToken);
 // Route to send OTP
 job_seeker.post('/send-otp', async (req, res) => {
     const { phone } = req.body;
+    //check if the account exists in the database
+    
+    
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const db = req.app.get("db");
     const request = new db.Request();
@@ -206,44 +209,61 @@ job_seeker.post('/send-otp', async (req, res) => {
     const insertQuery = `INSERT INTO otp_verification (phone, otp, created_at) VALUES (@phone, @otp, @timestamp)`;
     const updateQuery = `UPDATE otp_verification SET otp = @otp, created_at = @timestamp WHERE phone = @phone`;
     const deleteQuery = `DELETE FROM otp_verification WHERE phone = @phone`;
-
+    const sqlCheck ='SELECT * FROM job_seeker WHERE phone = @phone';
     request.input('phone', sql.VarChar, phone);
     request.input('otp', sql.VarChar, otp);
     request.input('timestamp', sql.DateTime, timestamp);
-
-    request.query(checkQuery, (err, results) => {
+    var usercount=0;
+    request.query(sqlCheck, (err, results) => {
+      
         if (err) {
             console.error('Error executing query:', err);
             return res.status(500).send({ message: 'Internal Server Error' });
         }
-
-        if (results.recordset.length > 0) {
-            request.query(deleteQuery, (err) => {
-                if (err) {
-                    console.error('Error deleting previous OTP:', err);
-                    return res.status(500).send({ message: 'Internal Server Error' });
-                }
-
-                request.query(insertQuery, (err) => {
+        
+        if(results.recordset.length>0){
+          usercount=1;
+          console.log(usercount+"usercountincode");
+          request.query(checkQuery, (err, results) => {
+            if (err) {
+                console.error('Error executing query:', err);
+                return res.status(500).send({ message: 'Internal Server Error' });
+            }
+    
+            if (results.recordset.length > 0) {
+                request.query(deleteQuery, (err) => {
                     if (err) {
-                        console.error('Error inserting new OTP:', err);
+                        console.error('Error deleting previous OTP:', err);
                         return res.status(500).send({ message: 'Internal Server Error' });
                     }
-
+    
+                    request.query(insertQuery, (err) => {
+                        if (err) {
+                            console.error('Error inserting new OTP:', err);
+                            return res.status(500).send({ message: 'Internal Server Error' });
+                        }
+    
+                        sendOtpMessage(phone, otp, res);
+                    });
+                });
+            } else {
+                request.query(insertQuery, (err) => {
+                    if (err) {
+                        console.error('Error inserting OTP:', err);
+                        return res.status(500).send({ message: 'Internal Server Error' });
+                    }
+    
                     sendOtpMessage(phone, otp, res);
                 });
-            });
-        } else {
-            request.query(insertQuery, (err) => {
-                if (err) {
-                    console.error('Error inserting OTP:', err);
-                    return res.status(500).send({ message: 'Internal Server Error' });
-                }
-
-                sendOtpMessage(phone, otp, res);
-            });
+            }
+        });
+        }else{
+          return res.status(404).send({ message: 'User not found' });
         }
+        
     });
+
+
 });
 
 const sendOtpMessage = async (phone, otp, res) => {

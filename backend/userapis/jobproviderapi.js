@@ -183,6 +183,32 @@ job_provider.put('/editJob/:jobId', verifyToken, (req, res) => {
   });
 });
 
+//to fetch the profile of job provider
+job_provider.get('/profile', verifyToken, (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+  
+  // Ensure the id is correctly extracted
+  const { id } = req.res.locals.decode;
+
+  const sqlQuery = `SELECT * FROM job_provider WHERE provider_id = @id`;
+
+  // Use sql.VarChar instead of sql.Int
+  request.input('id', sql.VarChar, id);
+
+  request.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send({ message: 'Internal Server Error' });
+    }
+
+    if (result.recordset.length === 0) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    res.status(200).send(result.recordset[0]);
+  });
+});
 
 // To delete any of the previously posted jobs by the JobProvider
 job_provider.delete('/deleteJob/:jobId', verifyToken, (req, res) => {
@@ -321,12 +347,8 @@ job_provider.post('/send-otp', async (req, res) => {
         }
         
     });
-    console.log(usercount+"usercount");
 
 
-    if(usercount!==0){
-    
-  }
 });
 
 const sendOtpMessage = async (phone, otp, res) => {

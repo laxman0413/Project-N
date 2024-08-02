@@ -1,0 +1,79 @@
+/* JobProviderLogin.css */
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+    background: #f8f9fa;
+  }
+  
+  .login-header {
+    background: #343a40;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+  }
+  
+  .login-main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+  
+  .login-form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .login-form h2 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .error-message {
+    color: red;
+    margin-bottom: 1rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+  
+  .btn-primary {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 4px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .login-footer {
+    background: #343a40;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+  

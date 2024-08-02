@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Logincontex } from '../jobSeeker/JobseekerloginContext/Logincontext';  // Correct import
+import { Logincontex } from '../jobProvider/JobProviderloginContext/Logincontext';  // Correct import
 import { FaUser, FaBirthdayCake, FaPhone, FaBriefcase, FaGenderless } from 'react-icons/fa';
 import { MdOutlineEmail } from 'react-icons/md';
 
@@ -12,7 +12,7 @@ function JobSeekerProfile() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.get('https://nagaconnect-iitbilai.onrender.com/jobseeker/profile', {
+      axios.get('http://localhost:3001/jobProvider/profile', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -60,14 +60,6 @@ function JobSeekerProfile() {
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <FaGenderless style={{ marginRight: '10px', color: '#888' }} />
         <p style={{ margin: 0 }}>Sex: {profile.sex}</p>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <FaBriefcase style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>Job Type: {profile.jobType}</p>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <MdOutlineEmail style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>{profile.email}</p>
       </div>
       <button style={{ width: '100%', padding: '10px', backgroundColor: '#6c63ff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Edit Profile</button>
     </div>

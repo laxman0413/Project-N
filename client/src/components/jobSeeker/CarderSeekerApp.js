@@ -49,7 +49,7 @@ function CarderSeekerApp({ job, onWithdraw }) {
             <p className='card_header_comp'>Date: {new Date(job.date).toLocaleDateString()}</p>
             <p className='card_header_comp'>Time: {new Date(job.time).toLocaleTimeString()}</p>
             <p className='card_header_comp'>Number of people: {job.peopleNeeded}</p>
-            <h4 className='card_header_comp'>Payment: {job.payment.join(', ')}</h4>
+            <h4 className='card_header_comp'>Payment(per person): {job.payment.join(', ')}</h4>
             <h4 className='card_header_comp'>Location: {job.location}</h4>
             <h4 className='card_header_comp'>Negotiability: {job.negotiability ? job.negotiability : 'Not negotiable'}</h4>
           </CardContent>

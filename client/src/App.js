@@ -22,6 +22,7 @@ import Theme from './components/advertisement/Theme';
 import ResetPassword from './components/jobSeeker/ResetPassword';
 import { ThemeProvider } from '@mui/material/styles';
 import ResetPasswordPro from './components/jobProvider/ResetPasswordPro';
+import JobProviderProfile from './components/jobProvider/JobProviderProfile';
 function App() {
   const RouterObj=createBrowserRouter([
     {
@@ -59,6 +60,10 @@ function App() {
             {
               path:'/job-provider/reset',
               element:<ResetPasswordPro />
+            },
+            {
+              path:'/job-provider/profile',
+              element:<JobProviderProfile />
             }
           ]
         },

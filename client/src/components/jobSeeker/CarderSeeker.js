@@ -1,98 +1,156 @@
-// frontend/src/CarderSeeker.js
-import React, { useState, useContext } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import card1 from '../assets/card1.jpg';
-import './CarderSeeker.css';
+/* CarderSeeker.js */
+import React, { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CardActionArea,
+  CardActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField
+} from '@mui/material';
+import card1 from './assets/card1.jpg';
 import axios from 'axios';
-import { Logincontex } from './JobseekerloginContext/Logincontext';
+import { useNavigate } from 'react-router-dom';
+import './CarderSeeker.css'; // Import the CSS file for custom styles
 
-function CarderSeeker({ job }) {
-  // State to manage dialog (overlay) visibility
+function CarderSeeker({ job, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [currentuser, , userloginStatus] = useContext(Logincontex);
+  const [isApplyDialogOpen, setApplyDialogOpen] = useState(false);
+  const [application, setApplication] = useState('');
+  const navigate = useNavigate();
 
-  // Function to handle card click and open dialog
   const handleCardClick = () => {
     setDialogOpen(true);
   };
 
-  // Function to handle dialog close
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  // Function to handle job acceptance
-// Function to handle job acceptance
-const handleAcceptJob = () => {
-  const token = localStorage.getItem('token');
-  axios.post('https://nagaconnect-iitbilai.onrender.com/jobseeker/accept-job', { id: job.id }, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  .then(response => {
-    console.log(response.data.message);
-    // Optionally, close the dialog and/or show a success message
-    handleCloseDialog();
-  })
-  .catch(error => {
-    console.error('Error accepting job:', error);
-  });
-};
+  const handleApplyClick = () => {
+    setApplyDialogOpen(true);
+  };
 
+  const handleApplyClose = () => {
+    setApplyDialogOpen(false);
+  };
+
+  const handleApplicationChange = (e) => {
+    setApplication(e.target.value);
+  };
+
+  const handleSubmitApplication = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.post(`https://nagaconnect-iitbilai.onrender.com/jobSeeker/apply/${job.id}`, { application }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          fetchJobs();
+          handleApplyClose();
+        })
+        .catch(error => {
+          console.error('Error submitting application:', error);
+        });
+    } else {
+      console.log("Please Login First");
+    }
+  };
 
   return (
     <div>
-      {/* Card with clickable area */}
-      <Card sx={{ maxWidth: 345 }} className='card'>
+      <Card className='custom-card'>
         <CardActionArea onClick={handleCardClick}>
-          <img src={job.images || card1} alt="Avatar" className='image' />
-          <CardContent>
-            {/* Title */}
-            <Typography gutterBottom variant="h5" component="div">
+          <img src={job.images || card1} alt="Avatar" className='custom-image' />
+          <CardContent className='custom-content'>
+            <Typography variant="body2" color="text.secondary">
+              Title
+            </Typography>
+            <Typography gutterBottom variant="h6" component="div">
               {job.jobTitle}
             </Typography>
-            <p className='card_header_comp'>Job Type: {job.jobType}</p>
-            {/* Date and Time */}
-            <p className='card_header_comp'>Date: {job.date}</p>
-            <p className='card_header_comp'>Time: {job.time}</p>
-
-            {/* Description */}
             <Typography variant="body2" color="text.secondary">
-              {job.description}
+              Subtitle
             </Typography>
-
-            {/* Payment, Location, Worker Capacity */}
-            <h4 className='card_header_comp'>Payment: {job.payment}</h4>
-            <h4 className='card_header_comp'>Location: {job.location}</h4>
-            <h4 className='card_header_comp'>Worker Capacity: {job.peopleNeeded}</h4>
+            <Typography variant="body2" color="text.secondary">
+              Cost: {job.payment}
+            </Typography>
           </CardContent>
         </CardActionArea>
-
-        {/* Card Actions (Share Button) */}
-        <CardActions>
-          <Button size="small" color="primary">
-            Share
+        <CardActions className='custom-actions'>
+          <Button size="small" className='ignore-button' onClick={handleCloseDialog}>
+            Ignore
+          </Button>
+          <Button size="small" className='apply-button' onClick={handleApplyClick}>
+            Apply
           </Button>
         </CardActions>
       </Card>
 
-      {/* Dialog (Modal) */}
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Additional Details</DialogTitle>
+        <DialogTitle>Job Details</DialogTitle>
         <DialogContent>
-          <h2>Description</h2>
-          <p>{job.additionalDetails}</p>
           <Typography variant="body2" color="text.secondary">
-            {/* Additional details content */}
+            <strong>Job Title:</strong> {job.jobTitle}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Type of Job:</strong> {job.jobType}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Payment:</strong> {job.payment}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>People Needed:</strong> {job.peopleNeeded}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Location:</strong> {job.location}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Date:</strong> {job.date}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Time:</strong> {job.time}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Negotiability:</strong> {job.negotiability}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Description:</strong> {job.description}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Additional Details:</strong> {job.additionalDetails}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAcceptJob} color="primary">Accept Job</Button>
           <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={isApplyDialogOpen} onClose={handleApplyClose}>
+        <DialogTitle>Apply for Job</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Application"
+            name="application"
+            value={application}
+            onChange={handleApplicationChange}
+            margin="normal"
+            multiline
+            rows={4}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleApplyClose}>Cancel</Button>
+          <Button onClick={handleSubmitApplication}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>
