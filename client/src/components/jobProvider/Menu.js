@@ -4,6 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import { Logincontex } from './JobProviderloginContext/Logincontext';
 import Link from '@mui/material';
+//uses mui styles
 function Menu() {
   // State to manage drawer (sliding menu) visibility
   const [isDrawerOpen, setDrawerOpen] = useState(false);
