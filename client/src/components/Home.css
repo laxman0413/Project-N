@@ -1,145 +1,147 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   font-family: 'Arial', sans-serif;
   background: #f0f2f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  overflow-y: auto;
-  padding: 20px;
+  overflow-x: hidden;
+}
+
+.home-wrapper {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 #container {
-  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
   background: #fff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 1s ease-in-out;
-  max-width: 1200px;
-  margin: 20px auto;
+  text-align: center;
 }
 
-.logo {
+.logo h1 {
+  font-size: 2em;
+  color: #333;
+  word-wrap: break-word;
   margin-bottom: 10px;
 }
 
-h1 {
-  font-size: 3em;
-  color: #333;
-}
-
 h3 {
-  margin-bottom: 20px;
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: #555;
+  word-wrap: break-word;
+  margin-bottom: 15px;
 }
 
 .intro-text {
-  margin-bottom: 20px;
-  font-size: 1.2em;
+  font-size: 1em;
   color: #666;
+  word-wrap: break-word;
+  margin-bottom: 15px;
 }
 
 .intro-image {
   width: 100%;
-  max-width: 600px;
+  max-width: 100%;
   height: auto;
   border-radius: 10px;
-  margin: 20px 0;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin: 15px 0;
 }
 
 .options {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
   gap: 20px;
-  flex-wrap: wrap;
 }
 
 .option {
+  width: 100%;
+  max-width: 280px;
   background: #fafafa;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
-  cursor: pointer;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  width: 280px;
-  text-align: center;
-}
-
-.option:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.image-container {
-  margin-bottom: 10px;
 }
 
 .option-image {
   width: 100%;
   border-radius: 10px;
-  animation: slideIn 1s ease-in-out;
 }
 
 .button h2 {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: #333;
+  word-wrap: break-word;
+  margin-top: 10px;
 }
 
 .button p {
-  font-size: 1em;
+  font-size: 0.9em;
   color: #777;
+  word-wrap: break-word;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.ads-carousel {
+  margin-top: 20px;
+  width: 100%;
 }
 
-@keyframes slideIn {
-  from { transform: translateX(-50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+.carousel-slide {
+  padding: 0;
 }
 
-@media (max-width: 768px) {
-  body {
-    align-items: flex-start;
-  }
-
+@media (min-width: 769px) {
   #container {
-    margin: 0;
-    padding: 20px 10px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: none;
-    border-radius: 0;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
-  .logo {
-    margin-bottom: 10px;
+  .logo h1 {
+    font-size: 3em;
   }
 
-  h1 {
-    font-size: 2em;
+  h3 {
+    font-size: 1.5em;
+  }
+
+  .intro-text {
+    font-size: 1.2em;
   }
 
   .options {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
   }
 
-  .option {
-    width: 90%;
-    margin-bottom: 20px;
+  .option:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
 
-  .intro-image {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    margin: 10px 0;
+  .ads-carousel .carousel-root {
+    padding: 0 10%;
+  }
+
+  .ads-carousel .carousel .slide {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  .ads-carousel .carousel .slide.selected {
+    opacity: 1;
   }
 }
