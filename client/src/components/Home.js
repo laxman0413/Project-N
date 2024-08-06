@@ -15,7 +15,7 @@ function Home() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/advertise/publicads')
+    axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/publicads')
       .then(response => setAds(response.data))
       .catch(error => console.error('Error fetching ads:', error));
 

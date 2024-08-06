@@ -11,7 +11,7 @@ function ResetPassword() {
   const [otp, setOtp] = useState('');
 
   const sendOtp = (data) => {
-    axios.post('http://localhost:3001/jobSeeker/send-otp', { phone: data.phone })
+    axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/send-otp', { phone: data.phone })
       .then(response => {
         setPhone(data.phone);
         setStep(2);
@@ -22,7 +22,7 @@ function ResetPassword() {
   };
 
   const verifyOtp = (data) => {
-    axios.post('http://localhost:3001/jobSeeker/verify-otp', { phone, otp: data.otp })
+    axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/verify-otp', { phone, otp: data.otp })
       .then(response => {
         setOtp(data.otp);
         setStep(3);
@@ -33,7 +33,7 @@ function ResetPassword() {
   };
 
   const resetPassword = (data) => {
-    axios.post('http://localhost:3001/jobSeeker/reset-password', { phone, password: data.password })
+    axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/reset-password', { phone, password: data.password })
       .then(response => {
         console.log('Password reset successful:', response);
         navigate('/job-seeker/login');
