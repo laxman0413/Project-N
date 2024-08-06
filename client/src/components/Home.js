@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import './Home.css';
 import jobProviderImage from './job-provider.jpg';
@@ -7,25 +7,6 @@ import websiteImage1 from './job-boost.png';
 
 function Home() {
   const navigate = useNavigate();
-  const [ads, setAds] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  useEffect(() => {
-    axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/publicads')
-      .then(response => setAds(response.data))
-      .catch(error => console.error('Error fetching ads:', error));
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const handleDelete = (id) => {
-    setAds(ads.filter(ad => ad.advertisement_id !== id));
-  };
 
   return (
     <div id="container">
