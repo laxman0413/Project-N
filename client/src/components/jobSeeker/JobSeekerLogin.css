@@ -1,0 +1,65 @@
+/* JobSeekerLogin.css */
+.login-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .login-form-container {
+    margin-top: 20px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: border-color 0.3s;
+  }
+  
+  .form-control:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .input-error {
+    border-color: #dc3545;
+  }
+  
+  .validation-error {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: -5px;
+    margin-bottom: 10px;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .btn-success {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+  }
+  

@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Logincontex } from '../jobSeeker/JobseekerloginContext/Logincontext';  // Correct import
-import { FaUser, FaBirthdayCake, FaPhone, FaBriefcase, FaGenderless } from 'react-icons/fa';
-import { MdOutlineEmail } from 'react-icons/md';
+import { Logincontex } from '../jobSeeker/JobseekerloginContext/Logincontext'; // Correct import
+import { FaUser, FaBirthdayCake, FaPhone, FaGenderless, FaBriefcase } from 'react-icons/fa';
 
 function JobSeekerProfile() {
   const [profile, setProfile] = useState(null);
@@ -14,14 +13,13 @@ function JobSeekerProfile() {
     if (token) {
       axios.get('https://nagaconnect-iitbilai.onrender.com/jobseeker/profile', {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then(response => {
         setProfile(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching profile details:', error);
+      .catch(() => {
         setError('Error fetching profile details. Please try again later.');
       });
     } else {
@@ -30,48 +28,103 @@ function JobSeekerProfile() {
   }, [userloginStatus]);
 
   if (error) {
-    return <div style={{ color: 'red', textAlign: 'center', marginTop: '20px' }}>{error}</div>;
+    return (
+      <div style={styles.error}>
+        {error}
+      </div>
+    );
   }
 
   if (!profile) {
-    return <div style={{ textAlign: 'center', marginTop: '20px' }}>Loading...</div>;
+    return (
+      <div style={styles.loading}>
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <div style={{ width: '100px', height: '100px', borderRadius: '50%', backgroundColor: '#ddd', margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '50px', color: '#666' }}>
-          <FaUser />
-        </div>
+    <div style={styles.container}>
+      <div style={styles.profileHeader}>
+        <img
+          src={profile.image || 'https://via.placeholder.com/100'}
+          alt="Profile"
+          style={styles.avatar}
+        />
         <h2>{profile.name}</h2>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <FaUser style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>{profile.name}</p>
+      <div style={styles.detail}>
+        <FaUser style={styles.icon} />
+        <p>{profile.name}</p>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <FaBirthdayCake style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>Birthday: {profile.age}</p>
+      <div style={styles.detail}>
+        <FaBirthdayCake style={styles.icon} />
+        <p>Age: {profile.age}</p>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <FaPhone style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>{profile.phone}</p>
+      <div style={styles.detail}>
+        <FaPhone style={styles.icon} />
+        <p>{profile.phone}</p>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <FaGenderless style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>Sex: {profile.sex}</p>
+      <div style={styles.detail}>
+        <FaGenderless style={styles.icon} />
+        <p>Sex: {profile.sex}</p>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <FaBriefcase style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>Job Type: {profile.jobType}</p>
+      <div style={styles.detail}>
+        <FaBriefcase style={styles.icon} />
+        <p>Job Type: {profile.jobType}</p>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <MdOutlineEmail style={{ marginRight: '10px', color: '#888' }} />
-        <p style={{ margin: 0 }}>{profile.email}</p>
-      </div>
-      <button style={{ width: '100%', padding: '10px', backgroundColor: '#6c63ff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Edit Profile</button>
+      <button style={styles.editButton}>Edit Profile</button>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    maxWidth: '400px',
+    margin: '0 auto',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    backgroundColor: '#f9f9f9',
+  },
+  profileHeader: {
+    textAlign: 'center',
+    marginBottom: '20px',
+  },
+  avatar: {
+    width: '100px',
+    height: '100px',
+    borderRadius: '50%',
+    objectFit: 'cover',
+    margin: '0 auto',
+  },
+  detail: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10px',
+  },
+  icon: {
+    marginRight: '10px',
+    color: '#888',
+  },
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: '20px',
+  },
+  loading: {
+    textAlign: 'center',
+    marginTop: '20px',
+  },
+  editButton: {
+    width: '100%',
+    padding: '10px',
+    backgroundColor: '#6c63ff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+};
 
 export default JobSeekerProfile;

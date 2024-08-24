@@ -41,16 +41,16 @@ function AppliedJobs() {
   };
 
   return (
-    <div>
+    <div className="applied-jobs-container">
       <Menu />
-      <h2>Applied Jobs</h2>
+      <h2 className="title">Applied Jobs</h2>
       <div className="applied-job-list">
         {appliedJobs.length > 0 ? (
           appliedJobs.map((job) => (
             <CarderSeekerApp key={job.application_id} job={job} onWithdraw={handleWithdraw} />
           ))
         ) : (
-          <p>No jobs applied yet.</p>
+          <p className="no-jobs-message">No jobs applied yet.</p>
         )}
       </div>
     </div>

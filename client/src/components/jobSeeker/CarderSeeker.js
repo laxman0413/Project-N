@@ -1,4 +1,3 @@
-/* CarderSeeker.js */
 import React, { useState } from 'react';
 import {
   Card,
@@ -69,19 +68,16 @@ function CarderSeeker({ job, fetchJobs }) {
     <div>
       <Card className='custom-card'>
         <CardActionArea onClick={handleCardClick}>
-          <img src={job.images || card1} alt="Avatar" className='custom-image' />
+          <img src={job.images || card1} alt="Job" className='custom-image' />
           <CardContent className='custom-content'>
             <Typography variant="body2" color="text.secondary">
-              Title
+              <strong>Job Title:</strong> {job.jobTitle}
             </Typography>
-            <Typography gutterBottom variant="h6" component="div">
+            <Typography gutterBottom variant="h6" component="div" className='job-title'>
               {job.jobTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Subtitle
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Cost: {job.payment}
+              <strong>Payment:</strong> {job.payment}
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -95,7 +91,7 @@ function CarderSeeker({ job, fetchJobs }) {
         </CardActions>
       </Card>
 
-      <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
+      <Dialog open={isDialogOpen} onClose={handleCloseDialog} className='dialog'>
         <DialogTitle>Job Details</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary">
@@ -130,11 +126,13 @@ function CarderSeeker({ job, fetchJobs }) {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isApplyDialogOpen} onClose={handleApplyClose}>
+      <Dialog open={isApplyDialogOpen} onClose={handleApplyClose} className='dialog'>
         <DialogTitle>Apply for Job</DialogTitle>
         <DialogContent>
           <TextField
@@ -149,8 +147,12 @@ function CarderSeeker({ job, fetchJobs }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleApplyClose}>Cancel</Button>
-          <Button onClick={handleSubmitApplication}>Submit</Button>
+          <Button onClick={handleApplyClose} color="default">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmitApplication} color="primary">
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

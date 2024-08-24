@@ -1,79 +1,80 @@
 /* JobProviderLogin.css */
-
 .login-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    justify-content: space-between;
-    background: #f8f9fa;
-  }
-  
-  .login-header {
-    background: #343a40;
-    color: white;
-    padding: 1rem 0;
-    text-align: center;
-  }
-  
-  .login-main {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem 0;
-  }
-  
-  .login-form-container {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .login-form h2 {
-    margin-bottom: 1.5rem;
-  }
-  
-  .error-message {
-    color: red;
-    margin-bottom: 1rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form-control {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-  }
-  
-  .btn-primary {
-    width: 100%;
-    padding: 0.5rem;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    border-radius: 4px;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  .login-footer {
-    background: #343a40;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-  }
-  
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-form-container {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.input-error {
+  border-color: #dc3545;
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: 5px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.875em;
+  color: #6c757d;
+}

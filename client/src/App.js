@@ -85,7 +85,7 @@ function App() {
               element:<JobSeekerLogin />
             },
             {
-              path:'/job-seeker/dashboad',
+              path:'/job-seeker/dashboard',
               element:<JobSeekerDashboard/>
             },
             {

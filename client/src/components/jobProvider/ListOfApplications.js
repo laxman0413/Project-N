@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Card, CardContent, Typography, Grid, Container } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Container, Button, Box } from '@mui/material';
 
 function ListOfApplications() {
   const { jobId } = useParams();
@@ -26,50 +26,58 @@ function ListOfApplications() {
     }
   }, [jobId]);
 
-  function handleChat(phoneNum) {
+  const handleChat = (phoneNum) => {
     return `https://wa.me/+91${phoneNum}`;
-  }
+  };
 
   return (
-    <div>
-      <h1>Applications for Job ID: {jobId}</h1>
+    <Container>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Applications for Job ID: {jobId}
+        </Typography>
+      </Box>
       {applications.length === 0 ? (
-        <p>No applications found</p>
+        <Typography variant="h6" color="textSecondary" align="center">
+          No applications found.
+        </Typography>
       ) : (
-        <Container>
-          <Grid container spacing={3}>
-            {applications.map(application => ( 
-              <Grid item xs={12} sm={6} md={4} key={application.id}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {application.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      <strong>Sex:</strong> {application.sex}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      <strong>Age:</strong> {application.age}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      <strong>Phone:</strong> {application.phone}
-                    </Typography>
-                    <a
-                      className="btn btn-success"
+        <Grid container spacing={3}>
+          {applications.map((application) => (
+            <Grid item xs={12} sm={6} md={4} key={application.id}>
+              <Card sx={{ minHeight: 180 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {application.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Sex:</strong> {application.sex}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Age:</strong> {application.age}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Phone:</strong> {application.phone}
+                  </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
                       href={handleChat(application.phone)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      sx={{ width: '100%' }}
                     >
                       Chat
-                    </a>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       )}
-    </div>
+    </Container>
   );
 }
 

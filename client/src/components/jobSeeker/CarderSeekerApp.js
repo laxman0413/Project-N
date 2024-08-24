@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import card1 from '../assets/card1.jpg';
-import './Carder.css';
 
 function CarderSeekerApp({ job, onWithdraw }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
