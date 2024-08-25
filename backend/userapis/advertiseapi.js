@@ -46,34 +46,47 @@ router.get('/getAds', verifyToken, async (req, res) => {
   const request = new db.Request();
 
   try {
-    const result = await request.query('SELECT * FROM advertisements');
-    res.status(200).json(result.recordset);
+      // Increment the pull_count for all advertisements and then select the records
+      const sqlQuery = `
+          UPDATE advertisements
+          SET pull_count = pull_count + 1;
+          
+          SELECT * FROM advertisements;
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
   } catch (err) {
-    console.error('Error fetching ads:', err);
-    res.status(500).json({ message: 'Internal Server Error' });
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 router.get('/getUserAds', verifyToken, async (req, res) => {
   const db = req.app.get("db");
   const request = new db.Request();
-  // Extract user ID from the token
   const user_id = req.res.locals.decode.id;
-  // SQL query to get ads by user ID
+
   const sqlQuery = `
-    SELECT *
-    FROM advertisements
-    WHERE user_id = @user_id
+      UPDATE advertisements
+      SET pull_count = pull_count + 1
+      WHERE user_id = @user_id;
+      
+      SELECT * FROM advertisements
+      WHERE user_id = @user_id;
   `;
   request.input('user_id', sql.VarChar, user_id);
+
   try {
-    const result = await request.query(sqlQuery);
-    res.status(200).json({payload:result.recordset});
+      const result = await request.query(sqlQuery);
+      res.status(200).json({ payload: result.recordset });
   } catch (err) {
-    console.error('Error executing query:', err);
-    res.status(500).json({ message: 'Internal Server Error' });
+      console.error('Error executing query:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 router.delete('/deleteAd/:id', verifyToken, async (req, res) => {
   const db = req.app.get("db");
@@ -91,17 +104,27 @@ router.delete('/deleteAd/:id', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-router.get('/publicads',async(req,res)=>{
+router.get('/publicads', async (req, res) => {
   const db = req.app.get("db");
   const request = new db.Request();
+
   try {
-    const result = await request.query('SELECT * FROM advertisements');
-    res.status(200).json(result.recordset);
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          UPDATE advertisements
+          SET pull_count = pull_count + 1;
+          
+          SELECT * FROM advertisements;
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
   } catch (err) {
-    console.error('Error fetching ads:', err);
-    res.status(500).json({ message: 'Internal Server Error' });
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
   }
-})
+});
+
 
 
 

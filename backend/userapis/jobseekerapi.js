@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
-
+const cors = require('cors');
 
 
 //jobseeker registration

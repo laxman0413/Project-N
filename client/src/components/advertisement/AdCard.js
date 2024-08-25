@@ -40,6 +40,9 @@ function AdCard({ ad, onDelete }) {
         <Typography variant="body2" color="textSecondary">
           <strong>Name:</strong> {ad.shop_name}
         </Typography>
+        <Typography variant="body2" color="textSecondary">
+          <strong>People Reached:</strong> {ad.pull_count}
+        </Typography>
       </CardContent>
       <CardActions>
         <Button
