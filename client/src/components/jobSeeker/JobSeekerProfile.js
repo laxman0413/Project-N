@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Logincontex } from '../jobSeeker/JobseekerloginContext/Logincontext'; // Correct import
 import { FaUser, FaBirthdayCake, FaPhone, FaGenderless, FaBriefcase } from 'react-icons/fa';
+import Menu from './Menu';
 
 function JobSeekerProfile() {
   const [profile, setProfile] = useState(null);
@@ -44,7 +45,14 @@ function JobSeekerProfile() {
   }
 
   return (
-    <div style={styles.container}>
+    <div>
+      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+        <Menu />
+      </div>
+
+      <pre>  </pre>
+      <pre>  </pre>
+      <div style={styles.container}>
       <div style={styles.profileHeader}>
         <img
           src={profile.image || 'https://via.placeholder.com/100'}
@@ -75,6 +83,7 @@ function JobSeekerProfile() {
       </div>
       <button style={styles.editButton}>Edit Profile</button>
     </div>
+  </div>
   );
 }
 

@@ -1,38 +1,36 @@
-import React, { useState ,useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { Logincontex } from './JobProviderloginContext/Logincontext';
-import Link from '@mui/material';
-//uses mui styles
+
 function Menu() {
-  // State to manage drawer (sliding menu) visibility
+  // State to manage drawer visibility
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const navigate=useNavigate();
-  let [currentuser,error,userloginStatus,LoginUser,LogoutUser]=useContext(Logincontex)
-  // Function to handle menu icon click and open drawer
-  const handleMenuIconClick = () => {
-    setDrawerOpen(true);
+  const navigate = useNavigate();
+  const [currentuser, error, userloginStatus, LoginUser, LogoutUser] = useContext(Logincontex);
+
+  // Toggles the drawer open/close state
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open);
   };
 
-  // Function to handle drawer close
-  const handleProfileDrawerClose = () => {
-    navigate('/job-provider/profile')
+  // Handles navigation and drawer close
+  const handleNavigation = (path) => {
+    navigate(path);
     setDrawerOpen(false);
   };
 
-  // Function to handle drawer close
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-  };
-  const handleLogoutDrawerClose = () => {
+  // Handles logout
+  const handleLogout = () => {
     LogoutUser();
-    navigate('/job-provider/login')
+    navigate('/job-provider/login');
     setDrawerOpen(false);
   };
-  const handleAdvertise=()=>{
-    navigate('/advertise')
-  }
+  const handleProfileClick = () => {
+    navigate('/job-provider/profile');
+  };
 
   return (
     <div>
@@ -40,40 +38,38 @@ function Menu() {
       <AppBar position="static">
         <Toolbar>
           {/* Menu Icon */}
-          <IconButton edge="start" color="inherit" onClick={handleMenuIconClick} sx={{ mr: 2 }}>
+          <IconButton edge="start" color="inherit" onClick={() => toggleDrawer(true)} sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
-          
+
           {/* Title */}
           <div style={{ flexGrow: 1 }}>
-            <h2>Your Title</h2>
+            <h2>Job </h2>
           </div>
-          
-          {/* Your three-bar logo can be added here */}
-          {/* Add your logo component */}
+
+          <IconButton edge="end" color="inherit" onClick={handleProfileClick}>
+            <AccountCircle />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
       {/* Drawer (Sliding Menu) */}
-      <Drawer anchor="left" open={isDrawerOpen} onClose={handleDrawerClose}>
-        {/* List of menu items */}
+      <Drawer anchor="left" open={isDrawerOpen} onClose={() => toggleDrawer(false)}>
         <List>
-          <ListItem  onClick={handleProfileDrawerClose} >
-              <link to="/job-provider/profile" />
-            <ListItemText  primary="Profile" />
+          <ListItem button onClick={() => handleNavigation('/job-provider/DashBoard')}>
+            <ListItemText primary="DashBoard" />
           </ListItem>
-          <ListItem  onClick={handleDrawerClose}>
+          <ListItem button onClick={() => handleNavigation('/change-password')}>
             <ListItemText primary="Change Password" />
           </ListItem>
-          <ListItem  onClick={handleLogoutDrawerClose}>
+          <ListItem button onClick={handleLogout}>
             <ListItemText primary="Log Out" />
           </ListItem>
-          <ListItem  onClick={handleAdvertise}>
+          <ListItem button onClick={() => handleNavigation('/advertise')}>
             <ListItemText primary="Advertise" />
           </ListItem>
         </List>
       </Drawer>
-
     </div>
   );
 }

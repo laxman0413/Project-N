@@ -22,11 +22,10 @@ function JobProviderLogin() {
   return (
     <div className="login-container">
       <header className="login-header">
-        <h1>Job Provider Portal</h1>
+        <h1>Job Provider Login</h1>
       </header>
       <main className="login-main">
         <div className="login-form-container">
-          <h2 className="text-center">Login</h2>
           {error.length !== 0 && <p className="error-message">{error}</p>}
           <form onSubmit={handleSubmit(onSubmit)} className="login-form">
             <div className="form-group">
@@ -56,7 +55,7 @@ function JobProviderLogin() {
                 {...register("password", { 
                   required: "Password is required",
                   minLength: {
-                    value: 2,
+                    value: 8,
                     message: "Password must be at least 8 characters long"
                   }
                 })} 

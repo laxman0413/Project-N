@@ -41,8 +41,13 @@ function AppliedJobs() {
   };
 
   return (
-    <div className="applied-jobs-container">
-      <Menu />
+    <div>
+      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+        <Menu />
+      </div>
+
+      <pre>  </pre>
+      <pre>  </pre>
       <h2 className="title">Applied Jobs</h2>
       <div className="applied-job-list">
         {appliedJobs.length > 0 ? (
