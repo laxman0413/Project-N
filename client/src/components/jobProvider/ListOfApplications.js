@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, Typography, Grid, Container, Button, Box } from '@mui/material';
+import Menu from './Menu';
 
 function ListOfApplications() {
   const { jobId } = useParams();
@@ -31,11 +32,17 @@ function ListOfApplications() {
   };
 
   return (
+    <div>
+      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+        <Menu />
+      </div>
+      <pre> </pre>
+      <pre> </pre>
     <Container>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <h2 variant="h4" gutterBottom>
           Applications for Job ID: {jobId}
-        </Typography>
+        </h2>
       </Box>
       {applications.length === 0 ? (
         <Typography variant="h6" color="textSecondary" align="center">
@@ -78,6 +85,7 @@ function ListOfApplications() {
         </Grid>
       )}
     </Container>
+    </div>
   );
 }
 
