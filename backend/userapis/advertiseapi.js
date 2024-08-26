@@ -131,9 +131,12 @@ router.get('/data', async (req, res) => {
 
   try {
       // Increment the pull_count for all public advertisements and then select the records
-      const sqlQuery = `
+      /*const sqlQuery = `
           SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';
           Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'jobdetails';
+      `;*/
+      const sqlQuery = `
+          select * from jobdetails;
       `;
 
       const result = await request.query(sqlQuery);
