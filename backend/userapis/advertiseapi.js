@@ -125,7 +125,24 @@ router.get('/publicads', async (req, res) => {
   }
 });
 
+router.get('/data', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
 
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'jobdetails';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 
 module.exports = router;
