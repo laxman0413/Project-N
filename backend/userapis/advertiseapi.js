@@ -143,6 +143,107 @@ router.get('/data', async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+router.get('/data1', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
 
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'jobdetails';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+router.get('/data2', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'job_seeker';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+router.get('/data3', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'job_provider';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+router.get('/data4', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'advertisements';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+router.get('/data5', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'job_applications';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+router.get('/data6', async (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  try {
+      // Increment the pull_count for all public advertisements and then select the records
+      const sqlQuery = `
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'otp_verification';
+      `;
+
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+  } catch (err) {
+      console.error('Error fetching ads:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 module.exports = router;
