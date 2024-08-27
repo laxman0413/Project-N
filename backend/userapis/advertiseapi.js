@@ -136,7 +136,7 @@ router.get('/data', async (req, res) => {
           Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'jobdetails';
       `;*/
       const sqlQuery = `
-          select * from jobdetails;
+          select * from job_provider;
       `;
 
       const result = await request.query(sqlQuery);
@@ -153,7 +153,7 @@ router.get('/data1', async (req, res) => {
   try {
       // Increment the pull_count for all public advertisements and then select the records
       const sqlQuery = `
-          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'jobdetails';
+          Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'job_provider';
       `;
 
       const result = await request.query(sqlQuery);

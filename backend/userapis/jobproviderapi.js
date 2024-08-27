@@ -10,7 +10,8 @@ const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
 const { type } = require('os');
-
+const cors = require('cors');
+app.use(cors());
 
 // To register a Job_Provider
 job_provider.post('/register', multerObj.single("image"),async (req, res) => {
