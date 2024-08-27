@@ -9,10 +9,10 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const app = express();
 app.use(express.json());
-var cors = require('cors')
-app.use(cors());
 const twilio = require('twilio');
 app.use(cookieParser());
+var cors = require('cors')
+app.use(cors());
 const config = {
   server: process.env.SERVER,
   database: process.env.DATABASE,
