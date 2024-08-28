@@ -9,9 +9,8 @@ const path = require('path');
 const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
-const { type } = require('os');
 const cors = require('cors');
-app.use(cors());
+job_provider.use(cors());
 
 // To register a Job_Provider
 job_provider.post('/register', multerObj.single("image"),async (req, res) => {
@@ -87,7 +86,7 @@ job_provider.post('/login', async (req, res) => {
 });
 
 // To post a new job
-job_provider.post('/addJob', verifyToken, multerObj.single("image"), async (req, res) => {
+job_provider.post('/addJob',verifyToken, multerObj.single("image"), async (req, res) => {
   const {
     jobTitle,
     jobType,

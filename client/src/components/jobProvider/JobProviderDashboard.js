@@ -27,6 +27,7 @@ function JobProviderDashboard() {
   const [page, setPage] = useState(1);
   const jobsPerPage = 8;
   const navigate = useNavigate();
+  const [err, setErr] = useState("");
   const locations = [
     "Dobinala Junction",
     "Ara mile",
@@ -92,12 +93,17 @@ function JobProviderDashboard() {
   };
 
   const handleImg = (e) => {
-    setSelectedImg(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setSelectedImg(file);
+    } else {
+      setErr("Please upload a valid image file (jpg, png, etc.)");
+    }
   };
 
   const formSubmit = (jobDetails) => {
     const token = localStorage.getItem('token');
-    jobDetails.negotiability = jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable';
+    jobDetails.negotiability = jobDetails.negotiabili7ty ? 'Negotiable' : 'Non Negotiable';
     const formData = new FormData();
     formData.append("jobDetails", JSON.stringify(jobDetails));
     formData.append("image", selectedImg);
@@ -255,17 +261,16 @@ function JobProviderDashboard() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="img">Profile Image</label>
-                <input
-                  type="file"
-                  name="img"
-                  id="image"
-                  className="form-control"
-                  onChange={handleImg}
-                  {...register("img", { required: "Profile image is required" })}
-                />
-                {errors.img && <p className="text-danger">{errors.img.message}</p>}
-              </div>
+              <label htmlFor="image">job Image</label>
+              <input
+                type="file"
+                name="image"
+                id="image"
+                className={`form-control ${errors.image ? 'input-error' : ''}`}
+                onChange={handleImg}
+                required
+              />
+            </div>
 
               <button className="btn btn-success" type="submit">Register</button>
             </form>
