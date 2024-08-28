@@ -161,32 +161,34 @@ job_seeker.delete('/withdrawJob/:application_id', verifyToken, async (req, res) 
   }
 });
 //To apply for a particular job
-job_seeker.post('/accept-job', verifyToken, (req, res) => {
-  const db = req.app.get("db");
-  const request = new sql.Request();
-  const { id } = req.body; // Ensure this is correctly received from the request body
-  const { id: seeker_id } = res.locals.decode; // Get seeker ID from the token
-
-  if (!id) {
-    return res.status(400).send({ message: 'Job ID is required' });
-  }
-
-  const sqlQuery = `
-      INSERT INTO job_applications (seeker_id, id, application_date)
-      VALUES (@seeker_id, @job_id, GETDATE())
-  `;
-
-  request.input('seeker_id', sql.VarChar, seeker_id);
-  request.input('job_id', sql.Int, id); // Ensure id is correctly passed as job_id
-
-  request.query(sqlQuery, (err, result) => {
+job_seeker.post('/apply/:jobId', verifyToken, (req, res) => {
+    const db = req.app.get("db");
+    const request = new sql.Request();
+  
+    // Extract jobId from URL parameters
+    const jobId = req.params.jobId;
+    const seekerId = res.locals.decode.id; // Get seeker ID from token
+  
+    if (!jobId) {
+      return res.status(400).send({ message: 'Job ID is required' });
+    }
+  
+    const sqlQuery = `
+        INSERT INTO job_applications (seeker_id, id, application_date)
+        VALUES (@seeker_id, @job_id, GETDATE())
+    `;
+  
+    request.input('seeker_id', sql.VarChar, seekerId);
+    request.input('job_id', sql.Int, jobId);
+  
+    request.query(sqlQuery, (err, result) => {
       if (err) {
-          console.error('Error executing query:', err);
-          return res.status(500).send({ message: 'Internal Server Error' });
+        console.error('Error executing query:', err);
+        return res.status(500).send({ message: 'Internal Server Error' });
       }
-      res.status(201).send({ message: 'Job accepted successfully' });
+      res.status(201).send({ message: 'Job application submitted successfully' });
+    });
   });
-});
 
 //any testing routes
 require('dotenv').config({ path: './twilio.env' });

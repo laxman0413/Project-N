@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   CardActionArea,
   CardActions,
   Dialog,
@@ -53,7 +52,6 @@ function CarderSeeker({ job, fetchJobs }) {
       })
         .then(response => {
           console.log(response.data);
-          fetchJobs();
           handleApplyClose();
         })
         .catch(error => {
@@ -82,12 +80,12 @@ function CarderSeeker({ job, fetchJobs }) {
           </CardContent>
         </CardActionArea>
         <CardActions className='custom-actions'>
-          <Button size="small" className='ignore-button' onClick={handleCloseDialog}>
+          <button className='ignore-button' onClick={handleCloseDialog}>
             Ignore
-          </Button>
-          <Button size="small" className='apply-button' onClick={handleApplyClick}>
+          </button>
+          <button className='apply-button' onClick={handleApplyClick}>
             Apply
-          </Button>
+          </button>
         </CardActions>
       </Card>
 
@@ -126,9 +124,9 @@ function CarderSeeker({ job, fetchJobs }) {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <button onClick={handleCloseDialog} className='dialog-button'>
             Close
-          </Button>
+          </button>
         </DialogActions>
       </Dialog>
 
@@ -147,12 +145,12 @@ function CarderSeeker({ job, fetchJobs }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleApplyClose} color="default">
+          <button onClick={handleApplyClose} className='dialog-button'>
             Cancel
-          </Button>
-          <Button onClick={handleSubmitApplication} color="primary">
+          </button>
+          <button onClick={handleSubmitApplication} className='dialog-button dialog-button-success'>
             Submit
-          </Button>
+          </button>
         </DialogActions>
       </Dialog>
     </div>
