@@ -33,21 +33,56 @@
   padding: 0 16px 16px;
 }
 
-.ignore-button {
-  background-color: #f44336;
+/* Success button with white text on green background */
+.apply-button {
+  background-color: #4caf50; /* Green for success */
   color: white;
-  &:hover {
-    background-color: #d32f2f;
-  }
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.apply-button {
-  background-color: #4caf50;
+/* Danger button with white text on red background */
+.ignore-button {
+  background-color: #f44336; /* Red for danger */
   color: white;
-  &:hover {
-    background-color: #388e3c;
-  }
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
 }
+
+/* Dialog buttons with white text on blue background */
+.dialog-button {
+  background-color: #2196f3; /* Blue for default dialog buttons */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Success variant for dialog button */
+.dialog-button-success {
+  background-color: #4caf50; /* Green for success */
+}
+
 
 .dialog .MuiDialogTitle-root {
   background-color: #f5f5f5;

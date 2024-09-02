@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   CardActionArea,
   CardActions,
   Dialog,
@@ -53,7 +52,6 @@ function CarderSeeker({ job, fetchJobs }) {
       })
         .then(response => {
           console.log(response.data);
-          fetchJobs();
           handleApplyClose();
         })
         .catch(error => {
@@ -82,20 +80,10 @@ function CarderSeeker({ job, fetchJobs }) {
           </CardContent>
         </CardActionArea>
         <CardActions className='custom-actions'>
-          <Button
-            size="small"
-            className='ignore-button'
-            style={{ color: '#fff', backgroundColor: '#888', borderColor: '#888' }}
-            onClick={handleCloseDialog}
-          >
+          <Button size="small" className='ignore-button' onClick={handleCloseDialog}>
             Ignore
           </Button>
-          <Button
-            size="small"
-            className='apply-button'
-            style={{ color: '#fff', backgroundColor: '#000', borderColor: '#000' }}
-            onClick={handleApplyClick}
-          >
+          <Button size="small" className='apply-button' onClick={handleApplyClick}>
             Apply
           </Button>
         </CardActions>
@@ -136,7 +124,9 @@ function CarderSeeker({ job, fetchJobs }) {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} style={{ color: '#000' }}>Close</Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -158,8 +148,12 @@ function CarderSeeker({ job, fetchJobs }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleApplyClose} style={{ color: '#000' }}>Cancel</Button>
-          <Button onClick={handleSubmitApplication} style={{ color: '#fff', backgroundColor: '#000' }}>Submit</Button>
+          <Button onClick={handleApplyClose} color="default">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmitApplication} color="primary">
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
