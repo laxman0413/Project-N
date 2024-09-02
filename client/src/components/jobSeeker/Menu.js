@@ -1,9 +1,27 @@
 import React, { useState, useContext } from 'react';
-import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText, createTheme, ThemeProvider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { Logincontex } from './JobseekerloginContext/Logincontext';
+
+// Create a black theme
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#000',
+      paper: '#333',
+    },
+    text: {
+      primary: '#fff',
+      secondary: '#aaa',
+    },
+    primary: {
+      main: '#1976d2', // You can customize this color if needed
+    },
+  },
+});
 
 function Menu() {
   // State to manage drawer (sliding menu) visibility
@@ -17,13 +35,12 @@ function Menu() {
   };
 
   // Function to handle drawer close
-  const handleDashDrawerClose = () => {
-    navigate('/job-seeker/dashboard');
+  const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
 
-  // Function to handle drawer close
-  const handleDrawerClose = () => {
+  const handleDashDrawerClose = () => {
+    navigate('/job-seeker/dashboard');
     setDrawerOpen(false);
   };
 
@@ -42,50 +59,51 @@ function Menu() {
   };
 
   return (
-    <div>
-      {/* App Bar with Menu Icon and Title */}
-      <AppBar position="static">
-        <Toolbar>
-          {/* Menu Icon */}
-          <IconButton edge="start" color="inherit" onClick={handleMenuIconClick} sx={{ mr: 2 }}>
-            <MenuIcon />
-          </IconButton>
-          
-          {/* Title */}
-          <div style={{ flexGrow: 1 }}>
-            <h2>Job Seeker</h2>
-          </div>
-          
-          {/* Profile Icon */}
-          <IconButton edge="end" color="inherit" onClick={handleProfileClick}>
-            <AccountCircle />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <ThemeProvider theme={theme}>
+      <div>
+        {/* App Bar with Menu Icon and Title */}
+        <AppBar position="static">
+          <Toolbar>
+            {/* Menu Icon */}
+            <IconButton edge="start" color="inherit" onClick={handleMenuIconClick} sx={{ mr: 2 }}>
+              <MenuIcon />
+            </IconButton>
+            
+            {/* Title */}
+            <div style={{ flexGrow: 1 }}>
+              <h2 style={{ color: theme.palette.text.primary }}>Job Seeker</h2>
+            </div>
+            
+            {/* Profile Icon */}
+            <IconButton edge="end" color="inherit" onClick={handleProfileClick}>
+              <AccountCircle />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-      {/* Drawer (Sliding Menu) */}
-      <Drawer anchor="left" open={isDrawerOpen} onClose={handleDrawerClose}>
-        {/* List of menu items */}
-        <List>
-          <ListItem onClick={handleDashDrawerClose}>
-            <ListItemText primary="DashBoard" />
-          </ListItem>
-          <ListItem onClick={handleDrawerClose}>
-            <ListItemText primary="Change Password" />
-          </ListItem>
-          <ListItem onClick={handleLogoutDrawerClose}>
-            <ListItemText primary="Log Out" />
-          </ListItem>
-          <ListItem onClick={handleAdvertise}>
-            <ListItemText primary="Advertise" />
-          </ListItem>
-          {/* Add more menu items as needed */}
-        </List>
-      </Drawer>
+        {/* Drawer (Sliding Menu) */}
+        <Drawer anchor="left" open={isDrawerOpen} onClose={handleDrawerClose}>
+          <List>
+            <ListItem button onClick={handleDashDrawerClose}>
+              <ListItemText primary="DashBoard" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
+            </ListItem>
+            <ListItem button onClick={handleDrawerClose}>
+              <ListItemText primary="Change Password" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
+            </ListItem>
+            <ListItem button onClick={handleLogoutDrawerClose}>
+              <ListItemText primary="Log Out" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
+            </ListItem>
+            <ListItem button onClick={handleAdvertise}>
+              <ListItemText primary="Advertise" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
+            </ListItem>
+            {/* Add more menu items as needed */}
+          </List>
+        </Drawer>
 
-      {/* The rest of your application content goes here */}
-      {/* Add your components and content */}
-    </div>
+        {/* The rest of your application content goes here */}
+        {/* Add your components and content */}
+      </div>
+    </ThemeProvider>
   );
 }
 
