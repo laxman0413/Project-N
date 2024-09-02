@@ -5,6 +5,7 @@ import Menu from './Menu';
 import CarderSeeker from './CarderSeeker';
 import AdCard from '../advertisement/AdCard';
 import { Link } from 'react-router-dom';
+import './JobSeekerDashboard.css'; // Import CSS file for styles
 
 function JobSeekerDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -94,44 +95,49 @@ function JobSeekerDashboard() {
   };
 
   return (
-    <div>
-      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+    <div className="job-seeker-dashboard">
+      <div className="header">
         <Menu />
       </div>
-      <div style={{ marginTop: '60px' }}> {/* Adjust margin-top to match the height of the fixed menu */}
-        <button><Link to="/job-seeker/applied-jobs">Applied Jobs</Link></button>
+      <div className="content">
+        <button className="applied-jobs-btn">
+          <Link to="/job-seeker/applied-jobs">Applied Jobs</Link>
+        </button>
         <br />
-        <br />
-        <button onClick={toggleFilterVisibility}>Filter</button>
+        <button className="filter-btn" onClick={toggleFilterVisibility}>Filter</button>
         {isFilterVisible && (
-          <div>
+          <div className="filters">
             <h4>Filter by Location:</h4>
-            {locations.map((location, index) => (
-              <div key={index}>
-                <input
-                  type="checkbox"
-                  id={location}
-                  value={location}
-                  checked={selectedLocations.includes(location)}
-                  onChange={() => handleLocationChange(location)}
-                />
-                <label htmlFor={location}>{location}</label>
-              </div>
-            ))}
+            <div className="filter-options">
+              {locations.map((location, index) => (
+                <div key={index} className="filter-item">
+                  <input
+                    type="checkbox"
+                    id={location}
+                    value={location}
+                    checked={selectedLocations.includes(location)}
+                    onChange={() => handleLocationChange(location)}
+                  />
+                  <label htmlFor={location}>{location}</label>
+                </div>
+              ))}
+            </div>
 
             <h4>Filter by Type of Work:</h4>
-            {["construction", "factoryWork", "agriculture", "transportation", "domesticWork", "others"].map((workType, index) => (
-              <div key={index}>
-                <input
-                  type="checkbox"
-                  id={workType}
-                  value={workType}
-                  checked={selectedWorkTypes.includes(workType)}
-                  onChange={() => handleWorkTypeChange(workType)}
-                />
-                <label htmlFor={workType}>{workType.split(/(?=[A-Z])/).join(" ")}</label>
-              </div>
-            ))}
+            <div className="filter-options">
+              {["construction", "factoryWork", "agriculture", "transportation", "domesticWork", "others"].map((workType, index) => (
+                <div key={index} className="filter-item">
+                  <input
+                    type="checkbox"
+                    id={workType}
+                    value={workType}
+                    checked={selectedWorkTypes.includes(workType)}
+                    onChange={() => handleWorkTypeChange(workType)}
+                  />
+                  <label htmlFor={workType}>{workType.split(/(?=[A-Z])/).join(" ")}</label>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -145,27 +151,26 @@ function JobSeekerDashboard() {
 
         <h3>Jobs Available</h3>
         {currentJobs.length > 0 ? (
-          currentJobs.map((job, index) => (
-            <div key={index}>
-              <CarderSeeker job={job} />
-              {(index + 1) % 5 === 0 && currentAds.length > Math.floor(index / 5) && (
-                <AdCard ad={currentAds[Math.floor(index / 5)]} />
-              )}
-            </div>
-          ))
+          <div className="jobs-grid">
+            {currentJobs.map((job, index) => (
+              <div key={index} className="job-card-wrapper">
+                <CarderSeeker job={job} />
+                {(index + 1) % 5 === 0 && currentAds.length > Math.floor(index / 5) && (
+                  <AdCard ad={currentAds[Math.floor(index / 5)]} />
+                )}
+              </div>
+            ))}
+          </div>
         ) : (
           <p>No jobs match your search or filter criteria.</p>
         )}
 
-        <pre>  </pre>
-        <div>
+        <div className="pagination">
           <button onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Previous</button>
           <span> Page {currentPage} of {totalPages} </span>
           <button onClick={() => handlePageChange('next')} disabled={currentPage === totalPages}>Next</button>
         </div>
       </div>
-      <pre>  </pre>
-      <pre>  </pre>
     </div>
   );
 }
