@@ -10,41 +10,108 @@ const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
 const cors = require('cors');
+const crypto = require('crypto');
 job_provider.use(cors());
 
 // To register a Job_Provider
-job_provider.post('/register', multerObj.single("image"),async (req, res) => {
-  const { name, phone, password } = JSON.parse(req.body.userObj);
+job_provider.post('/register', multerObj.single("image"), async (req, res) => {
+  const { name, phone, password, otp } = JSON.parse(req.body.userObj);
   const image = req.file.path;
   const id = "JP" + (+phone);
   const db = req.app.get("db");
   const request = new db.Request();
-  try {
-    // Check if user already exists
-    const sqlQuery = 'SELECT * FROM job_provider WHERE provider_id = @provider_id';
-    request.input('provider_id', sql.VarChar, id);
-    const result = await request.query(sqlQuery);
 
-    if (result.recordset.length > 0) {
-      return res.status(208).send({ message: "User already exists please login",flag:1});
+  try {
+    // Verify the OTP
+    const otpQuery = `SELECT * FROM otp_verification WHERE phone = @phone AND otp = @otp`;
+    request.input('phone', sql.VarChar, phone);
+    request.input('otp', sql.VarChar, otp);
+    const otpResult = await request.query(otpQuery);
+
+    if (otpResult.recordset.length === 0) {
+      return res.status(400).send({ message: "Invalid or expired OTP" });
     }
 
-    // Hash password
+    const otpRecord = otpResult.recordset[0];
+    const currentTime = new Date();
+    const otpTimestamp = new Date(otpRecord.created_at);
+    const timeDifference = (currentTime - otpTimestamp) / 1000 / 60; // Difference in minutes
+
+    if (timeDifference > 10) {
+      return res.status(400).send({ message: 'OTP has expired' });
+    }
+
+    // Check if user already exists
+    const userQuery = 'SELECT * FROM job_provider WHERE provider_id = @provider_id';
+    request.input('provider_id', sql.VarChar, id);
+    const userResult = await request.query(userQuery);
+
+    if (userResult.recordset.length > 0) {
+      return res.status(208).send({ message: "User already exists, please login", flag: 1 });
+    }
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new user
+    // Insert new user into the job_provider table
     request.input('nameParam', sql.NVarChar, name);
     request.input('providerIdParam', sql.VarChar, id);
     request.input('passParam', sql.NVarChar, hashedPassword);
     request.input('phoneParam', sql.Numeric, phone);
     request.input('imageParam', sql.VarChar, image);
-    //console.log(image,typeof(image))
-    const insertQuery = `INSERT INTO job_provider (name, provider_id, password, phone, image) VALUES (@nameParam, @providerIdParam, @passParam, @phoneParam, @imageParam)`;
+
+    const insertQuery = `
+      INSERT INTO job_provider (name, provider_id, password, phone, image)
+      VALUES (@nameParam, @providerIdParam, @passParam, @phoneParam, @imageParam)
+    `;
     await request.query(insertQuery);
-    res.status(201).send('User registered successfully');
+
+    // Remove the OTP record after successful registration
+    const deleteOtpQuery = `DELETE FROM otp_verification WHERE phone = @phone`;
+    await request.query(deleteOtpQuery);
+
+    res.status(201).send({ message: 'User registered successfully' });
+
   } catch (err) {
     console.error('Error:', err);
     res.status(500).send('Internal Server Error');
+  }
+});
+
+job_provider.post('/send-register-otp', async (req, res) => {
+  const { phone } = req.body;
+  const db = req.app.get("db");
+  const request = new db.Request();
+  const id = "JP" + (+phone);
+
+  try {
+      // Check a query to check if the user already exists
+      const sqlQuery = 'SELECT * FROM job_provider WHERE provider_id = @provider_id';
+      request.input('provider_id', sql.VarChar, id);
+      const result = await request.query(sqlQuery);
+
+      if (result.recordset.length > 0) {
+          return res.status(208).send({ message: "User already exists, please login", flag: 1 });
+      }
+
+      // Generate OTP
+      const otp = crypto.randomInt(100000, 999999).toString(); // Generates a 6-digit OTP
+
+      // Store OTP in the database
+      const otpInsertQuery = `
+          INSERT INTO otp_verification (phone, otp, created_at)
+          VALUES (@phoneParam, @otpParam, GETDATE())
+      `;
+      request.input('phoneParam', sql.VarChar, phone);
+      request.input('otpParam', sql.VarChar, otp);
+      await request.query(otpInsertQuery);
+
+      // Send OTP message using the provided function
+      await sendOtpMessage(phone, otp, res);
+
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).send({ message: 'Internal Server Error' });
   }
 });
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const job_seeker=express();
 job_seeker.use(express.json());
+const multer = require('multer');
 const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -8,37 +9,105 @@ const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
 const cors = require('cors');
+const crypto = require('crypto');
 job_seeker.use(cors());
 
-//jobseeker registration
-job_seeker.post('/register',multerObj.single("image"), async (req, res) => {
-    const { name, pass, phone, jobType, age, sex } = JSON.parse(req.body.userObj);
-    const image = req.file.path;
-    const db=req.app.get("db");
-    const request=new db.Request();
+job_seeker.post('/send-register-otp', async (req, res) => {
+  const { phone } = req.body;
+  const db = req.app.get("db");
+  const request = new db.Request();
+  const id = "JS" + (+phone);
+  console.log(id);
+
   try {
-    const result = await request.query(`select * from job_seeker where phone='${phone}'`);
-    if (result.recordset.length > 0) {
-      return res.status(208).json({ message: "user already exists please login" });
+      // Check a query to check if the user already exists
+      const sqlQuery = 'SELECT * FROM job_seeker WHERE seeker_id = @seeker_id';
+      request.input('seeker_id', sql.VarChar, id);
+      const result = await request.query(sqlQuery);
+
+      if (result.recordset.length > 0) {
+          return res.status(208).send({ message: "User already exists, please login", flag: 1 });
+      }
+
+      // Generate OTP
+      const otp = crypto.randomInt(100000, 999999).toString(); // Generates a 6-digit OTP
+
+      // Store OTP in the database
+      const otpInsertQuery = `
+          INSERT INTO otp_verification (phone, otp, created_at)
+          VALUES (@phoneParam, @otpParam, GETDATE())
+      `;
+      request.input('phoneParam', sql.VarChar, phone);
+      request.input('otpParam', sql.VarChar, otp);
+      await request.query(otpInsertQuery);
+
+      // Send OTP message using the provided function
+      await sendOtpMessage(phone, otp, res);
+
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
+//jobseeker registration
+job_seeker.post('/register', multerObj.single("image"), async (req, res) => {
+  const { name, pass, phone, jobType, age, sex, otp } = JSON.parse(req.body.userObj);
+  const image = req.file.path;
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  try {
+    // OTP Verification
+    const otpQuery = `SELECT * FROM otp_verification WHERE phone = @otpPhone AND otp = @otpCode`;
+    request.input('otpPhone', sql.VarChar, phone);
+    request.input('otpCode', sql.VarChar, otp);
+    const otpResult = await request.query(otpQuery);
+
+    if (otpResult.recordset.length === 0) {
+      return res.status(400).send({ message: "Invalid or expired OTP" });
     }
-    const hashedPassword = await bcrypt.hash(pass, 10); // Hash the password
-    const sqlQuery = `INSERT INTO job_seeker (name, password, phone, age, sex, jobType,image) VALUES (@name, @hashedPassword, @phone, @age, @sex, @jobType,@image)`;
-      //console.log('name: ',username, 'password: ',hashedPassword, 'phone: ',phone, 'age: ',age );
-      //console.log(image,typeof(image))
-    let values = { name, hashedPassword, phone, jobType, age, sex ,image};
+
+    const otpRecord = otpResult.recordset[0];
+    const currentTime = new Date();
+    const otpTimestamp = new Date(otpRecord.created_at);
+    const timeDifference = (currentTime - otpTimestamp) / 1000 / 60; // Difference in minutes
+
+    if (timeDifference > 10) {
+      return res.status(400).send({ message: 'OTP has expired' });
+    }
+
+    // Check if user already exists
+    const userQuery = `SELECT * FROM job_seeker WHERE phone = @userPhone`;
+    request.input('userPhone', sql.VarChar, phone);
+    const userResult = await request.query(userQuery);
+
+    if (userResult.recordset.length > 0) {
+      return res.status(208).json({ message: "User already exists, please login" });
+    }
+
+    // Hash the password and insert new user
+    const hashedPassword = await bcrypt.hash(pass, 10);
+    const sqlQuery = `
+      INSERT INTO job_seeker (name, password, phone, jobType, age, sex, image)
+      VALUES (@name, @hashedPassword, @phone, @jobType, @age, @sex, @image)
+    `;
+
+    let values = { name, hashedPassword, phone, jobType, age, sex, image };
     for (let key in values) {
       request.input(key, values[key]);
     }
+
     request.query(sqlQuery, (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
-        return res.status(500).send({message:'Internal Server Error'});
+        return res.status(500).send({ message: 'Internal Server Error' });
       }
-      res.status(201).send({message:'User registered successfully'});
+      res.status(201).send({ message: 'User registered successfully' });
     });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).send('Error registering user');
+    res.status(500).send({ message: 'Error registering user' });
   }
 });
 
