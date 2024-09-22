@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import './JobProviderRegister.css'; // Assume you add styles here
+import { Link } from 'react-router-dom';
 
 function JobProviderRegister() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -126,6 +127,7 @@ function JobProviderRegister() {
                 />
               </div>
               <button className="btn btn-success" type="submit">Send OTP</button>
+              <p>Already have an account? <Link to="/job-provider/login">Log in</Link></p>
             </form>
           ) : (
             <div>
@@ -146,10 +148,6 @@ function JobProviderRegister() {
             </div>
           )}
         </div>
-        <div className="alternative-signup">
-          <p>or</p>
-        </div>
-        <p>Already have an account? <a href="/job-provider/login">Log in</a></p>
       </div>
     </div>
   );

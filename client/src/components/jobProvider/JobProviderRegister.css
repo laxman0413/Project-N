@@ -1,82 +1,129 @@
-/* JobProviderRegister.css */
 .signup-container {
-    max-width: 500px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  animation: fadeIn 0.6s ease;
+}
+
+.form-section {
+  text-align: center;
+}
+
+.form-section h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #343a40;
+  font-weight: bold;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+}
+
+.input-error {
+  border-color: #dc3545;
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+.btn-success, .btn-primary {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-success:hover, .btn-primary:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.alternative-signup {
+  margin: 20px 0;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Add subtle animations */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-20px);
   }
-  
-  .form-section {
-    text-align: center;
+  to {
+      opacity: 1;
+      transform: translateY(0);
   }
-  
-  .form-section h2 {
-    margin-bottom: 20px;
+}
+
+@keyframes fadeOut {
+  from {
+      opacity: 1;
+      transform: translateY(0);
   }
-  
-  .form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    transition: border-color 0.3s;
+  to {
+      opacity: 0;
+      transform: translateY(-20px);
   }
-  
-  .form-control:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .input-error {
-    border-color: #dc3545;
-  }
-  
-  .validation-error {
-    color: #dc3545;
-    font-size: 0.875em;
-    margin-top: -5px;
-    margin-bottom: 10px;
-  }
-  
-  .btn-success {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    font-size: 1em;
-    margin-bottom: 15px;
-  }
-  
-  .alternative-signup {
-    margin: 20px 0;
-  }
-  
-  .alternative-signup p {
-    margin: 0;
-  }
-  
-  a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
+}
+
+.container {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.btn-success:active, .btn-primary:active {
+  transform: scale(0.98);
+}
+
+form {
+  animation: fadeIn 0.5s ease;
+}

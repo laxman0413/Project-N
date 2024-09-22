@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import './JobSeekerRegister.css'; // Custom CSS for styling
+import { Link } from 'react-router-dom';
 
 function JobSeekerRegister() {
   const navigate = useNavigate();
@@ -134,8 +135,6 @@ function JobSeekerRegister() {
               {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
             </div>
 
-            {/* Other fields... */}
-            
             <div className="mb-3">
               <label>Type of Job</label>
               <select className="form-select" {...register("jobType", { required: true })}>
@@ -169,6 +168,7 @@ function JobSeekerRegister() {
             </div>
 
             <button type="submit" className="btn btn-primary">Send OTP</button>
+            <p>Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
           </form>
         ) : (
           <div className="otp-verification">

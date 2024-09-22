@@ -68,6 +68,12 @@ function CarderSeeker({ job, fetchJobs }) {
     <div style={{ marginBottom: '20px' }}>
       <Card sx={{ maxWidth: 345, backgroundColor: '#fff', color: '#000' }} className='custom-card'>
         <CardActionArea onClick={handleCardClick}>
+          {/* Display job poster's name at the top */}
+          <CardContent className='custom-content'>
+            <Typography variant="body2" color="text.secondary" style={{ color: '#000', fontWeight: 'bold' }}>
+              Job Posted by: {job.providerName} {/* Added job poster's name */}
+            </Typography>
+          </CardContent>
           <img src={job.images || card1} alt="Job" className='custom-image' style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
           <CardContent className='custom-content'>
             <Typography variant="body2" color="text.secondary" style={{ color: '#555' }}>

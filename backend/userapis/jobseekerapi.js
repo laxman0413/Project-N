@@ -149,20 +149,35 @@ job_seeker.post('/login', async (req, res) => {
 });
 
 //To get list of jobs according to JobSeeker jobType and JobType
-job_seeker.get("/jobdetails",verifyToken,(req, res) => {
-    const {location,jobtype}=req.body;
-    const db=req.app.get("db");
-    const request=new db.Request();
-    request.input('locatonParam', sql.NVarChar, location);
-    request.input('jobtypeParam', sql.VarChar, jobtype);
-    request.query('Select * from jobdetails', (err, result) => {
-        if (err) {
-            console.error('Error executing query:', err);
-            return res.status(500).send('Internal Server Error');
-        }
-        res.status(201).send(result);
-    });
+job_seeker.get("/jobdetails", verifyToken, (req, res) => {
+  const { location, jobtype } = req.body;
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  // Pass the input parameters (location and jobtype)
+  request.input('locationParam', sql.NVarChar, location);
+  request.input('jobtypeParam', sql.VarChar, jobtype);
+
+  // Updated SQL query with joins to fetch job details along with job provider name
+  const query = `
+      SELECT jd.id, jd.jobTitle, jd.customJobType, jd.payment, jd.peopleNeeded, 
+             jd.location, jd.date, jd.time, jd.description, jd.negotiability, 
+             jd.images, jp.name as providerName
+      FROM jobdetails jd
+      JOIN job_provider jp ON jp.provider_id = jd.provider_id
+      WHERE (@locationParam IS NULL OR jd.location = @locationParam)
+        AND (@jobtypeParam IS NULL OR jd.customJobType = @jobtypeParam)
+  `;
+
+  request.query(query, (err, result) => {
+      if (err) {
+          console.error('Error executing query:', err);
+          return res.status(500).send('Internal Server Error');
+      }
+      res.status(201).send(result.recordset); // Send the job details with provider names
+  });
 });
+
 
 job_seeker.get('/appliedJobs', verifyToken, async (req, res) => {
   const seekerId = req.res.locals.decode.id;

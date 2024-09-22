@@ -23,17 +23,15 @@ function JobSeekerDashboard() {
     if (!token) {
       navigate("/job-seeker/login");
     } else {
-      axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', { headers: { Authorization: 'Bearer ' + token } })
+      axios.get('http://localhost:3001/jobSeeker/jobdetails', { headers: { Authorization: 'Bearer ' + token } })
         .then(response => {
-          if (response.data?.recordsets?.[0]) {
-            const jobsData = response.data.recordsets[0];
-            setJobs(jobsData);
+          const jobsData = response.data;
 
-            const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
-            setLocations(uniqueLocations);
-          } else {
-            console.error('Unexpected response format:', response.data);
-          }
+          // Set jobs and unique locations
+          setJobs(jobsData);
+
+          const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
+          setLocations(uniqueLocations);
         })
         .catch(error => console.error('Error fetching job details:', error));
 
@@ -64,7 +62,7 @@ function JobSeekerDashboard() {
   };
 
   const applyFilters = (job) => {
-    const normalizedJobType = job.jobType.trim().toLowerCase();
+    const normalizedJobType = (job.customJobType || job.jobTitle || '').trim().toLowerCase();
 
     const locationMatches = selectedLocations.length === 0 || selectedLocations.includes(job.location);
     const workTypeMatches = selectedWorkTypes.length === 0 || selectedWorkTypes.includes(normalizedJobType);
