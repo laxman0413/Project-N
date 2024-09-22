@@ -23,7 +23,7 @@ function JobSeekerDashboard() {
     if (!token) {
       navigate("/job-seeker/login");
     } else {
-      axios.get('http://localhost:3001/jobSeeker/jobdetails', { headers: { Authorization: 'Bearer ' + token } })
+      axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', { headers: { Authorization: 'Bearer ' + token } })
         .then(response => {
           const jobsData = response.data;
 
