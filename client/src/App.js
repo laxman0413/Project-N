@@ -111,7 +111,7 @@ function App() {
           element:<AdminLogin />
         },
         {
-          path:"/admin-dashboard",
+          path:"/admindashboard",
           element:<AdminDashboard />
         }
       ]

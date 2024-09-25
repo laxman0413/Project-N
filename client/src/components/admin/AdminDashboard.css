@@ -1,0 +1,57 @@
+.admin-dashboard-container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .job-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .job-table th, .job-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .job-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .job-row:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  
+  .job-details-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    background-color: #fafafa;
+  }
+  
+  .job-details p {
+    margin: 8px 0;
+  }
+  
+  .job-image-container {
+    margin-top: 15px;
+  }
+  
+  .job-image {
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  

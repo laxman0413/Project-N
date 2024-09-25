@@ -51,6 +51,9 @@ app.use('/jobseeker',job_seeker);
 const advertisement=require('./userapis/advertiseapi');
 app.use('/advertise',advertisement);
 
+const adminapi=require('./userapis/adminapi');
+app.use('/admin',adminapi);
+
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);
 });
