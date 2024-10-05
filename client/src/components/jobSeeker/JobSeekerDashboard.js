@@ -94,9 +94,12 @@ function JobSeekerDashboard() {
 
   return (
     <div className="job-seeker-dashboard">
-      <div className="header">
+      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
         <Menu />
       </div>
+      <pre>  </pre>
+      <pre>  </pre>
+      
       <div className="content">
         <button className="applied-jobs-btn">
           <Link to="/job-seeker/applied-jobs">Applied Jobs</Link>

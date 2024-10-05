@@ -1,86 +1,55 @@
-/* AppliedJobs.css */
-
 .applied-jobs-container {
+  max-width: 800px;
+  margin: 40px auto;
   padding: 20px;
-  background-color: #f4f4f4;
-  min-height: 100vh;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .applied-job-list {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* Default to 1 column */
+}
+
+/* For small screens (mobiles) */
+@media only screen and (max-width: 600px) {
+  .jobs-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+/* For medium screens (tablets) */
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+  .jobs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* For large screens (laptops) */
+@media only screen and (min-width: 901px) {
+  .jobs-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .no-jobs-message {
   text-align: center;
   color: #666;
-  font-size: 18px;
 }
 
-.carder-seeker-app {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  transition: box-shadow 0.3s ease;
-}
-
-.carder-seeker-app:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.carder-seeker-app .card-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.carder-seeker-app .card-header img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
-}
-
-.carder-seeker-app .card-header h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #333;
-}
-
-.carder-seeker-app .card-details {
-  font-size: 16px;
-  color: #555;
-}
-
-.carder-seeker-app .card-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.carder-seeker-app .card-actions button {
-  background-color: #ff6f61;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.carder-seeker-app .card-actions button:hover {
-  background-color: #e55d50;
+.error-message {
+  color: red;
+  text-align: center;
 }

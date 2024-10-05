@@ -64,7 +64,7 @@ function Menu() {
 
             {/* Title */}
             <div style={{ flexGrow: 1 }}>
-              <h2 style={{ color: theme.palette.text.primary }}>Job</h2>
+              <h2 style={{ color: theme.palette.text.primary }}>Job Provider</h2>
             </div>
 
             <IconButton edge="end" color="inherit" onClick={handleProfileClick}>
@@ -79,7 +79,7 @@ function Menu() {
             <ListItem button onClick={() => handleNavigation('/job-provider/DashBoard')}>
               <ListItemText primary="DashBoard" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
             </ListItem>
-            <ListItem button onClick={() => handleNavigation('/change-password')}>
+            <ListItem button onClick={() => handleNavigation('/job-provider/reset-password')}>
               <ListItemText primary="Change Password" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
             </ListItem>
             <ListItem button onClick={handleLogout}>

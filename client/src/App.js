@@ -58,7 +58,7 @@ function App() {
               element:<ListOfApplications/>
             },
             {
-              path:'/job-provider/reset',
+              path:'/job-provider/reset-password',
               element:<ResetPasswordPro />
             },
             {
