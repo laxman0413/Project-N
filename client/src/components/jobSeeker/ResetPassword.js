@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import './ResetPassword.css'; // Custom CSS file for styling
 
 function ResetPassword() {
   const { register, handleSubmit } = useForm();
@@ -44,7 +45,7 @@ function ResetPassword() {
   };
 
   return (
-    <div>
+    <div className="reset-password-container">
       <h1 className="text-center">Reset Password</h1>
       <div className="row">
         <div className="col-l1 col-sm-8 col-md-6 mx-auto mt-3">
@@ -54,7 +55,8 @@ function ResetPassword() {
                 <label htmlFor="phone">Phone</label>
                 <input type="number" name="phone" id="phone" className="form-control" {...register("phone")} required />
               </div>
-              <button type="submit" className="btn btn-success">Send OTP</button>
+              <button type="submit" className="btn btn-submit">Send OTP</button>
+              
             </form>
           )}
           {step === 2 && (
@@ -63,7 +65,7 @@ function ResetPassword() {
                 <label htmlFor="otp">OTP</label>
                 <input type="text" name="otp" id="otp" className="form-control" {...register("otp")} required />
               </div>
-              <button type="submit" className="btn btn-success">Verify OTP</button>
+              <button type="submit" className="btn btn-submit">Verify OTP</button>
             </form>
           )}
           {step === 3 && (
@@ -72,7 +74,7 @@ function ResetPassword() {
                 <label htmlFor="password">New Password</label>
                 <input type="password" name="password" id="password" className="form-control" {...register("password")} required />
               </div>
-              <button type="submit" className="btn btn-success">Reset Password</button>
+              <button type="submit" className="btn btn-submit">Reset Password</button>
             </form>
           )}
         </div>

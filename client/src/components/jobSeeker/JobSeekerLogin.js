@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Logincontex } from './JobseekerloginContext/Logincontext';
@@ -7,7 +7,7 @@ import './JobSeekerLogin.css'; // Custom CSS file for styling
 function JobSeekerLogin() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  const [currentuser, error, userloginStatus, LoginUser, LogoutUser] = useContext(Logincontex);
+  const [currentuser, error, userloginStatus, LoginUser] = useContext(Logincontex);
 
   const forsubmit = (userObj) => {
     LoginUser(userObj);
@@ -60,7 +60,7 @@ function JobSeekerLogin() {
               />
               {errors.password && <p className="validation-error">{errors.password.message}</p>}
             </div>
-            <button type="submit" className="btn btn-success">Login</button>
+            <button type="submit" className="btn btn-submit">Login</button>
           </form>
         </div>
       </div>

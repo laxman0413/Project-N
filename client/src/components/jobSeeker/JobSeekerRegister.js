@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import './JobSeekerRegister.css'; // Custom CSS for styling
+import './JobSeekerRegister.css';
 import { Link } from 'react-router-dom';
 
 function JobSeekerRegister() {
@@ -10,9 +10,9 @@ function JobSeekerRegister() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [err, setError] = useState("");
   const [selectedImg, setSelectedImg] = useState(null);
-  const [otpStep, setOtpStep] = useState(false); // OTP step control
-  const [otp, setOtp] = useState(""); // OTP state
-  const [userDetails, setUserDetails] = useState(null); // Store form data before OTP verification
+  const [otpStep, setOtpStep] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
 
   const handleImg = (e) => {
     const file = e.target.files[0];
@@ -24,12 +24,12 @@ function JobSeekerRegister() {
   };
 
   const handleSendOtp = (data) => {
-    setError(""); // Reset error messages
-    axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/send-register-otp", { phone: data.phone })
+    setError("");
+    axios.post("http://localhost:3001/jobSeeker/send-register-otp", { phone: data.phone })
       .then(res => {
         if (res.status === 200) {
-          setOtpStep(true); // Move to OTP verification step
-          setUserDetails(data); // Save user details
+          setOtpStep(true);
+          setUserDetails(data);
         } else {
           setError(res.data.message);
         }
@@ -43,7 +43,7 @@ function JobSeekerRegister() {
     if (!userDetails || !otp) return;
 
     const formData = new FormData();
-    formData.append("userObj", JSON.stringify({ ...userDetails, otp })); // Add OTP to the user data
+    formData.append("userObj", JSON.stringify({ ...userDetails, otp }));
     formData.append("image", selectedImg);
 
     axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
@@ -69,106 +69,87 @@ function JobSeekerRegister() {
 
   return (
     <div className="register-container">
-      <h1 className="text-center">Job Seeker Register</h1>
+      <button className="back-button" onClick={() => navigate(-1)}>←</button>
+      <h2 className="form-title">Sign Up</h2>
       {err && <p className="error-message">{err}</p>}
-      <div className="form-container col-lg-6 col-md-8 col-sm-10 mx-auto mt-3">
+      <div className="form-container">
         {!otpStep ? (
           <form onSubmit={handleSubmit(handleSendOtp)} className="register-form">
-            <div className="mb-3">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                name="username"
-                id="username"
-                className={`form-control ${errors.name ? 'input-error' : ''}`}
-                {...register("name", {
-                  required: "Username is required",
-                  pattern: {
-                    value: /^[a-zA-Z0-9]+$/,
-                    message: "Username should not contain special characters"
-                  }
-                })}
-                required
-              />
-              {errors.name && <p className="validation-error">{errors.name.message}</p>}
-            </div>
+            <input
+              type="text"
+              name="username"
+              className={`form-control ${errors.name ? 'input-error' : ''}`}
+              placeholder="Username"
+              {...register("name", {
+                required: "Username is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9]+$/,
+                  message: "Username should not contain special characters"
+                }
+              })}
+              required
+            />
+            {errors.name && <p className="validation-error">{errors.name.message}</p>}
 
-            <div className="mb-3">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                className={`form-control ${errors.pass ? 'input-error' : ''}`}
-                {...register("pass", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters long"
-                  }
-                })}
-                required
-              />
-              {errors.pass && <p className="validation-error">{errors.pass.message}</p>}
-            </div>
+            <input
+              type="password"
+              name="password"
+              className={`form-control ${errors.pass ? 'input-error' : ''}`}
+              placeholder="Password"
+              {...register("pass", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long"
+                }
+              })}
+              required
+            />
+            {errors.pass && <p className="validation-error">{errors.pass.message}</p>}
 
-            <div className="mb-3">
-              <label htmlFor="phoneNo">Phone No</label>
-              <input
-                type="text"
-                id="phoneNo"
-                className={`form-control ${errors.phone ? 'input-error' : ''}`}
-                onKeyPress={(event) => {
-                  if (!/[0-9]/.test(event.key) || event.target.value.length >= 10) {
-                    event.preventDefault();
-                  }
-                }}
-                {...register("phone", {
-                  required: "Phone number is required",
-                  pattern: {
-                    value: /^[0-9]{10}$/,
-                    message: "Phone number must be exactly 10 digits"
-                  }
-                })}
-                required
-              />
-              {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
-            </div>
+            <input
+              type="text"
+              className={`form-control ${errors.phone ? 'input-error' : ''}`}
+              placeholder="Phone No"
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key) || event.target.value.length >= 10) {
+                  event.preventDefault();
+                }
+              }}
+              {...register("phone", {
+                required: "Phone number is required",
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: "Phone number must be exactly 10 digits"
+                }
+              })}
+              required
+            />
+            {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
 
-            <div className="mb-3">
-              <label>Type of Job</label>
-              <select className="form-select" {...register("jobType", { required: true })}>
-                {jobOptions.map((option, index) => (
-                  <option key={index} value={option.value}>{option.label}</option>
-                ))}
-              </select>
-            </div>
+            <select className="form-control" {...register("jobType", { required: true })}>
+              <option value="" disabled selected>Type of Job</option>
+              {jobOptions.map((option, index) => (
+                <option key={index} value={option.value}>{option.label}</option>
+              ))}
+            </select>
 
-            <div className="mb-3">
-              <label htmlFor="age">Age</label>
-              <input
-                type="number"
-                id="age"
-                className={`form-control ${errors.age ? 'input-error' : ''}`}
-                {...register("age", { required: true })}
-              />
-            </div>
+            <input
+              type="number"
+              className={`form-control ${errors.age ? 'input-error' : ''}`}
+              placeholder="Age"
+              {...register("age", { required: true })}
+            />
 
-            <div className="mb-3">
-              <label>Sex</label>
-              <select className="form-select" {...register("sex", { required: true })}>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
+            <select className="form-control" {...register("sex", { required: true })}>
+              <option value="" disabled selected>Sex</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
 
-            <div className="mb-3">
-              <label>Upload Image</label>
-              <input type="file" className="form-control" onChange={handleImg} required />
-            </div>
-
-            <button type="submit" className="btn btn-primary">Send OTP</button>
-            <p>Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
+            <input type="file" className="form-control" onChange={handleImg} required />
+            <button type="submit" className="btn btn-submit">send OTP</button>
+            <p className="alternative-login">Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
           </form>
         ) : (
           <div className="otp-verification">
@@ -181,9 +162,7 @@ function JobSeekerRegister() {
               placeholder="Enter OTP"
               required
             />
-            <button className="btn btn-primary mt-3" onClick={handleRegister}>
-              Register
-            </button>
+            <button className="btn btn-submit" onClick={handleRegister}>Register</button>
           </div>
         )}
       </div>

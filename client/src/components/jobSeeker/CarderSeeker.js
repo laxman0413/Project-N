@@ -65,24 +65,24 @@ function CarderSeeker({ job, fetchJobs }) {
   };
 
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <Card sx={{ maxWidth: 345, backgroundColor: '#fff', color: '#000' }} className='custom-card'>
+    <div style={{ marginBottom: '20px' }} >
+      <Card sx={{ maxWidth: 345, backgroundColor: '#333', color: '#399d',border:'solid #333' }} className='custom-card'>
         <CardActionArea onClick={handleCardClick}>
           {/* Display job poster's name at the top */}
           <CardContent className='custom-content'>
-            <Typography variant="body2" color="text.secondary" style={{ color: '#000', fontWeight: 'bold' }}>
+            <Typography variant="body2" color="text.secondary" style={{ color: '#fff', fontWeight: 'bold' }}>
               Job Posted by: {job.providerName} {/* Added job poster's name */}
             </Typography>
           </CardContent>
           <img src={job.images || card1} alt="Job" className='custom-image' style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
           <CardContent className='custom-content'>
-            <Typography variant="body2" color="text.secondary" style={{ color: '#555' }}>
+            <Typography variant="body2" color="text.secondary" style={{ color: '#fff' }}>
               <strong>Job Title:</strong> {job.jobTitle}
             </Typography>
-            <Typography gutterBottom variant="h6" component="div" className='job-title' style={{ color: '#000' }}>
+            <Typography gutterBottom variant="h6" component="div" className='job-title' style={{ color: '#fff' }}>
               {job.jobTitle}
             </Typography>
-            <Typography variant="body2" color="text.secondary" style={{ color: '#555' }}>
+            <Typography variant="body2" color="text.secondary" style={{ color: '#fff' }}>
               <strong>Payment:</strong> {job.payment}
             </Typography>
           </CardContent>
