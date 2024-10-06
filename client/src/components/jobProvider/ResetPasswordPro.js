@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function ResetPasswordPro() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
-
+  const password = watch("password");
   const sendOtp = (data) => {
     axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/send-otp', { phone: data.phone })
       .then(response => {
@@ -69,8 +69,39 @@ function ResetPasswordPro() {
           {step === 3 && (
             <form onSubmit={handleSubmit(resetPassword)}>
               <div className="mb-3">
+              <div className="mb-3">
                 <label htmlFor="password">New Password</label>
-                <input type="password" name="password" id="password" className="form-control" {...register("password")} required />
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="form-control"
+                  {...register("password", {
+                    required: "New password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters",
+                    },
+                  })}
+                />
+                {errors.password && <p>{errors.password.message}</p>} {/* Display error for new password */}
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="confirmPassword">Confirm New Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  className="form-control"
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
+                />
+                {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>} {/* Display error for confirm password */}
+              </div>
               </div>
               <button type="submit" className="btn btn-success">Reset Password</button>
             </form>

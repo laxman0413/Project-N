@@ -27,40 +27,46 @@ function JobSeekerLogin() {
         <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-3">
           <form onSubmit={handleSubmit(forsubmit)} className="login-form">
             <div className="mb-3">
-              <label htmlFor="phone">Phone Number</label>
-              <input
-                type="text"
-                name="phone"
-                id="phone"
-                className={`form-control ${errors.phone ? 'input-error' : ''}`}
-                {...register("phone", {
-                  required: "Phone number is required",
-                  pattern: {
-                    value: /^[0-9]{10}$/,
-                    message: "Phone number must be exactly 10 digits"
-                  }
-                })}
-              />
-              {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
+              
+            <input
+              type="text"
+              className={`form-control ${errors.phone ? 'input-error' : ''}`}
+              placeholder="Phone No"
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key) || event.target.value.length >= 10) {
+                  event.preventDefault();
+                }
+              }}
+              {...register("phone", {
+                required: "Phone number is required",
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: "Phone number must be exactly 10 digits"
+                }
+              })}
+              required
+            />
+            {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
             </div>
             <div className="mb-3">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                className={`form-control ${errors.password ? 'input-error' : ''}`}
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters long"
-                  }
-                })}
-              />
-              {errors.password && <p className="validation-error">{errors.password.message}</p>}
+              
+            <input
+              type="password"
+              name="password"
+              className={`form-control ${errors.pass ? 'input-error' : ''}`}
+              placeholder="Password"
+              {...register("pass", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long"
+                }
+              })}
+              required
+            />
+            {errors.pass && <p className="validation-error">{errors.pass.message}</p>}
             </div>
-            <button type="submit" className="btn btn-submit">Login</button>
+            <button type="submit" className="btn-dark btn-submit">Login</button>
           </form>
         </div>
       </div>

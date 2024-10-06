@@ -38,7 +38,10 @@ function Menu() {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
-
+  const handlePassDrawerClose = () => {
+    navigate('/job-seeker/reset-password')
+    setDrawerOpen(false);
+  };
   const handleDashDrawerClose = () => {
     navigate('/job-seeker/dashboard');
     setDrawerOpen(false);
@@ -87,7 +90,7 @@ function Menu() {
             <ListItem button onClick={handleDashDrawerClose}>
               <ListItemText primary="DashBoard" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
             </ListItem>
-            <ListItem button onClick={handleDrawerClose}>
+            <ListItem button onClick={handlePassDrawerClose}>
               <ListItemText primary="Change Password" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
             </ListItem>
             <ListItem button onClick={handleLogoutDrawerClose}>

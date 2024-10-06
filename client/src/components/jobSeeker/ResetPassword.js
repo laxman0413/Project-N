@@ -5,7 +5,7 @@ import axios from 'axios';
 import './ResetPassword.css'; // Custom CSS file for styling
 
 function ResetPassword() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
@@ -43,7 +43,7 @@ function ResetPassword() {
         console.error('Error resetting password:', error);
       });
   };
-
+  const password = watch("password");
   return (
     <div className="reset-password-container">
       <h1 className="text-center">Reset Password</h1>
@@ -72,7 +72,36 @@ function ResetPassword() {
             <form onSubmit={handleSubmit(resetPassword)}>
               <div className="mb-3">
                 <label htmlFor="password">New Password</label>
-                <input type="password" name="password" id="password" className="form-control" {...register("password")} required />
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="form-control"
+                  {...register("password", {
+                    required: "New password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters",
+                    },
+                  })}
+                />
+                {errors.password && <p>{errors.password.message}</p>} {/* Display error for new password */}
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="confirmPassword">Confirm New Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  className="form-control"
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
+                />
+                {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>} {/* Display error for confirm password */}
               </div>
               <button type="submit" className="btn btn-submit">Reset Password</button>
             </form>
