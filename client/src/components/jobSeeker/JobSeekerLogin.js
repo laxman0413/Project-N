@@ -53,9 +53,9 @@ function JobSeekerLogin() {
             <input
               type="password"
               name="password"
-              className={`form-control ${errors.pass ? 'input-error' : ''}`}
+              className={`form-control ${errors.password ? 'input-error' : ''}`}
               placeholder="Password"
-              {...register("pass", {
+              {...register("password", {
                 required: "Password is required",
                 minLength: {
                   value: 8,
@@ -64,7 +64,7 @@ function JobSeekerLogin() {
               })}
               required
             />
-            {errors.pass && <p className="validation-error">{errors.pass.message}</p>}
+            {errors.password && <p className="validation-error">{errors.password.message}</p>}
             </div>
             <button type="submit" className="btn-dark btn-submit">Login</button>
           </form>

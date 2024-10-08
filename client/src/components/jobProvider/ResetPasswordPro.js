@@ -8,7 +8,6 @@ function ResetPasswordPro() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
   const password = watch("password");
   const sendOtp = (data) => {
     axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/send-otp', { phone: data.phone })
@@ -24,7 +23,6 @@ function ResetPasswordPro() {
   const verifyOtp = (data) => {
     axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/verify-otp', { phone, otp: data.otp })
       .then(response => {
-        setOtp(data.otp);
         setStep(3);
       })
       .catch(error => {
