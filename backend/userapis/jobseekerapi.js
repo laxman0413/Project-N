@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
-const cors = require('cors');
+var cors = require('cors');
 const crypto = require('crypto');
 job_seeker.use(cors());
 

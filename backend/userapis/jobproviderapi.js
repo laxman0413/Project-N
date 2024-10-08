@@ -9,7 +9,7 @@ const path = require('path');
 const verifyToken = require('../middlewares/verifyToken');
 const multerObj=require('../middlewares/Cloudinary')
 const twilio = require('twilio');
-const cors = require('cors');
+var cors = require('cors');
 const crypto = require('crypto');
 job_provider.use(cors());
 
