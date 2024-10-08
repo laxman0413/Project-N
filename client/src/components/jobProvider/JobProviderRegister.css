@@ -1,129 +1,66 @@
-.signup-container {
-  max-width: 500px;
+.register-container {
+  max-width: 400px;
   margin: auto;
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-  animation: fadeIn 0.6s ease;
-}
-
-.form-section {
+  background-color: #f2f1ec;
+  border-radius: 12px;
   text-align: center;
+  font-family: Arial, sans-serif;
 }
 
-.form-section h2 {
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: #343a40;
+.back-button {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  color: #333;
+  cursor: pointer;
+}
+
+.form-title {
+  font-size: 2em;
   font-weight: bold;
+  margin-bottom: 1em;
 }
 
 .form-control {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  padding: 10px;
+  margin-bottom: 1em;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  background-color: #fff;
+  text-align: center;
 }
 
-.form-control:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
-}
-
-.input-error {
-  border-color: #dc3545;
-}
-
-.validation-error {
-  color: #dc3545;
-  font-size: 0.875em;
-  margin-top: -5px;
-  margin-bottom: 10px;
-}
-
-.btn-success, .btn-primary {
+.btn-submit {
   width: 100%;
   padding: 12px;
-  background-color: #28a745;
-  border: none;
-  border-radius: 5px;
+  border: 2px solid black;
+  border-radius: 25px;
+  background-color: #000; /* Changed to black */
   color: white;
-  font-size: 1rem;
+  font-size: 1em;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s ease-in-out;
 }
 
-.btn-primary {
-  background-color: #007bff;
+.alternative-login {
+  margin-top: 10px;
+  color: #6c757d;
 }
 
-.btn-success:hover, .btn-primary:hover {
-  background-color: #218838;
-  transform: scale(1.02);
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
+.otp-verification {
+  text-align: center;
 }
 
 .error-message {
-  color: #dc3545;
-  font-size: 1rem;
+  color: #e74c3c;
+  font-size: 0.875em;
   margin-bottom: 15px;
 }
 
-.alternative-signup {
-  margin: 20px 0;
-}
-
-a {
-  color: #007bff;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: #0056b3;
-}
-
-/* Add subtle animations */
-@keyframes fadeIn {
-  from {
-      opacity: 0;
-      transform: translateY(-20px);
-  }
-  to {
-      opacity: 1;
-      transform: translateY(0);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-      opacity: 1;
-      transform: translateY(0);
-  }
-  to {
-      opacity: 0;
-      transform: translateY(-20px);
-  }
-}
-
-.container {
-  transition: opacity 0.4s ease-in-out;
-}
-
-.btn-success:active, .btn-primary:active {
-  transform: scale(0.98);
-}
-
-form {
-  animation: fadeIn 0.5s ease;
+.validation-error {
+  color: #e74c3c;
+  font-size: 0.75em;
+  margin-top: -8px;
+  margin-bottom: 10px;
 }

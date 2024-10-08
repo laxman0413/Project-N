@@ -148,7 +148,7 @@ function JobSeekerRegister() {
             </select>
 
             <input type="file" className="form-control" onChange={handleImg} required />
-            <button type="submit" className="btn btn-submit">send OTP</button>
+            <button type="submit" className="btn-dark btn-submit">send OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
           </form>
         ) : (
@@ -162,7 +162,7 @@ function JobSeekerRegister() {
               placeholder="Enter OTP"
               required
             />
-            <button className="btn btn-submit" onClick={handleRegister}>Register</button>
+            <button className="btn-dark btn-submit" onClick={handleRegister}>Register</button>
           </div>
         )}
       </div>
