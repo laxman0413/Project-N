@@ -191,7 +191,7 @@ function JobProviderDashboard() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="payment">Payment</label>
+                <label htmlFor="payment">Wage per day(in INR)</label>
                 <input
                   type="text"
                   id="payment"
@@ -202,7 +202,7 @@ function JobProviderDashboard() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="peopleNeeded">People Needed</label>
+                <label htmlFor="peopleNeeded">People Needed for this job:</label>
                 <input
                   type="text"
                   id="peopleNeeded"

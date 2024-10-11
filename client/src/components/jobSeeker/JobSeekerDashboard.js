@@ -105,7 +105,7 @@ function JobSeekerDashboard() {
           <Link to="/job-seeker/applied-jobs">Applied Jobs</Link>
         </button>
         <br />
-        <button className="filter-btn" onClick={toggleFilterVisibility}>Filter</button>
+        <button className="filter-btn" onClick={toggleFilterVisibility}>Filter Jobs </button>
         {isFilterVisible && (
           <div className="filters">
             <h4>Filter by Location:</h4>
