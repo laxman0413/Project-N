@@ -52,7 +52,7 @@ function ResetPasswordPro() {
                 <label htmlFor="phone">Phone</label>
                 <input type="number" name="phone" id="phone" className="form-control" {...register("phone")} required />
               </div>
-              <button type="submit" className="btn btn-success">Send OTP</button>
+              <button type="submit" className="btn-dark btn-success">Send OTP</button>
             </form>
           )}
           {step === 2 && (
@@ -61,7 +61,7 @@ function ResetPasswordPro() {
                 <label htmlFor="otp">OTP</label>
                 <input type="text" name="otp" id="otp" className="form-control" {...register("otp")} required />
               </div>
-              <button type="submit" className="btn btn-success">Verify OTP</button>
+              <button type="submit" className="btn-dark btn-success">Verify OTP</button>
             </form>
           )}
           {step === 3 && (
@@ -82,7 +82,7 @@ function ResetPasswordPro() {
                     },
                   })}
                 />
-                {errors.password && <p>{errors.password.message}</p>} {/* Display error for new password */}
+                {errors.password && <p className="validation-error">{errors.password.message}</p>} {/* Display error for new password */}
               </div>
 
               <div className="mb-3">
@@ -98,10 +98,10 @@ function ResetPasswordPro() {
                       value === password || "Passwords do not match",
                   })}
                 />
-                {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>} {/* Display error for confirm password */}
+                {errors.confirmPassword && <p className="validation-error">{errors.confirmPassword.message}</p>} {/* Display error for confirm password */}
               </div>
               </div>
-              <button type="submit" className="btn btn-success">Reset Password</button>
+              <button type="submit" className="btn-dark btn-success">Reset Password</button>
             </form>
           )}
         </div>

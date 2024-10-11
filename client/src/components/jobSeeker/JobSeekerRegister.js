@@ -13,6 +13,7 @@ function JobSeekerRegister() {
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState("");
   const [userDetails, setUserDetails] = useState(null);
+  const [sessionId, setSessionId] = useState(""); // Store session ID for OTP verification
 
   const handleImg = (e) => {
     const file = e.target.files[0];
@@ -23,39 +24,67 @@ function JobSeekerRegister() {
     }
   };
 
+  // Function to send OTP
   const handleSendOtp = (data) => {
     setError("");
-    axios.post("http://localhost:3001/jobSeeker/send-register-otp", { phone: data.phone })
-      .then(res => {
-        if (res.status === 200) {
+    
+    // Use the API from the provided code to send OTP
+    const api_key = '48d44a76-8792-11ef-8b17-0200cd936042'; // Example API key
+    const mobileNumber = data.phone;
+    const temp_name='Otp';
+    const url = `https://2factor.in/API/V1/${api_key}/SMS/+91${mobileNumber}/AUTOGEN3/${temp_name}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data["Status"] === "Success") {
           setOtpStep(true);
-          setUserDetails(data);
+          setUserDetails(data); // Store the user details temporarily
+          setSessionId(data["Details"]); // Save session ID for OTP verification
+          alert("OTP sent successfully");
         } else {
-          setError(res.data.message);
+          setError("Failed to send OTP. Please try again.");
         }
       })
-      .catch(error => {
-        setError("Failed to send OTP. Please try again.");
+      .catch(err => {
+        setError("Error occurred while sending OTP.");
       });
   };
 
+  // Function to verify OTP and register the user
   const handleRegister = () => {
-    if (!userDetails || !otp) return;
+    if (!userDetails || !otp || !sessionId) return;
 
-    const formData = new FormData();
-    formData.append("userObj", JSON.stringify({ ...userDetails, otp }));
-    formData.append("image", selectedImg);
+    // Verify OTP using the session ID and OTP entered by the user
+    const api_key = '48d44a76-8792-11ef-8b17-0200cd936042'; // Example API key
+    const url = `https://2factor.in/API/V1/${api_key}/SMS/VERIFY/${sessionId}/${otp}`;
 
-    axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
-      .then(res => {
-        if (res.status === 201) {
-          navigate("/job-seeker/login");
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data["Details"] === "OTP Matched") {
+          // OTP verified, proceed with registration
+          const formData = new FormData();
+          formData.append("userObj", JSON.stringify({ ...userDetails, otp }));
+          formData.append("image", selectedImg);
+
+          axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
+            .then(res => {
+              if (res.status === 201) {
+                navigate("/job-seeker/login");
+              } else {
+                setError(res.data.message);
+              }
+            })
+            .catch(error => {
+              setError("Registration failed. Please try again.");
+            });
         } else {
-          setError(res.data.message);
+          setError("OTP verification failed.");
         }
       })
-      .catch(error => {
-        setError("Registration failed. Please try again.");
+      .catch(err => {
+        setError("Error occurred while verifying OTP.");
       });
   };
 
