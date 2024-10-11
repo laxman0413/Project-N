@@ -103,11 +103,11 @@ function App() {
           ]
         },
         {
-          path:'/advertise',
+          path:'/advertisehome',
           element:<ThemeProvider theme={Theme}><Advertise /></ThemeProvider>
         },
         {
-          path:'/admin',
+          path:'/adminlogin',
           element:<AdminLogin />
         },
         {
