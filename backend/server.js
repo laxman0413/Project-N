@@ -6,6 +6,7 @@ const sql = require('mssql');
 const mysql=require('mysql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const app = express();
 app.use(express.json());
@@ -36,9 +37,7 @@ sql.connect(config, err => {
   }
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello from the other side!');
-});
+app.use(express.static(path.join(__dirname,'../client/build')));
 
 //jobprovider apis
 const job_provider=require('./userapis/jobproviderapi');
