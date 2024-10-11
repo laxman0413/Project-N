@@ -8,6 +8,8 @@ import './Home.css';
 import jobProviderImage from './job-provider.jpg';
 import jobSeekerImage from './job-seeker.jpg';
 import websiteImage1 from './job-boost.png';
+import logoImage from './logo.png'; // Ensure this is the correct path to your logo
+import Footer from './Footer';
 
 function Home() {
   const navigate = useNavigate();
@@ -33,19 +35,19 @@ function Home() {
 
   return (
     <div className="home-wrapper">
-    <div id="container">
-      <div className="logo">
-        <h1><b>NagaConnect</b></h1>
+      <div className="header">
+        <img src={logoImage} alt="NagaConnect Logo" className="logo-image" />
+        <div className="title-description">
+          <h1 className="logo-title">NagaConnect</h1>
+          <p className="intro-text">     -   Platform for connecting job seekers with employers. Start your journey today!</p>
+        </div>
       </div>
+      <p className="intro-description">
+        Whether you are an employer searching for top talent or a job seeker looking for the perfect opportunity, NagaConnect provides an intuitive interface to meet your needs. Our advanced search capabilities and seamless experience ensure you find exactly what you're looking for, quickly and efficiently.
+      </p>
       <h3><b>How do you want to use NagaConnect?</b></h3>
-      <div className="intro-text">
-        <p>Welcome to NagaConnect, the ultimate platform connecting job seekers with employers. Whether you are looking to hire top talent or find the perfect job that matches your skills, NagaConnect has you covered.</p>
-        <img src={websiteImage1} alt='Job' className="intro-image" />
-        <p>Our platform offers an easy-to-use interface, advanced search capabilities, and a seamless experience for both job providers and job seekers.</p>
-        <p>Choose your path below and start your journey with NagaConnect today.</p>
-      </div>
       <div className="options">
-        <div className="option" onClick={() => { navigate('/job-provider/register') }}>
+        <div className="option-card" onClick={() => { navigate('/job-provider/register') }}>
           <div className="image-container">
             <img src={jobProviderImage} alt="Job Provider" className="option-image" />
           </div>
@@ -54,7 +56,7 @@ function Home() {
             <p>Evaluate the skills at scale</p>
           </div>
         </div>
-        <div className="option" onClick={() => { navigate('/job-seeker/register') }}>
+        <div className="option-card" onClick={() => { navigate('/job-seeker/register') }}>
           <div className="image-container">
             <img src={jobSeekerImage} alt="Job Seeker" className="option-image" />
           </div>
@@ -81,9 +83,10 @@ function Home() {
               </div>
             ))}
           </Carousel>
+          
         </div>
       )}
-    </div>
+      <Footer style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} />
     </div>
   );
 }

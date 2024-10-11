@@ -13,7 +13,8 @@ function JobSeekerRegister() {
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState("");
   const [userDetails, setUserDetails] = useState(null);
-  const [sessionId, setSessionId] = useState(""); // Store session ID for OTP verification
+  const [otpSessionId, setOtpSessionId] = useState('')
+  const apiKey = '48d44a76-8792-11ef-8b17-0200cd936042'; // Your API key
 
   const handleImg = (e) => {
     const file = e.target.files[0];
@@ -24,51 +25,34 @@ function JobSeekerRegister() {
     }
   };
 
-  // Function to send OTP
   const handleSendOtp = (data) => {
     setError("");
-    
-    // Use the API from the provided code to send OTP
-    const api_key = '48d44a76-8792-11ef-8b17-0200cd936042'; // Example API key
-    const mobileNumber = data.phone;
-    const temp_name='Otp';
-    const url = `https://2factor.in/API/V1/${api_key}/SMS/+91${mobileNumber}/AUTOGEN3/${temp_name}`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data["Status"] === "Success") {
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/${data.phone}/AUTOGEN`)
+      .then(res => {
+        if (res.data.Status === 'Success') {
           setOtpStep(true);
-          setUserDetails(data); // Store the user details temporarily
-          setSessionId(data["Details"]); // Save session ID for OTP verification
-          alert("OTP sent successfully");
+          setUserDetails(data);
+          setOtpSessionId(res.data.Details);
         } else {
-          setError("Failed to send OTP. Please try again.");
+          setError(res.data.Details);
         }
       })
-      .catch(err => {
-        setError("Error occurred while sending OTP.");
+      .catch(error => {
+        setError("Failed to send OTP. Please try again.");
       });
   };
 
-  // Function to verify OTP and register the user
   const handleRegister = () => {
-    if (!userDetails || !otp || !sessionId) return;
+    if (!userDetails || !otp) return;
 
-    // Verify OTP using the session ID and OTP entered by the user
-    const api_key = '48d44a76-8792-11ef-8b17-0200cd936042'; // Example API key
-    const url = `https://2factor.in/API/V1/${api_key}/SMS/VERIFY/${sessionId}/${otp}`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data["Details"] === "OTP Matched") {
-          // OTP verified, proceed with registration
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/VERIFY/${otpSessionId}/${otp}`)
+      .then(res => {
+        if (res.data.Status === 'Success') {
           const formData = new FormData();
-          formData.append("userObj", JSON.stringify({ ...userDetails, otp }));
+          formData.append("userObj", JSON.stringify({ ...userDetails}));
           formData.append("image", selectedImg);
 
-          axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
+          axios.post("https://nagaconnect-iitbilai.onrender.comjobSeeker/register", formData)
             .then(res => {
               if (res.status === 201) {
                 navigate("/job-seeker/login");
@@ -80,11 +64,11 @@ function JobSeekerRegister() {
               setError("Registration failed. Please try again.");
             });
         } else {
-          setError("OTP verification failed.");
+          setError("Invalid OTP. Please try again.");
         }
       })
-      .catch(err => {
-        setError("Error occurred while verifying OTP.");
+      .catch(error => {
+        setError("Error verifying OTP. Please try again.");
       });
   };
 
@@ -174,10 +158,12 @@ function JobSeekerRegister() {
               <option value="" disabled selected>Sex</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
+              <option value="other">Other</option> {/* Add this option if you want to include it */}
             </select>
 
+
             <input type="file" className="form-control" onChange={handleImg} required />
-            <button type="submit" className="btn-dark btn-submit">send OTP</button>
+            <button type="submit" className="btn-dark btn-submit">Send OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
           </form>
         ) : (

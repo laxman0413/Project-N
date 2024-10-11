@@ -15,35 +15,16 @@ job_provider.use(cors());
 
 // To register a Job_Provider
 job_provider.post('/register', multerObj.single("image"), async (req, res) => {
-  const { name, phone, password, otp } = JSON.parse(req.body.userObj);
+  const { name, phone, pass } = JSON.parse(req.body.userObj);
   const image = req.file.path;
   const id = "JP" + (+phone);
   const db = req.app.get("db");
   const request = new db.Request();
 
   try {
-    // Verify the OTP
-    const otpQuery = `SELECT * FROM otp_verification WHERE phone = @phone AND otp = @otp`;
-    request.input('phone', sql.VarChar, phone);
-    request.input('otp', sql.VarChar, otp);
-    const otpResult = await request.query(otpQuery);
-
-    if (otpResult.recordset.length === 0) {
-      return res.status(400).send({ message: "Invalid or expired OTP" });
-    }
-
-    const otpRecord = otpResult.recordset[0];
-    const currentTime = new Date();
-    const otpTimestamp = new Date(otpRecord.created_at);
-    const timeDifference = (currentTime - otpTimestamp) / 1000 / 60; // Difference in minutes
-
-    if (timeDifference > 10) {
-      return res.status(400).send({ message: 'OTP has expired' });
-    }
-
     // Check if user already exists
     const userQuery = 'SELECT * FROM job_provider WHERE provider_id = @provider_id';
-    request.input('provider_id', sql.VarChar, id);
+    request.input('provider_id', sql.VarChar, id); // Ensure the correct type
     const userResult = await request.query(userQuery);
 
     if (userResult.recordset.length > 0) {
@@ -51,13 +32,13 @@ job_provider.post('/register', multerObj.single("image"), async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(pass, 10);
 
     // Insert new user into the job_provider table
     request.input('nameParam', sql.NVarChar, name);
     request.input('providerIdParam', sql.VarChar, id);
     request.input('passParam', sql.NVarChar, hashedPassword);
-    request.input('phoneParam', sql.Numeric, phone);
+    request.input('phoneParam', sql.VarChar, phone); // Match the type with your database
     request.input('imageParam', sql.VarChar, image);
 
     const insertQuery = `
@@ -67,16 +48,18 @@ job_provider.post('/register', multerObj.single("image"), async (req, res) => {
     await request.query(insertQuery);
 
     // Remove the OTP record after successful registration
-    const deleteOtpQuery = `DELETE FROM otp_verification WHERE phone = @phone`;
+    request.input('phoneParam', sql.VarChar, phone); // Declare the phoneParam
+    const deleteOtpQuery = `DELETE FROM otp_verification WHERE phone = @phoneParam`; // Use the correct variable
     await request.query(deleteOtpQuery);
 
     res.status(201).send({ message: 'User registered successfully' });
 
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error:', err.message); // Log the error message
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 job_provider.post('/send-register-otp', async (req, res) => {
   const { phone } = req.body;

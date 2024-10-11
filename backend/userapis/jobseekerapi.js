@@ -52,31 +52,12 @@ job_seeker.post('/send-register-otp', async (req, res) => {
 
 //jobseeker registration
 job_seeker.post('/register', multerObj.single("image"), async (req, res) => {
-  const { name, pass, phone, jobType, age, sex, otp } = JSON.parse(req.body.userObj);
+  const { name, pass, phone, jobType, age, sex } = JSON.parse(req.body.userObj);
   const image = req.file.path;
   const db = req.app.get("db");
   const request = new db.Request();
 
   try {
-    // OTP Verification
-    const otpQuery = `SELECT * FROM otp_verification WHERE phone = @otpPhone AND otp = @otpCode`;
-    request.input('otpPhone', sql.VarChar, phone);
-    request.input('otpCode', sql.VarChar, otp);
-    const otpResult = await request.query(otpQuery);
-
-    if (otpResult.recordset.length === 0) {
-      return res.status(400).send({ message: "Invalid or expired OTP" });
-    }
-
-    const otpRecord = otpResult.recordset[0];
-    const currentTime = new Date();
-    const otpTimestamp = new Date(otpRecord.created_at);
-    const timeDifference = (currentTime - otpTimestamp) / 1000 / 60; // Difference in minutes
-
-    if (timeDifference > 10) {
-      return res.status(400).send({ message: 'OTP has expired' });
-    }
-
     // Check if user already exists
     const userQuery = `SELECT * FROM job_seeker WHERE phone = @userPhone`;
     request.input('userPhone', sql.VarChar, phone);

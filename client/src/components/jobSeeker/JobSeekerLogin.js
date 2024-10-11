@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 import { Logincontex } from './JobseekerloginContext/Logincontext';
 import './JobSeekerLogin.css'; // Custom CSS file for styling
 
@@ -69,6 +69,11 @@ function JobSeekerLogin() {
             <button type="submit" className="btn-dark btn-submit">Login</button>
           </form>
         </div>
+        <div className="text-center mt-3">
+            <Link to="/job-seeker/reset-password" className="forgot-password-link">
+              Forgot your password?
+            </Link>
+          </div>
       </div>
     </div>
   );
