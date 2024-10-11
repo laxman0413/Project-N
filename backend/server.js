@@ -53,6 +53,9 @@ app.use('/advertise',advertisement);
 const adminapi=require('./userapis/adminapi');
 app.use('/admin',adminapi);
 
+app.use('*',(req,res)=>{
+  res.sendFile(path.join(__dirname,'../client/build/index.html'))
+})
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);
 });
