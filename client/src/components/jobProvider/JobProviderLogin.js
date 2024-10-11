@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link} from "react-router-dom";
 import { Logincontex } from './JobProviderloginContext/Logincontext';
 import './JobProviderLogin.css';
 
@@ -70,6 +70,11 @@ function JobProviderLogin() {
             <button type="submit" className="btn-dark btn-submit">Login</button>
           </form>
         </div>
+        <div className="text-center mt-3">
+            <Link to="/job-provider/reset-password" className="forgot-password-link">
+              Forgot your password?
+            </Link>
+          </div>
       </main>
       
     </div>

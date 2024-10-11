@@ -13,6 +13,8 @@ function JobSeekerRegister() {
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState("");
   const [userDetails, setUserDetails] = useState(null);
+  const [otpSessionId, setOtpSessionId] = useState('')
+  const apiKey = '48d44a76-8792-11ef-8b17-0200cd936042'; // Your API key
 
   const handleImg = (e) => {
     const file = e.target.files[0];
@@ -25,13 +27,14 @@ function JobSeekerRegister() {
 
   const handleSendOtp = (data) => {
     setError("");
-    axios.post("http://localhost:3001/jobSeeker/send-register-otp", { phone: data.phone })
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/${data.phone}/AUTOGEN`)
       .then(res => {
-        if (res.status === 200) {
+        if (res.data.Status === 'Success') {
           setOtpStep(true);
           setUserDetails(data);
+          setOtpSessionId(res.data.Details);
         } else {
-          setError(res.data.message);
+          setError(res.data.Details);
         }
       })
       .catch(error => {
@@ -42,20 +45,30 @@ function JobSeekerRegister() {
   const handleRegister = () => {
     if (!userDetails || !otp) return;
 
-    const formData = new FormData();
-    formData.append("userObj", JSON.stringify({ ...userDetails, otp }));
-    formData.append("image", selectedImg);
-
-    axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/VERIFY/${otpSessionId}/${otp}`)
       .then(res => {
-        if (res.status === 201) {
-          navigate("/job-seeker/login");
+        if (res.data.Status === 'Success') {
+          const formData = new FormData();
+          formData.append("userObj", JSON.stringify({ ...userDetails}));
+          formData.append("image", selectedImg);
+
+          axios.post("https://nagaconnect-iitbilai.onrender.comjobSeeker/register", formData)
+            .then(res => {
+              if (res.status === 201) {
+                navigate("/job-seeker/login");
+              } else {
+                setError(res.data.message);
+              }
+            })
+            .catch(error => {
+              setError("Registration failed. Please try again.");
+            });
         } else {
-          setError(res.data.message);
+          setError("Invalid OTP. Please try again.");
         }
       })
       .catch(error => {
-        setError("Registration failed. Please try again.");
+        setError("Error verifying OTP. Please try again.");
       });
   };
 
@@ -145,10 +158,12 @@ function JobSeekerRegister() {
               <option value="" disabled selected>Sex</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
+              <option value="other">Other</option> {/* Add this option if you want to include it */}
             </select>
 
+
             <input type="file" className="form-control" onChange={handleImg} required />
-            <button type="submit" className="btn-dark btn-submit">send OTP</button>
+            <button type="submit" className="btn-dark btn-submit">Send OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
           </form>
         ) : (

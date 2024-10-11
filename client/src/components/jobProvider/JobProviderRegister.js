@@ -1,63 +1,74 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import './JobProviderRegister.css'; // Assume you add styles here
 import { Link } from 'react-router-dom';
 
 function JobProviderRegister() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const [err, setErr] = useState("");
-  const [otpStep, setOtpStep] = useState(false); // For OTP step control
-  const [otp, setOtp] = useState(""); // Store the OTP entered by user
-  const [userDetails, setUserDetails] = useState(null); // Store user details for submission after OTP verification
   const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [err, setError] = useState("");
   const [selectedImg, setSelectedImg] = useState(null);
+  const [otpStep, setOtpStep] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
+  const [otpSessionId, setOtpSessionId] = useState('');
+  const apiKey = '48d44a76-8792-11ef-8b17-0200cd936042'; // Your API key
 
   const handleImg = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
       setSelectedImg(file);
     } else {
-      setErr("Please upload a valid image file (jpg, png, etc.)");
+      setError("Please upload a valid image file (jpg, png, etc.)");
     }
   };
 
   const handleSendOtp = (data) => {
-    setErr(""); // Reset error messages
-    axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/send-register-otp", { phone: data.phone })
+    setError("");
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/${data.phone}/AUTOGEN`)
       .then(res => {
-        if (res.status === 200) {
-          setOtpStep(true); // Move to OTP verification step
-          setUserDetails(data); // Save user details to use after OTP verification
+        if (res.data.Status === 'Success') {
+          setOtpStep(true);
+          setUserDetails(data);
+          setOtpSessionId(res.data.Details);
         } else {
-          setErr(res.data.message);
+          setError(res.data.Details);
         }
       })
       .catch(error => {
-        console.error(error);
-        setErr("Failed to send OTP. Please try again.");
+        setError("Failed to send OTP. Please try again.");
       });
   };
 
   const handleRegister = () => {
     if (!userDetails || !otp) return;
 
-    const formData = new FormData();
-    formData.append("userObj", JSON.stringify({ ...userDetails, otp })); // Add OTP to the user data
-    formData.append("image", selectedImg);
-
-    axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register", formData)
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/VERIFY/${otpSessionId}/${otp}`)
       .then(res => {
-        if (res.status === 201) {
-          navigate("/job-provider/login");
+        if (res.data.Status === 'Success') {
+          const formData = new FormData();
+          formData.append("userObj", JSON.stringify(userDetails)); // Exclude otp from userDetails
+          formData.append("image", selectedImg);
+
+          axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register", formData)
+            .then(res => {
+              if (res.status === 201) {
+                navigate("/job-provider/login");
+              } else {
+                setError(res.data.message);
+              }
+            })
+            .catch(error => {
+              setError("Registration failed. Please try again.");
+            });
         } else {
-          setErr(res.data.message);
+          setError("Invalid OTP. Please try again.");
         }
       })
       .catch(error => {
-        console.error(error);
-        setErr("Registration failed. Please try again.");
+        setError("Error verifying OTP. Please try again.");
       });
   };
 
@@ -121,16 +132,9 @@ function JobProviderRegister() {
             />
             {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
 
-            
-
-            <select className="form-control" {...register("sex", { required: true })}>
-              <option value="" disabled selected>Sex</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
 
             <input type="file" className="form-control" onChange={handleImg} required />
-            <button type="submit" className="btn-dark btn-submit">send OTP</button>
+            <button type="submit" className="btn-dark btn-submit">Send OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-provider/login">Log in</Link></p>
           </form>
         ) : (

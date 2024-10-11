@@ -9,12 +9,15 @@ function ResetPassword() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
+  const [otpSessionId, setOtpSessionId] = useState(''); // Store OTP session ID
+  const apiKey = '48d44a76-8792-11ef-8b17-0200cd936042'; // Your API key
+  const password = watch("password");
 
   const sendOtp = (data) => {
-    axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/send-otp', { phone: data.phone })
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/${data.phone}/AUTOGEN`)
       .then(response => {
         setPhone(data.phone);
+        setOtpSessionId(response.data.Details); // Capture OTP session ID from response
         setStep(2);
       })
       .catch(error => {
@@ -23,10 +26,13 @@ function ResetPassword() {
   };
 
   const verifyOtp = (data) => {
-    axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/verify-otp', { phone, otp: data.otp })
+    axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/VERIFY/${otpSessionId}/${data.otp}`)
       .then(response => {
-        setOtp(data.otp);
-        setStep(3);
+        if (response.data.Status === 'Success') {
+          setStep(3);
+        } else {
+          console.error('OTP verification failed');
+        }
       })
       .catch(error => {
         console.error('Error verifying OTP:', error);
@@ -43,7 +49,7 @@ function ResetPassword() {
         console.error('Error resetting password:', error);
       });
   };
-  const password = watch("password");
+
   return (
     <div className="reset-password-container">
       <h1 className="text-center">Reset Password</h1>
@@ -55,8 +61,7 @@ function ResetPassword() {
                 <label htmlFor="phone">Phone</label>
                 <input type="number" name="phone" id="phone" className="form-control" {...register("phone")} required />
               </div>
-              <button type="submit" className="btn btn-submit">Send OTP</button>
-              
+              <button type="submit" className="btn-dark btn-submit">Send OTP</button>
             </form>
           )}
           {step === 2 && (
@@ -65,7 +70,7 @@ function ResetPassword() {
                 <label htmlFor="otp">OTP</label>
                 <input type="text" name="otp" id="otp" className="form-control" {...register("otp")} required />
               </div>
-              <button type="submit" className="btn btn-submit">Verify OTP</button>
+              <button type="submit" className="btn-dark btn-submit">Verify OTP</button>
             </form>
           )}
           {step === 3 && (
@@ -85,7 +90,7 @@ function ResetPassword() {
                     },
                   })}
                 />
-                {errors.password && <p>{errors.password.message}</p>} {/* Display error for new password */}
+                {errors.password && <p className="validation-error">{errors.password.message}</p>} {/* Display error for new password */}
               </div>
 
               <div className="mb-3">
@@ -101,9 +106,9 @@ function ResetPassword() {
                       value === password || "Passwords do not match",
                   })}
                 />
-                {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>} {/* Display error for confirm password */}
+                {errors.confirmPassword && <p className="validation-error">{errors.confirmPassword.message}</p>} {/* Display error for confirm password */}
               </div>
-              <button type="submit" className="btn btn-submit">Reset Password</button>
+              <button type="submit" className="btn-dark btn-submit">Reset Password</button>
             </form>
           )}
         </div>
