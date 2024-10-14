@@ -143,7 +143,7 @@ job_seeker.get("/jobdetails", verifyToken, (req, res) => {
   const query = `
       SELECT jd.id, jd.jobTitle, jd.customJobType, jd.payment, jd.peopleNeeded, 
              jd.location, jd.date, jd.time, jd.description, jd.negotiability, 
-             jd.images, jp.name as providerName
+             jd.images, jp.name as providerName,jp.provider_id as providerId
       FROM jobdetails jd
       JOIN job_provider jp ON jp.provider_id = jd.provider_id
       WHERE (@locationParam IS NULL OR jd.location = @locationParam)
@@ -203,6 +203,46 @@ job_seeker.get('/profile', verifyToken, (req, res) => {
     res.status(200).send(result.recordset[0]);
   });
 });
+
+
+//public profiling 
+job_seeker.get('/pub-profile/:id', (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+  
+  // Extract user ID from the request parameters
+  const { id } = req.params;
+
+  // Query for public profile details (ensure correct SQL data type for seeker_id)
+  const sqlQuery = `SELECT name, jobType, age, image,sex,phone FROM job_seeker WHERE seeker_id = @id`;
+
+  // Input the user ID into the query, adjust the type if necessary
+  request.input('id', db.VarChar, id);
+
+  request.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send({ message: 'Internal Server Error' });
+    }
+
+    if (result.recordset.length === 0) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    // Send public profile fields
+    const publicProfile = {
+      name: result.recordset[0].name,
+      jobType: result.recordset[0].jobType,
+      age: result.recordset[0].age,
+      image: result.recordset[0].image,
+      sex:result.recordset[0].sex,
+      phone:result.recordset[0].phone,
+    };
+
+    res.status(200).send(publicProfile);
+  });
+});
+
 
 job_seeker.delete('/withdrawJob/:application_id', verifyToken, async (req, res) => {
   const { application_id } = req.params;

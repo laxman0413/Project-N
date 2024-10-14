@@ -23,6 +23,8 @@ import ResetPassword from './components/jobSeeker/ResetPassword';
 import { ThemeProvider } from '@mui/material/styles';
 import ResetPasswordPro from './components/jobProvider/ResetPasswordPro';
 import JobProviderProfile from './components/jobProvider/JobProviderProfile';
+import JobProviderPubP from './components/PublicProfiling/JobProviderPubP';
+import JobSeekerPubP from './components/PublicProfiling/JobSeekerPubP';
 function App() {
   const RouterObj=createBrowserRouter([
     {
@@ -113,6 +115,14 @@ function App() {
         {
           path:"/admindashboard",
           element:<AdminDashboard />
+        },
+        {
+          path:'/spprofile/:userId',
+          element:<JobSeekerPubP />
+        },
+        {
+          path:'/ppprofile/:userId',
+          element:<JobProviderPubP />
         }
       ]
     }

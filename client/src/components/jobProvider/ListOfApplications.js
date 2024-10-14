@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, Typography, Grid, Container, Button, Box } from '@mui/material';
 import Menu from './Menu';
@@ -7,6 +7,7 @@ import Menu from './Menu';
 function ListOfApplications() {
   const { jobId } = useParams();
   const [applications, setApplications] = useState([]);
+  const navigate=useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -66,6 +67,18 @@ function ListOfApplications() {
                   <Typography variant="body2" color="textSecondary">
                     <strong>Phone:</strong> {application.phone}
                   </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={()=>{navigate(`/spprofile/${application.seekerId}`)}}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ width: '100%' }}
+                    >
+                      View profile
+                    </Button>
+                  </Box>
                   <Box sx={{ mt: 2 }}>
                     <Button
                       variant="contained"

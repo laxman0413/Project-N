@@ -260,6 +260,42 @@ job_provider.get('/profile', verifyToken, (req, res) => {
   });
 });
 
+//public Profiling 
+job_provider.get('/pub-profile/:id', (req, res) => {
+  const db = req.app.get("db");
+  const request = new db.Request();
+  
+  // Extract user ID (provider_id) from request parameters
+  const { id } = req.params;
+
+  // Query for public profile details for the job provider
+  const sqlQuery = `SELECT name, phone, image FROM job_provider WHERE provider_id = @id`;
+
+  // Ensure the ID type matches the provider_id data type in your DB schema
+  request.input('id', db.VarChar, id);
+
+  request.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send({ message: 'Internal Server Error' });
+    }
+
+    if (result.recordset.length === 0) {
+      return res.status(404).send({ message: 'Provider not found' });
+    }
+
+    // Send public profile fields for job provider
+    const publicProfile = {
+      name: result.recordset[0].name,
+      phone: result.recordset[0].phone,
+      image: result.recordset[0].image,
+    };
+
+    res.status(200).send(publicProfile);
+  });
+});
+
+
 // To delete any of the previously posted jobs by the JobProvider
 job_provider.delete('/deleteJob/:jobId', verifyToken, (req, res) => {
   const {jobId} = req.params;
@@ -301,7 +337,7 @@ job_provider.get('/applications/:jobId', verifyToken, async(req, res) =>{
   const db = req.app.get("db");
   const request = new db.Request();
   const result = await request.input('jobId', sql.VarChar, jobId)
-                              .query('select js.name,js.phone,js.sex,js.age from job_applications ja, job_seeker js where ja.id=@jobId and ja.seeker_id=js.seeker_id');
+                              .query('select js.name,js.phone,js.sex,js.age,js.seeker_id as seekerId from job_applications ja, job_seeker js where ja.id=@jobId and ja.seeker_id=js.seeker_id');
   res.status(200).json(result.recordset);
 } catch (err) {
   console.error('Error fetching applied jobs:', err);

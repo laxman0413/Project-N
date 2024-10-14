@@ -22,7 +22,6 @@ function CarderSeeker({ job, fetchJobs }) {
   const [isApplyDialogOpen, setApplyDialogOpen] = useState(false);
   const [application, setApplication] = useState('');
   const navigate = useNavigate();
-
   const handleCardClick = () => {
     setDialogOpen(true);
   };
@@ -63,7 +62,6 @@ function CarderSeeker({ job, fetchJobs }) {
       console.log("Please Login First");
     }
   };
-
   return (
     <div style={{ marginBottom: '20px' }} >
       <Card sx={{ maxWidth: 345, backgroundColor: '#333', color: '#399d',border:'solid #333' }} className='custom-card'>
@@ -71,7 +69,21 @@ function CarderSeeker({ job, fetchJobs }) {
           {/* Display job poster's name at the top */}
           <CardContent className='custom-content'>
             <Typography variant="body2" color="text.secondary" style={{ color: '#fff', fontWeight: 'bold' }}>
-              Job Posted by: {job.providerName} {/* Added job poster's name */}
+            Job Posted by: 
+            <Button 
+              onClick={() => { 
+                if (job.providerId) {
+                
+                  navigate(`/ppprofile/${job.providerId}`);
+                } else {
+                  console.error('providerID is undefined!');
+                  // Handle the case when providerID is missing
+                }
+              }}
+              style={{ color: '#007bff', textDecoration: 'underline' }}
+            >
+              {job.providerName}
+            </Button>
             </Typography>
           </CardContent>
           <img src={job.images || card1} alt="Job" className='custom-image' style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
@@ -140,6 +152,7 @@ function CarderSeeker({ job, fetchJobs }) {
           <Typography variant="body2" color="text.secondary" style={{ color: '#555' }}>
             <strong>Additional Details:</strong> {job.additionalDetails}
           </Typography>
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} style={{ color: '#000' }}>Close</Button>

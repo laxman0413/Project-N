@@ -1,0 +1,43 @@
+/* Profile Card Container */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    width: 300px; /* Control card width */
+    margin: 20px auto; /* Center it */
+    border: 1px solid #ddd; /* Light border for definition */
+  }
+  
+  /* Profile Image */
+  .profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Circular image */
+    object-fit: cover; /* Maintain image aspect ratio */
+    border: 2px solid #007BFF; /* Add a blue border */
+    margin-bottom: 20px;
+  }
+  
+  /* Profile Details */
+  .profile-details h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .profile-details p {
+    font-size: 1rem;
+    color: #666;
+    margin: 5px 0;
+  }
+  
+  /* Profile Details Strong Text (Labels) */
+  .profile-details p strong {
+    color: #007BFF; /* Highlight labels in blue */
+  }
+  
