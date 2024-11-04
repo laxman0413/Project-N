@@ -13,7 +13,11 @@ admin.get('/getjobs', verifyTokenAdmin, async (req, res) => {
     const request = new db.Request();
     
     try {
-      const sqlQuery = `SELECT * FROM jobdetails;`;
+      const sqlQuery = `SELECT jd.id, jd.jobTitle, jd.customJobType, jd.payment, jd.peopleNeeded, 
+             jd.location, jd.date, jd.time, jd.description, jd.negotiability, 
+             jd.images, jp.name as providerName,jp.provider_id as providerId
+      FROM jobdetails jd
+      JOIN job_provider jp ON jp.provider_id = jd.provider_id;`;
       const result = await request.query(sqlQuery);
       res.status(200).json(result.recordset);
     } catch (err) {
@@ -29,7 +33,11 @@ admin.get('/data4', async (req, res) => {
     try {
         // Increment the pull_count for all public advertisements and then select the records
         const sqlQuery = `
-            select * from jobdetails;
+            SELECT jd.id, jd.jobTitle, jd.customJobType, jd.payment, jd.peopleNeeded, 
+             jd.location, jd.date, jd.time, jd.description, jd.negotiability, 
+             jd.images, jp.name as providerName,jp.provider_id as providerId
+      FROM jobdetails jd
+      JOIN job_provider jp ON jp.provider_id = jd.provider_id;
         `;
   
         const result = await request.query(sqlQuery);

@@ -504,6 +504,17 @@ job_provider.post('/reset-password', async (req, res) => {
     });
 });
 
+job_provider.post('/RaiseTicket', verifyToken, async (req, res) => {
+  const { title, description } = req.body;
+  const provider_id = req.res.locals.decode.id;
+  const db = req.app.get("db");
+  const request = new db.Request();
+  const result = await request.input('title', sql.VarChar, title)
+                              .input('description', sql.VarChar, description)
+                              .input('provider_id', sql.VarChar, provider_id)
+                              .query('INSERT INTO tickets (Title, Description, TicketOwner) VALUES (@title, @description, @provider_id)');
+  res.status(200).send('Ticket raised successfully');
+});
 
 
 

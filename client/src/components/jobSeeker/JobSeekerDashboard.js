@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Menu from './Menu';
 import CarderSeeker from './CarderSeeker';
 import AdCard from '../advertisement/AdCard';
-import { Link } from 'react-router-dom';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Typography
+} from '@mui/material';
 import './JobSeekerDashboard.css'; // Import CSS file for styles
 
 function JobSeekerDashboard() {
@@ -17,6 +25,14 @@ function JobSeekerDashboard() {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+
+  // States for Ticket Modal
+  const [isTicketModalOpen, setTicketModalOpen] = useState(false);
+  const [ticketData, setTicketData] = useState({
+    title: '',
+    description: ''
+  });
+  const [ticketErrors, setTicketErrors] = useState({});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -80,7 +96,7 @@ function JobSeekerDashboard() {
   const adsPerPage = 2;
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const totalAdsPages = Math.ceil(ads.length / adsPerPage);
-  
+
   const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
   const currentAds = ads.slice(((currentPage - 1) * adsPerPage), currentPage * adsPerPage);
 
@@ -92,20 +108,133 @@ function JobSeekerDashboard() {
     });
   };
 
+  // Handlers for Ticket Modal
+  const handleOpenTicketModal = () => {
+    setTicketModalOpen(true);
+  };
+
+  const handleCloseTicketModal = () => {
+    setTicketModalOpen(false);
+    setTicketData({ title: '', description: '' });
+    setTicketErrors({});
+  };
+
+  const handleTicketChange = (e) => {
+    const { name, value } = e.target;
+    setTicketData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const validateTicket = () => {
+    const errors = {};
+    if (!ticketData.title) {
+      errors.title = "Title is required";
+    }
+    if (!ticketData.description) {
+      errors.description = "Description is required";
+    }
+    return errors;
+  };
+
+  const handleTicketSubmit = (e) => {
+    e.preventDefault();
+    const errors = validateTicket();
+    if (Object.keys(errors).length > 0) {
+      setTicketErrors(errors);
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.post('http://localhost:3001/jobSeeker/RaiseTicket', ticketData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          console.log('Ticket raised successfully:', response.data);
+          handleCloseTicketModal();
+          // Optionally, you can show a success message to the user
+        })
+        .catch(error => {
+          console.error('Error raising ticket:', error);
+          // Optionally, handle error (e.g., show error message)
+        });
+    } else {
+      console.log("Please Login First");
+      navigate("/job-seeker/login");
+    }
+  };
+
   return (
-    <div >
+    <div>
+      {/* Fixed Menu Bar */}
       <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
         <Menu />
       </div>
-      <pre>  </pre>
-      <pre>  </pre>
-      
-      <div >
+
+      {/* Spacer to prevent content from being hidden behind fixed menu */}
+      <div style={{ paddingTop: '60px' }}></div>
+
+      {/* Main Content */}
+      <div className="dashboard-container">
+        {/* Ticket Modal */}
+        <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
+          <DialogTitle>Raise a Ticket</DialogTitle>
+          <DialogContent>
+            <form onSubmit={handleTicketSubmit}>
+              <div className="mb-3">
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  label="Title"
+                  name="title"
+                  fullWidth
+                  variant="standard"
+                  value={ticketData.title}
+                  onChange={handleTicketChange}
+                  error={!!ticketErrors.title}
+                  helperText={ticketErrors.title}
+                />
+              </div>
+              <div className="mb-3">
+                <TextField
+                  margin="dense"
+                  label="Description"
+                  name="description"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  variant="standard"
+                  value={ticketData.description}
+                  onChange={handleTicketChange}
+                  error={!!ticketErrors.description}
+                  helperText={ticketErrors.description}
+                />
+              </div>
+              <DialogActions>
+                <Button onClick={handleCloseTicketModal}>Cancel</Button>
+                <Button type="submit" variant="contained" color="primary">Submit</Button>
+              </DialogActions>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Raise a Ticket Button */}
+        <button className="raise-ticket-btn" onClick={handleOpenTicketModal}>
+          Raise a Ticket
+        </button>
+
+        {/* Applied Jobs Button */}
         <button className="applied-jobs-btn">
           <Link to="/job-seeker/applied-jobs">Applied Jobs</Link>
         </button>
         <br />
-        <button className="filter-btn" onClick={toggleFilterVisibility}>Filter Jobs </button>
+
+        {/* Filter Button */}
+        <button className="filter-btn" onClick={toggleFilterVisibility}>Filter Jobs</button>
         {isFilterVisible && (
           <div className="filters">
             <h4>Filter by Location:</h4>
@@ -142,6 +271,7 @@ function JobSeekerDashboard() {
           </div>
         )}
 
+        {/* Search Bar */}
         <input
           type='text'
           placeholder='Search for jobs'
@@ -150,11 +280,12 @@ function JobSeekerDashboard() {
           value={searchQuery}
         />
 
+        {/* Jobs Available */}
         <h3>Jobs Available</h3>
         {currentJobs.length > 0 ? (
           <div className="jobs-grid">
             {currentJobs.map((job, index) => (
-              <div key={index} className="job-card-wrapper">
+              <div key={job.id || index} className="job-card-wrapper">
                 <CarderSeeker job={job} />
                 {(index + 1) % 5 === 0 && currentAds.length > Math.floor(index / 5) && (
                   <AdCard ad={currentAds[Math.floor(index / 5)]} />
@@ -166,6 +297,7 @@ function JobSeekerDashboard() {
           <p>No jobs match your search or filter criteria.</p>
         )}
 
+        {/* Pagination */}
         <div className="pagination">
           <button onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Previous</button>
           <span> Page {currentPage} of {totalPages} </span>

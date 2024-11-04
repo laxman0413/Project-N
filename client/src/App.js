@@ -109,7 +109,7 @@ function App() {
           element:<ThemeProvider theme={Theme}><Advertise /></ThemeProvider>
         },
         {
-          path:'/adminlogin',
+          path:'/admin',
           element:<AdminLogin />
         },
         {

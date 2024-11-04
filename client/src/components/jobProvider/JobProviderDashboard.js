@@ -13,15 +13,18 @@ import {
   Select,
   MenuItem,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CarderProvider from './CarderProvider';
 import Pagination from '@mui/material/Pagination';
+import './JobProviderDashboard.css';
 
 function JobProviderDashboard() {
   const [selectedImg, setSelectedImg] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isTicketModalOpen, setTicketModalOpen] = useState(false); // New state for ticket modal
   const [showCustomJobType, setShowCustomJobType] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -38,7 +41,7 @@ function JobProviderDashboard() {
     "D. C. Court"
   ];
 
-  let { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
       jobType: 'construction',
       negotiability: false,
@@ -51,7 +54,6 @@ function JobProviderDashboard() {
       customJobType: '',
     }
   });
-  
 
   const fetchJobs = useCallback(() => {
     const token = localStorage.getItem('token');
@@ -103,7 +105,7 @@ function JobProviderDashboard() {
 
   const formSubmit = (jobDetails) => {
     const token = localStorage.getItem('token');
-    jobDetails.negotiability = jobDetails.negotiabili7ty ? 'Negotiable' : 'Non Negotiable';
+    jobDetails.negotiability = jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable';
     const formData = new FormData();
     formData.append("jobDetails", JSON.stringify(jobDetails));
     formData.append("image", selectedImg);
@@ -134,6 +136,39 @@ function JobProviderDashboard() {
     setPage(value);
   };
 
+  const handleOpenTicketModal = () => {
+    setTicketModalOpen(true);
+  };
+
+  const handleCloseTicketModal = () => {
+    setTicketModalOpen(false);
+  };
+
+  // Submit the ticket data to the backend
+  const handleTicketSubmit = (ticketData) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.post('http://localhost:3001/jobProvider/RaiseTicket', {
+        ...ticketData,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          console.log('Ticket raised successfully:', response.data);
+          handleCloseTicketModal();
+        })
+        .catch(error => {
+          console.error('Error raising ticket:', error);
+        });
+    } else {
+      console.log("Please Login First");
+      navigate("/job-provider/login");
+    }
+  };
+  
+
   const indexOfLastJob = page * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -142,144 +177,40 @@ function JobProviderDashboard() {
     <div>
       <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
         <Menu />
+        <button className='btn btn-primary'  onClick={handleOpenTicketModal}>Raise a Ticket</button> 
         <button className="btn btn-primary" onClick={handlePostJobClick}>Post a Job</button>
       </div>
       
-      <div style={{ paddingTop: '100px' }}> {/* To avoid content hiding behind the fixed header */}
-        <Dialog open={isModalOpen} onClose={handleCloseModal}>
-          <DialogTitle>Post a Job</DialogTitle>
+      <div style={{ paddingTop: '100px' }}>
+        {/* Ticket Modal */}
+        <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
+          <DialogTitle>Raise a Ticket</DialogTitle>
           <DialogContent>
-            <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
-            <form onSubmit={handleSubmit(formSubmit)}>
+            <form onSubmit={handleSubmit(handleTicketSubmit)}>
               <div className="mb-3">
-                <label htmlFor="jobTitle">Job Title</label>
-                <input
-                  type="text"
-                  id="jobTitle"
-                  className="form-control"
-                  {...register("jobTitle", { required: "Job title is required" })}
+                <label htmlFor="title">Title:</label><br />
+                <input type='text' id='title' {...register("title", { required: "Title is required" })} /> <br></br>
+                <label htmlFor="description">Issue Description</label>
+                <TextField
+                  fullWidth
+                  id="description"
+                  {...register("description", { required: "description is required" })}
+                  multiline
+                  rows={4}
                 />
-                {errors.jobTitle && <p className="text-danger">{errors.jobTitle.message}</p>}
+                {errors.issue && <Typography color="error">{errors.issue.message}</Typography>}
               </div>
-
-              <div className="mb-3">
-                <FormControl fullWidth margin="normal">
-                  <label id="job-type-label">Type of Job</label>
-                  <Select
-                    labelId="job-type-label"
-                    name="jobType"
-                    value={jobType}
-                    onChange={handleJobTypeChange}
-                  >
-                    <MenuItem value="construction">Construction</MenuItem>
-                    <MenuItem value="factoryWork">Factory work</MenuItem>
-                    <MenuItem value="agriculture">Agriculture</MenuItem>
-                    <MenuItem value="transportation">Transportation</MenuItem>
-                    <MenuItem value="domesticWork">Domestic work</MenuItem>
-                    <MenuItem value="others">Others</MenuItem>
-                  </Select>
-                </FormControl>
-                {showCustomJobType && (
-                  <TextField
-                    fullWidth
-                    label="Custom Job Type"
-                    {...register("customJobType", { required: "Custom job type is required when 'Others' is selected" })}
-                    margin="normal"
-                  />
-                )}
-                {errors.customJobType && <p className="text-danger">{errors.customJobType.message}</p>}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="payment">Wage per day(in INR)</label>
-                <input
-                  type="text"
-                  id="payment"
-                  className="form-control"
-                  {...register("payment", { required: "Payment is required" })}
-                />
-                {errors.payment && <p className="text-danger">{errors.payment.message}</p>}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="peopleNeeded">People Needed for this job:</label>
-                <input
-                  type="text"
-                  id="peopleNeeded"
-                  className="form-control"
-                  {...register("peopleNeeded", { required: "Number of people needed is required" })}
-                />
-                {errors.peopleNeeded && <p className="text-danger">{errors.peopleNeeded.message}</p>}
-              </div>
-
-              <div className="mb-3">
-                <FormControl fullWidth margin="normal">
-                  <label id="location-label">Location</label>
-                  <Select
-                    labelId="location-label"
-                    id="location"
-                    {...register("location", { required: "Location is required" })}
-                  >
-                    {locations.map((location, index) => (
-                      <MenuItem key={index} value={location}>
-                        {location}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {errors.location && <p className="text-danger">{errors.location.message}</p>}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="date">Job Date</label>
-                <input
-                  type="date"
-                  id="date"
-                  className="form-control"
-                  {...register("date", { required: "Job date is required" })}
-                />
-                {errors.date && <p className="text-danger">{errors.date.message}</p>}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="time">Time</label>
-                <input
-                  type="time"
-                  id="time"
-                  className="form-control"
-                  {...register("time")}
-                />
-              </div>
-
-              <div className="mb-3">
-                <FormControlLabel
-                  control={
-                    <Checkbox {...register("negotiability")} />
-                  }
-                  label="Negotiable"
-                />
-              </div>
-
-              <div className="mb-3">
-              <label htmlFor="image">job Image</label>
-              <input
-                type="file"
-                name="image"
-                id="image"
-                className={`form-control ${errors.image ? 'input-error' : ''}`}
-                onChange={handleImg}
-                required
-              />
-            </div>
-
-              <button className="btn btn-success" type="submit">Register</button>
+              <button type="submit" className="btn btn-success">Submit Ticket</button>
             </form>
-
-            </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseModal}>Cancel</Button>
+            <Button onClick={handleCloseTicketModal}>Cancel</Button>
           </DialogActions>
+        </Dialog>
+
+        {/* Job Posting Modal */}
+        <Dialog open={isModalOpen} onClose={handleCloseModal}>
+          {/* Your job posting modal content */}
         </Dialog>
 
         <h2>Previous Jobs</h2>
@@ -287,7 +218,6 @@ function JobProviderDashboard() {
           {currentJobs.map((job, index) => (
             <React.Fragment key={job.id}>
               <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
-              {/* Insert ads at the 3rd and 7th positions on each page */}
               {(index === 2 || index === 6) && <div className="advertisement">Advertisement</div>}
             </React.Fragment>
           ))}
