@@ -54,7 +54,7 @@ function Menu() {
   };
 
   const handleAdvertise = () => {
-    navigate('/advertise');
+    navigate('/advertisehome');
   };
 
   const handleProfileClick = () => {

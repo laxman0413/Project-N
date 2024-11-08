@@ -51,6 +51,7 @@ function Menu() {
     navigate('/job-provider/profile');
   };
 
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -85,7 +86,7 @@ function Menu() {
             <ListItem button onClick={handleLogout}>
               <ListItemText primary="Log Out" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
             </ListItem>
-            <ListItem button onClick={() => handleNavigation('/advertise')}>
+            <ListItem button onClick={() => handleNavigation('/advertisehome')}>
               <ListItemText primary="Advertise" primaryTypographyProps={{ style: { color: theme.palette.text.primary } }} />
             </ListItem>
           </List>
