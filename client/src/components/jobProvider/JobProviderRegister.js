@@ -132,7 +132,7 @@ function JobProviderRegister() {
             />
             {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
 
-
+              <p>Profile Image:</p>
             <input type="file" className="form-control" onChange={handleImg} required />
             <button type="submit" className="btn-dark btn-submit">Send OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-provider/login">Log in</Link></p>
