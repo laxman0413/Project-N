@@ -55,6 +55,7 @@ function JobProviderRegister() {
           axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register", formData)
             .then(res => {
               if (res.status === 201) {
+                alert(res.data.message+"Please Login!");
                 navigate("/job-provider/login");
               } else {
                 setError(res.data.message);
@@ -75,7 +76,7 @@ function JobProviderRegister() {
   return (
     <div className="register-container">
       <button className="back-button" onClick={() => navigate(-1)}>←</button>
-      <h2 className="form-title">Sign Up</h2>
+      <h2 className="form-title">Register</h2>
       {err && <p className="error-message">{err}</p>}
       <div className="form-container">
         {!otpStep ? (
@@ -134,7 +135,7 @@ function JobProviderRegister() {
 
               <p>Profile Image:</p>
             <input type="file" className="form-control" onChange={handleImg} required />
-            <button type="submit" className="btn-dark btn-submit">Send OTP</button>
+            <button type="submit" className="btn-dark btn-submit">Generate OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-provider/login">Log in</Link></p>
           </form>
         ) : (

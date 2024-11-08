@@ -50,9 +50,7 @@ job_provider.post('/register', multerObj.single("image"), async (req, res) => {
     `;
     await request.query(insertQuery);
 
-    // Remove the OTP record after successful registration
-    const deleteOtpQuery = `DELETE FROM otp_verification WHERE phone = @phoneParam`; // Use the correct variable
-    await request.query(deleteOtpQuery);
+    
 
     res.status(201).send({ message: 'User registered successfully' });
 

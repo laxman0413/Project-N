@@ -52,9 +52,10 @@ function JobSeekerRegister() {
           formData.append("userObj", JSON.stringify({ ...userDetails}));
           formData.append("image", selectedImg);
 
-          axios.post("https://nagaconnect-iitbilai.onrender.comjobSeeker/register", formData)
+          axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
             .then(res => {
               if (res.status === 201) {
+                alert(res.data.message+"Please Login!");
                 navigate("/job-seeker/login");
               } else {
                 setError(res.data.message);
@@ -161,9 +162,9 @@ function JobSeekerRegister() {
               <option value="other">Other</option> {/* Add this option if you want to include it */}
             </select>
 
-
-            <input type="file" className="form-control" onChange={handleImg} required />
-            <button type="submit" className="btn-dark btn-submit">Send OTP</button>
+            <label htmlFor='profile'>Profile Image</label>
+            <input type="file" className="form-control" id="profile" onChange={handleImg} required />
+            <button type="submit" className="btn-dark btn-submit">Generate OTP</button>
             <p className="alternative-login">Already have an account? <Link to="/job-seeker/login">Log in</Link></p>
           </form>
         ) : (

@@ -15,6 +15,7 @@ function JobSeekerLogin() {
 
   useEffect(() => {
     if (userloginStatus === true) {
+      alert("User Login Successfully")
       navigate('/job-seeker/dashboard');
     }
   }, [userloginStatus, navigate]);

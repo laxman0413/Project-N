@@ -33,29 +33,41 @@ function JobSeekerDashboard() {
     description: ''
   });
   const [ticketErrors, setTicketErrors] = useState({});
-
-  useEffect(() => {
+  
+  const fetchJobs = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/job-seeker/login");
     } else {
-      axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', { headers: { Authorization: 'Bearer ' + token } })
-        .then(response => {
-          const jobsData = response.data;
+      try {
+        // Fetch job details
+        const jobResponse = await axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        const jobsData = jobResponse.data;
 
-          // Set jobs and unique locations
-          setJobs(jobsData);
+        // Set jobs and unique locations
+        setJobs(jobsData);
+        const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
+        setLocations(uniqueLocations);
 
-          const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
-          setLocations(uniqueLocations);
-        })
-        .catch(error => console.error('Error fetching job details:', error));
-
-      axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', { headers: { Authorization: 'Bearer ' + token } })
-        .then(response => setAds(response.data))
-        .catch(error => console.error('Error fetching ads:', error));
+        // Fetch ads
+        const adsResponse = await axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        setAds(adsResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
   }, [navigate]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
+
+  
+  
 
   const toggleFilterVisibility = () => setIsFilterVisible(!isFilterVisible);
 
@@ -148,7 +160,7 @@ function JobSeekerDashboard() {
 
     const token = localStorage.getItem('token');
     if (token) {
-      axios.post('http://localhost:3001/jobSeeker/RaiseTicket', ticketData, {
+      axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/RaiseTicket', ticketData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -286,7 +298,7 @@ function JobSeekerDashboard() {
           <div className="jobs-grid">
             {currentJobs.map((job, index) => (
               <div key={job.id || index} className="job-card-wrapper">
-                <CarderSeeker job={job} />
+                <CarderSeeker job={job} fetchJobs={fetchJobs} />
                 {(index + 1) % 5 === 0 && currentAds.length > Math.floor(index / 5) && (
                   <AdCard ad={currentAds[Math.floor(index / 5)]} />
                 )}

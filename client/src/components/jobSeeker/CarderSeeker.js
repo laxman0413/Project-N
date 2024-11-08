@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField
 } from '@mui/material';
 import card1 from './assets/card1.jpg';
 import axios from 'axios';
@@ -19,7 +18,6 @@ import './CarderSeeker.css'; // Import the CSS file for custom styles
 
 function CarderSeeker({ job, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [isApplyDialogOpen, setApplyDialogOpen] = useState(false);
   const [application, setApplication] = useState('');
   const navigate = useNavigate();
   const handleCardClick = () => {
@@ -30,17 +28,6 @@ function CarderSeeker({ job, fetchJobs }) {
     setDialogOpen(false);
   };
 
-  const handleApplyClick = () => {
-    setApplyDialogOpen(true);
-  };
-
-  const handleApplyClose = () => {
-    setApplyDialogOpen(false);
-  };
-
-  const handleApplicationChange = (e) => {
-    setApplication(e.target.value);
-  };
 
   const handleSubmitApplication = () => {
     const token = localStorage.getItem('token');
@@ -52,8 +39,8 @@ function CarderSeeker({ job, fetchJobs }) {
       })
         .then(response => {
           console.log(response.data);
+          alert(response.data.message);
           fetchJobs();
-          handleApplyClose();
         })
         .catch(error => {
           console.error('Error submitting application:', error);
@@ -112,7 +99,7 @@ function CarderSeeker({ job, fetchJobs }) {
             size="small"
             className='apply-button'
             style={{ color: '#fff', backgroundColor: '#000', borderColor: '#000' }}
-            onClick={handleApplyClick}
+            onClick={handleSubmitApplication}
           >
             Apply
           </Button>
@@ -156,29 +143,6 @@ function CarderSeeker({ job, fetchJobs }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} style={{ color: '#000' }}>Close</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={isApplyDialogOpen} onClose={handleApplyClose} PaperProps={{ style: { backgroundColor: '#fff', color: '#000' } }} className='dialog'>
-        <DialogTitle style={{ color: '#000' }}>Apply for Job</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="Application"
-            name="application"
-            value={application}
-            onChange={handleApplicationChange}
-            margin="normal"
-            multiline
-            rows={4}
-            InputProps={{ style: { color: '#000' } }}
-            InputLabelProps={{ style: { color: '#555' } }}
-            style={{ backgroundColor: '#f5f5f5' }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleApplyClose} style={{ color: '#000' }}>Cancel</Button>
-          <Button onClick={handleSubmitApplication} style={{ color: '#fff', backgroundColor: '#000' }}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>

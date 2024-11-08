@@ -30,7 +30,6 @@ job_seeker.post('/register', multerObj.single("image"), async (req, res) => {
     if (userResult.recordset.length > 0) {
       return res.status(208).json({ message: "User already exists, please login" });
     }
-
     // Hash the password and insert new user
     const hashedPassword = await bcrypt.hash(pass, 10);
     const sqlQuery = `
@@ -94,34 +93,54 @@ job_seeker.post('/login', async (req, res) => {
 });
 
 //To get list of jobs according to JobSeeker jobType and JobType
-job_seeker.get("/jobdetails", verifyToken, (req, res) => {
+job_seeker.get('/jobdetails', verifyToken, (req, res) => {
   const { location, jobtype } = req.body;
   const db = req.app.get("db");
   const request = new db.Request();
-
-  // Pass the input parameters (location and jobtype)
+  const { id } = req.res.locals.decode; // Job seeker's ID
+  const seekerId=id;
+  // Pass the input parameters (location, jobtype, and seekerId)
   request.input('locationParam', sql.NVarChar, location);
   request.input('jobtypeParam', sql.VarChar, jobtype);
+  request.input('seekerId', sql.VarChar, seekerId);
 
-  // Updated SQL query with joins to fetch job details along with job provider name
+  // Updated SQL query with joins to fetch job details and provider info for jobs not applied by the job seeker
   const query = `
-      SELECT jd.id, jd.jobTitle, jd.customJobType, jd.payment, jd.peopleNeeded, 
-             jd.location, jd.date, jd.time, jd.description, jd.negotiability, 
-             jd.images, jp.name as providerName,jp.provider_id as providerId
-      FROM jobdetails jd
-      JOIN job_provider jp ON jp.provider_id = jd.provider_id
-      WHERE (@locationParam IS NULL OR jd.location = @locationParam)
-        AND (@jobtypeParam IS NULL OR jd.customJobType = @jobtypeParam)
+    SELECT 
+      jd.id, 
+      jd.jobTitle, 
+      jd.customJobType, 
+      jd.payment, 
+      jd.peopleNeeded, 
+      jd.location, 
+      jd.date, 
+      jd.time, 
+      jd.description, 
+      jd.negotiability, 
+      jd.images, 
+      jp.name AS providerName,
+      jp.provider_id AS providerId
+    FROM 
+      jobdetails jd
+    LEFT JOIN 
+      job_applications ja ON jd.id = ja.id AND ja.seeker_id = @seekerId
+    JOIN 
+      job_provider jp ON jp.provider_id = jd.provider_id
+    WHERE 
+      (@locationParam IS NULL OR jd.location = @locationParam)
+      AND (@jobtypeParam IS NULL OR jd.customJobType = @jobtypeParam)
+      AND ja.application_id IS NULL;  -- Ensures jobs without applications by the seeker
   `;
 
   request.query(query, (err, result) => {
-      if (err) {
-          console.error('Error executing query:', err);
-          return res.status(500).send({message:'Internal Server Error'});
-      }
-      res.status(201).send(result.recordset); // Send the job details with provider names
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).send({ message: "Internal Server Error" });
+    }
+    res.status(200).send(result.recordset); // Send the filtered job details
   });
 });
+
 
 
 job_seeker.get('/appliedJobs', verifyToken, async (req, res) => {

@@ -15,6 +15,7 @@ function JobProviderLogin() {
 
   useEffect(() => {
     if (userloginStatus === true) {
+      alert("User Login Successfully")
       navigate('/job-provider/dashboard');
     }
   }, [userloginStatus, navigate]);
