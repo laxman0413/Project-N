@@ -64,6 +64,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
         }
       })
         .then(response => {
+          alert('Job deleted successfully');
           console.log(response.data);
           fetchJobs();
         })
@@ -85,6 +86,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
       })
         .then(response => {
           console.log(response.data);
+          alert("Job Edited successfully");
           fetchJobs();
           handleEditClose();
         })

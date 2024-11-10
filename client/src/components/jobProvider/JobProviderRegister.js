@@ -55,7 +55,7 @@ function JobProviderRegister() {
           axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register", formData)
             .then(res => {
               if (res.status === 201) {
-                alert(res.data.message+"Please Login!");
+                alert(res.data.message+"  Please Login!");
                 navigate("/job-provider/login");
               } else {
                 setError(res.data.message);

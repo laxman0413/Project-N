@@ -55,7 +55,7 @@ function JobSeekerRegister() {
           axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
             .then(res => {
               if (res.status === 201) {
-                alert(res.data.message+"Please Login!");
+                alert(res.data.message+" Please Login!");
                 navigate("/job-seeker/login");
               } else {
                 setError(res.data.message);

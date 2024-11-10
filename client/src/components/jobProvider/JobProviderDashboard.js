@@ -24,7 +24,7 @@ import './JobProviderDashboard.css';
 function JobProviderDashboard() {
   const [selectedImg, setSelectedImg] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isTicketModalOpen, setTicketModalOpen] = useState(false); // New state for ticket modal
+  const [isTicketModalOpen, setTicketModalOpen] = useState(false);
   const [showCustomJobType, setShowCustomJobType] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -52,6 +52,42 @@ function JobProviderDashboard() {
       date: '',
       time: '',
       customJobType: '',
+    },
+    resolver: async (data) => {
+      const errors = {};
+      
+      if (!data.jobTitle?.trim()) {
+        errors.jobTitle = { message: "Job title is required" };
+      }
+      
+      if (!data.payment?.trim()) {
+        errors.payment = { message: "Payment is required" };
+      } else if (isNaN(data.payment)) {
+        errors.payment = { message: "Payment must be a number" };
+      }
+      
+      if (!data.peopleNeeded?.trim()) {
+        errors.peopleNeeded = { message: "Number of people needed is required" };
+      } else if (isNaN(data.peopleNeeded)) {
+        errors.peopleNeeded = { message: "Must be a number" };
+      }
+      
+      if (!data.location) {
+        errors.location = { message: "Location is required" };
+      }
+      
+      if (!data.date) {
+        errors.date = { message: "Date is required" };
+      }
+      
+      if (data.jobType === 'others' && !data.customJobType?.trim()) {
+        errors.customJobType = { message: "Custom job type is required" };
+      }
+
+      return {
+        values: data,
+        errors: Object.keys(errors).length > 0 ? errors : {}
+      };
     }
   });
 
@@ -86,6 +122,8 @@ function JobProviderDashboard() {
   const handleCloseModal = () => {
     setModalOpen(false);
     setShowCustomJobType(false);
+    setErr("");
+    setSelectedImg(null);
   };
 
   const handleJobTypeChange = (e) => {
@@ -96,37 +134,75 @@ function JobProviderDashboard() {
 
   const handleImg = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setSelectedImg(file);
-    } else {
-      setErr("Please upload a valid image file (jpg, png, etc.)");
+    if (!file) {
+      setErr("Please select an image file");
+      setSelectedImg(null);
+      return;
     }
+    
+    if (!file.type.startsWith('image/')) {
+      setErr("Please upload a valid image file (jpg, png, etc.)");
+      setSelectedImg(null);
+      return;
+    }
+    
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      setErr("Image size should be less than 5MB");
+      setSelectedImg(null);
+      return;
+    }
+    
+    setErr("");
+    setSelectedImg(file);
   };
 
-  const formSubmit = (jobDetails) => {
-    const token = localStorage.getItem('token');
-    jobDetails.negotiability = jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable';
-    const formData = new FormData();
-    formData.append("jobDetails", JSON.stringify(jobDetails));
-    formData.append("image", selectedImg);
+  const formSubmit = async (jobDetails) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log("Please Login First");
+        navigate("/job-provider/login");
+        return;
+      }
 
-    if (token) {
-      axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      // Validate required image
+      if (!selectedImg) {
+        setErr("Please select an image");
+        return;
+      }
+
+      // Format the job details
+      const formattedJobDetails = {
+        ...jobDetails,
+        negotiability: jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable',
+        jobType: jobDetails.jobType === 'others' ? jobDetails.customJobType : jobDetails.jobType
+      };
+
+      // Create FormData
+      const formData = new FormData();
+      formData.append("jobDetails", JSON.stringify(formattedJobDetails));
+      formData.append("image", selectedImg);
+
+      const response = await axios.post(
+        'https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob', 
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
         }
-      })
-        .then(response => {
-          console.log(response.data);
-          fetchJobs(); // Refresh the job list
-          handleCloseModal();
-        })
-        .catch(error => {
-          console.error('Error submitting form:', error);
-        });
-    } else {
-      console.log("Please Login First");
-      navigate("/job-provider/login");
+      );
+      alert('Job posted successfully!');
+      console.log('Job posted successfully:', response.data);
+      fetchJobs(); // Refresh the job list
+      handleCloseModal();
+      // Optional: Add success message
+      
+
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setErr(error.response?.data?.message || 'Error posting job. Please try again.');
     }
   };
 
@@ -144,11 +220,10 @@ function JobProviderDashboard() {
     setTicketModalOpen(false);
   };
 
-  // Submit the ticket data to the backend
   const handleTicketSubmit = (ticketData) => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.post('http://localhost:3001/jobProvider/RaiseTicket', {
+      axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/RaiseTicket', {
         ...ticketData,
       }, {
         headers: {
@@ -156,6 +231,7 @@ function JobProviderDashboard() {
         }
       })
         .then(response => {
+          alert('Ticket raised successfully!');
           console.log('Ticket raised successfully:', response.data);
           handleCloseTicketModal();
         })
@@ -167,7 +243,6 @@ function JobProviderDashboard() {
       navigate("/job-provider/login");
     }
   };
-  
 
   const indexOfLastJob = page * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
@@ -177,10 +252,10 @@ function JobProviderDashboard() {
     <div>
       <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
         <Menu />
-        <button className='btn btn-primary'  onClick={handleOpenTicketModal}>Raise a Ticket</button> 
+        <button className='btn btn-primary' onClick={handleOpenTicketModal}>Raise a Ticket</button>
         <button className="btn btn-primary" onClick={handlePostJobClick}>Post a Job</button>
       </div>
-      
+
       <div style={{ paddingTop: '100px' }}>
         {/* Ticket Modal */}
         <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
@@ -189,7 +264,7 @@ function JobProviderDashboard() {
             <form onSubmit={handleSubmit(handleTicketSubmit)}>
               <div className="mb-3">
                 <label htmlFor="title">Title:</label><br />
-                <input type='text' id='title' {...register("title", { required: "Title is required" })} /> <br></br>
+                <input type='text' id='title' {...register("title", { required: "Title is required" })} /> <br />
                 <label htmlFor="description">Issue Description</label>
                 <TextField
                   fullWidth
@@ -209,136 +284,142 @@ function JobProviderDashboard() {
         </Dialog>
 
         {/* Job Posting Modal */}
-        <div style={{ paddingTop: '100px' }}> {/* To avoid content hiding behind the fixed header */}
         <Dialog open={isModalOpen} onClose={handleCloseModal}>
           <DialogTitle>Post a Job</DialogTitle>
           <DialogContent>
             <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
-            <form onSubmit={handleSubmit(formSubmit)}>
-              <div className="mb-3">
-                <label htmlFor="jobTitle">Job Title</label>
-                <input
-                  type="text"
-                  id="jobTitle"
-                  className="form-control"
-                  {...register("jobTitle", { required: "Job title is required" })}
-                />
-                {errors.jobTitle && <p className="text-danger">{errors.jobTitle.message}</p>}
-              </div>
-
-              <div className="mb-3">
-                <FormControl fullWidth margin="normal">
-                  <label id="job-type-label">Type of Job</label>
-                  <Select
-                    labelId="job-type-label"
-                    name="jobType"
-                    value={jobType}
-                    onChange={handleJobTypeChange}
-                  >
-                    <MenuItem value="construction">Construction</MenuItem>
-                    <MenuItem value="factoryWork">Factory work</MenuItem>
-                    <MenuItem value="agriculture">Agriculture</MenuItem>
-                    <MenuItem value="transportation">Transportation</MenuItem>
-                    <MenuItem value="domesticWork">Domestic work</MenuItem>
-                    <MenuItem value="others">Others</MenuItem>
-                  </Select>
-                </FormControl>
-                {showCustomJobType && (
-                  <TextField
-                    fullWidth
-                    label="Custom Job Type"
-                    {...register("customJobType", { required: "Custom job type is required when 'Others' is selected" })}
-                    margin="normal"
+              <form onSubmit={handleSubmit(formSubmit)} encType="multipart/form-data">
+                <div className="mb-3">
+                  <label htmlFor="jobTitle">Job Title</label>
+                  <input
+                    type="text"
+                    id="jobTitle"
+                    className="form-control"
+                    {...register("jobTitle", { required: "Job title is required" })}
                   />
-                )}
-                {errors.customJobType && <p className="text-danger">{errors.customJobType.message}</p>}
-              </div>
+                  {errors.jobTitle && <p className="text-danger">{errors.jobTitle.message}</p>}
+                </div>
 
-              <div className="mb-3">
-                <label htmlFor="payment">Wage per day(in INR)</label>
-                <input
-                  type="text"
-                  id="payment"
-                  className="form-control"
-                  {...register("payment", { required: "Payment is required" })}
-                />
-                {errors.payment && <p className="text-danger">{errors.payment.message}</p>}
-              </div>
+                <div className="mb-3">
+                  <FormControl fullWidth margin="normal">
+                    <label id="job-type-label">Type of Job</label>
+                    <Select
+                      labelId="job-type-label"
+                      name="jobType"
+                      value={jobType}
+                      onChange={handleJobTypeChange}
+                    >
+                      <MenuItem value="construction">Construction</MenuItem>
+                      <MenuItem value="factoryWork">Factory work</MenuItem>
+                      <MenuItem value="agriculture">Agriculture</MenuItem>
+                      <MenuItem value="transportation">Transportation</MenuItem>
+                      <MenuItem value="domesticWork">Domestic work</MenuItem>
+                      <MenuItem value="others">Others</MenuItem>
+                    </Select>
+                  </FormControl>
+                  {showCustomJobType && (
+                    <TextField
+                      fullWidth
+                      label="Custom Job Type"
+                      {...register("customJobType", { required: "Custom job type is required when 'Others' is selected" })}
+                      margin="normal"
+                    />
+                  )}
+                  {errors.customJobType && <p className="text-danger">{errors.customJobType.message}</p>}
+                </div>
 
-              <div className="mb-3">
-                <label htmlFor="peopleNeeded">People Needed for this job:</label>
-                <input
-                  type="text"
-                  id="peopleNeeded"
-                  className="form-control"
-                  {...register("peopleNeeded", { required: "Number of people needed is required" })}
-                />
-                {errors.peopleNeeded && <p className="text-danger">{errors.peopleNeeded.message}</p>}
-              </div>
+                <div className="mb-3">
+                  <label htmlFor="payment">Wage per day(in INR)</label>
+                  <input
+                    type="text"
+                    id="payment"
+                    className="form-control"
+                    {...register("payment", { required: "Payment is required" })}
+                  />
+                  {errors.payment && <p className="text-danger">{errors.payment.message}</p>}
+                </div>
 
-              <div className="mb-3">
-                <FormControl fullWidth margin="normal">
-                  <label id="location-label">Location</label>
-                  <Select
-                    labelId="location-label"
-                    id="location"
-                    {...register("location", { required: "Location is required" })}
-                  >
-                    {locations.map((location, index) => (
-                      <MenuItem key={index} value={location}>
-                        {location}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {errors.location && <p className="text-danger">{errors.location.message}</p>}
-              </div>
+                <div className="mb-3">
+                  <label htmlFor="peopleNeeded">People Needed for this job:</label>
+                  <input
+                    type="text"
+                    id="peopleNeeded"
+                    className="form-control"
+                    {...register("peopleNeeded", { required: "Number of people needed is required" })}
+                  />
+                  {errors.peopleNeeded && <p className="text-danger">{errors.peopleNeeded.message}</p>}
+                </div>
 
-              <div className="mb-3">
-                <label htmlFor="date">Job Date</label>
-                <input
-                  type="date"
-                  id="date"
-                  className="form-control"
-                  {...register("date", { required: "Job date is required" })}
-                />
-                {errors.date && <p className="text-danger">{errors.date.message}</p>}
-              </div>
+                <div className="mb-3">
+                  <FormControl fullWidth margin="normal">
+                    <label id="location-label">Location</label>
+                    <Select
+                      labelId="location-label"
+                      id="location"
+                      {...register("location", { required: "Location is required" })}
+                    >
+                      {locations.map((location, index) => (
+                        <MenuItem key={index} value={location}>
+                          {location}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {errors.location && <p className="text-danger">{errors.location.message}</p>}
+                </div>
 
-              <div className="mb-3">
-                <label htmlFor="time">Time</label>
-                <input
-                  type="time"
-                  id="time"
-                  className="form-control"
-                  {...register("time")}
-                />
-              </div>
+                <div className="mb-3">
+                  <label htmlFor="date">Job Date</label>
+                  <input
+                    type="date"
+                    id="date"
+                    className="form-control"
+                    {...register("date", { required: "Job date is required" })}
+                  />
+                  {errors.date && <p className="text-danger">{errors.date.message}</p>}
+                </div>
 
-              <div className="mb-3">
-                <FormControlLabel
-                  control={
-                    <Checkbox {...register("negotiability")} />
-                  }
-                  label="Negotiable"
-                />
-              </div>
+                <div className="mb-3">
+                  <label htmlFor="time">Time</label>
+                  <input
+                    type="time"
+                    id="time"
+                    className="form-control"
+                    {...register("time")}
+                  />
+                </div>
 
-              <div className="mb-3">
-              <label htmlFor="image">job Image</label>
-              <input
-                type="file"
-                name="image"
-                id="image"
-                className={`form-control ${errors.image ? 'input-error' : ''}`}
-                onChange={handleImg}
-                required
-              />
-            </div>
+                <div className="mb-3">
+                  <FormControlLabel
+                    control={
+                      <Checkbox {...register("negotiability")} />
+                    }
+                    label="Negotiable"
+                  />
+                </div>
 
-              <button className="btn btn-success" type="submit">Register</button>
-            </form>
+                <div className="mb-3">
+                  <label htmlFor="image">Job Image</label>
+                  <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    className={`form-control ${err ? 'is-invalid' : ''}`}
+                    onChange={handleImg}
+                    accept="image/*"
+                    required
+                  />
+                  {err && <div className="invalid-feedback">{err}</div>}
+                </div>
 
+                <button
+                  className="btn btn-success"
+                  type="submit"
+                  disabled={Object.keys(errors).length > 0 || !selectedImg}
+                >
+                  Register
+                </button>
+              </form>
             </div>
           </DialogContent>
           <DialogActions>
@@ -346,48 +427,29 @@ function JobProviderDashboard() {
           </DialogActions>
         </Dialog>
 
-        <h2>Previous Jobs</h2>
-        <div className="job-list">
-          {currentJobs.map((job, index) => (
-            <React.Fragment key={job.id}>
-              <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
-              {/* Insert ads at the 3rd and 7th positions on each page */}
-              {(index === 2 || index === 6) && <div className="advertisement">Advertisement</div>}
-            </React.Fragment>
-          ))}
+        <div style={{ paddingTop: '100px' }}>
+          <h2>Previous Jobs</h2>
+          <div className="job-list">
+            {currentJobs.map((job, index) => (
+              <React.Fragment key={job.id}>
+                <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
+                {(index === 2 || index === 6) && <div className="advertisement">Advertisement</div>}
+              </React.Fragment>
+            ))}
+          </div>
+
+          <Pagination
+            count={Math.ceil(jobs.length / jobsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+            sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
+            />
+            </div>
+          </div>
         </div>
-
-        <Pagination
-          count={Math.ceil(jobs.length / jobsPerPage)}
-          page={page}
-          onChange={handlePageChange}
-          variant="outlined"
-          shape="rounded"
-          sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
-        />
-      </div>
-
-        <h2>Previous Jobs</h2>
-        <div className="job-list">
-          {currentJobs.map((job, index) => (
-            <React.Fragment key={job.id}>
-              <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
-              {(index === 2 || index === 6) && <div className="advertisement">Advertisement</div>}
-            </React.Fragment>
-          ))}
-        </div>
-
-        <Pagination
-          count={Math.ceil(jobs.length / jobsPerPage)}
-          page={page}
-          onChange={handlePageChange}
-          variant="outlined"
-          shape="rounded"
-          sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
-        />
-      </div>
-    </div>
-  );
-}
-
-export default JobProviderDashboard;
+      );
+    }
+    
+    export default JobProviderDashboard;
