@@ -28,6 +28,7 @@ function CarderSeekerApp({ job, onWithdraw }) {
           Authorization: `Bearer ${token}`
         }
       });
+      alert("job withdrawn Successfully");
       onWithdraw(job.application_id);
       handleCloseDialog();
     } catch (error) {

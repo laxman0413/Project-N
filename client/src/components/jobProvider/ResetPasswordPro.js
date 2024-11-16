@@ -43,6 +43,7 @@ function ResetPassword() {
     axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/reset-password', { phone, password: data.password })
       .then(response => {
         console.log('Password reset successful:', response);
+        alert('Password reset successful, Please Login!');
         navigate('/job-seeker/login');
       })
       .catch(error => {

@@ -68,6 +68,7 @@ function Advertise() {
           Authorization: `Bearer ${token}`
         }
       });
+      alert("Advertise added Successfully");
       console.log(response.data);
       setAds([...ads, response.data]);
       handleCloseModal();

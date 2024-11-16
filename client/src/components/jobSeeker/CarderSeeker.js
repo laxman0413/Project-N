@@ -39,7 +39,7 @@ function CarderSeeker({ job, fetchJobs }) {
       })
         .then(response => {
           console.log(response.data);
-          alert(response.data.message);
+          alert("Job applied successfully");
           fetchJobs();
         })
         .catch(error => {
