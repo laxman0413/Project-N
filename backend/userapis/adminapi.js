@@ -179,4 +179,35 @@ const sendOtpMessage = async (phone, otp, res) => {
     }
 };
 
+
+admin.get('/getTickets',  async (req, res) => {
+    const db = req.app.get("db");
+    const request = new db.Request();
+    
+    try {
+      const sqlQuery = `SELECT * FROM tickets`;
+      const result = await request.query(sqlQuery);
+      res.status(200).json(result.recordset);
+    } catch (err) {
+      console.error('Error fetching tickets:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+  admin.put("/admin/updateticket/:id", async (req, res) => {
+    const { id } = req.params;
+    const { TicketStatus } = req.body;
+  
+    try {
+      const result = await db.query(
+        "UPDATE Tickets SET TicketStatus = ? WHERE TicketId = ?",
+        [TicketStatus, id]
+      );
+      res.status(200).send({ message: "Ticket updated successfully" });
+    } catch (err) {
+      console.error("Error updating ticket:", err);
+      res.status(500).send({ message: "Failed to update ticket" });
+    }
+  });
+  
+
 module.exports = admin;
