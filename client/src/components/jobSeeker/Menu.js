@@ -10,15 +10,24 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     background: {
-      default: '#000',
-      paper: '#333',
+      default: '#000', // Background for the entire app
+      paper: '#000', // Background for drawers and paper components
     },
     text: {
-      primary: '#fff',
-      secondary: '#aaa',
+      primary: '#fff', // Text color
+      secondary: '#aaa', // Secondary text color
     },
     primary: {
-      main: '#1976d2', // You can customize this color if needed
+      main: '#1976d2', // Primary color for buttons and icons
+    },
+  },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#000', // Drawer background
+        },
+      },
     },
   },
 });

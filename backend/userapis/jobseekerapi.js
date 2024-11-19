@@ -187,6 +187,44 @@ job_seeker.get('/profile', verifyToken, (req, res) => {
   });
 });
 
+//edit profile 
+job_seeker.put('/updateProfile', verifyToken, async (req, res) => {
+  const { name, phone, sex, age, jobType } = req.body; // Get the required fields from the request body
+  const id = req.res.locals.decode.id; // Get the user ID from the decoded token
+  const nid = "JS" + phone; // Generate a unique ID for the job seeker based on phone
+
+  const db = req.app.get("db");
+  const request = new db.Request();
+
+  console.log("User updated successfully");
+
+  const query = `
+    UPDATE job_seeker
+    SET name = @nameParam, phone = @phoneParam, sex = @sexParam, age = @ageParam, jobType = @jobTypeParam
+    WHERE seeker_id = @seekerId
+  `;
+
+  // Set parameters for the query
+  request.input('nameParam', sql.NVarChar, name);
+  request.input('phoneParam', sql.VarChar, phone);
+  request.input('sexParam', sql.VarChar, sex);
+  request.input('ageParam', sql.Int, age); // Assuming age is an integer
+  request.input('jobTypeParam', sql.VarChar, jobType);
+  request.input('seekerId', sql.VarChar, id);
+
+  try {
+    // Execute the query to update the user profile
+    await request.query(query);
+    console.log("User updated successfully");
+    res.status(200).send({ message: 'Profile updated successfully' });
+  } catch (e) {
+    console.error('Error:', e.message);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
+module.exports = job_seeker;
+
 
 //public profiling 
 job_seeker.get('/pub-profile/:id', (req, res) => {

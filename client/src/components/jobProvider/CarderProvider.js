@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   Card,
   CardContent,
   Typography,
   Button,
-  CardActionArea,
-  CardActions,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -17,10 +17,6 @@ import {
   FormControlLabel,
   Checkbox
 } from '@mui/material';
-import card1 from './assets/card1.jpg';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './CarderProvider.css'; // Import the CSS file for custom styles
 
 function CarderProvider({ job, locations, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -33,26 +29,46 @@ function CarderProvider({ job, locations, fetchJobs }) {
     setDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const handleEditClick = () => {
-    setEditDialogOpen(true);
-  };
-
   const handleEditClose = () => {
     setEditDialogOpen(false);
+    setEditedJob({ ...job });
   };
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditedJob({ ...editedJob, [name]: value });
+    setEditedJob(prevJob => ({
+      ...prevJob,
+      [name]: value
+    }));
   };
 
   const handleNegotiabilityChange = (e) => {
-    setIsNegotiable(e.target.checked);
-    setEditedJob({ ...editedJob, negotiability: e.target.checked ? 'Negotiable' : 'Non Negotiable' });
+    const negotiable = e.target.checked;
+    setIsNegotiable(negotiable);
+    setEditedJob(prevJob => ({
+      ...prevJob,
+      negotiability: negotiable ? 'Negotiable' : 'Non Negotiable'
+    }));
+  };
+
+  const handleEditSubmit = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.put(`https://nagaconnect-iitbilai.onrender.com/jobProvider/editJob/${job.id}`, editedJob, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          alert(response.data.message);
+          fetchJobs();
+          setEditDialogOpen(false);
+        })
+        .catch(error => {
+          console.error('Error updating job:', error);
+        });
+    }
   };
 
   const handleDeleteClick = () => {
@@ -76,104 +92,182 @@ function CarderProvider({ job, locations, fetchJobs }) {
     }
   };
 
-  const handleEditSubmit = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.put(`https://nagaconnect-iitbilai.onrender.com/jobProvider/editJob/${job.id}`, editedJob, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(response => {
-          console.log(response.data);
-          alert("Job Edited successfully");
-          fetchJobs();
-          handleEditClose();
-        })
-        .catch(error => {
-          console.error('Error updating job:', error);
-        });
-    } else {
-      console.log("Please Login First");
-    }
-  };
-
-  const handleApplications = () => {
-    navigate(`/job-provider/application/${job.id}`);
-  };
-
   return (
-    <div>
-      <Card className='custom-card'>
-        <CardActionArea onClick={handleCardClick}>
-          <img src={job.images || card1} alt="Avatar" className='custom-image' />
-          <CardContent>
-            <Typography variant="body2" color="text.secondary">
-              Title
+    <div className="m-4">
+      <Card 
+        sx={{ 
+          maxWidth: 345, 
+          boxShadow: '0 8px 20px rgba(0,0,0,0.1)', 
+          borderRadius: '16px', 
+          transition: 'transform 0.3s ease',
+          '&:hover': { 
+            transform: 'scale(1.02)',
+            boxShadow: '0 12px 24px rgba(0,0,0,0.15)' 
+          }
+        }}
+      >
+        {/* Gradient Overlay Image */}
+        <div 
+          style={{
+            position: 'relative',
+            height: '200px',
+            backgroundImage: `url(${job.images || '/default-job.jpg'})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '50%',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)'
+            }}
+          />
+          <Typography 
+            variant="h5" 
+            sx={{
+              position: 'absolute',
+              bottom: 10,
+              left: 10,
+              color: 'white',
+              fontWeight: 'bold',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+            }}
+          >
+            {job.jobTitle}
+          </Typography>
+        </div>
+
+        <CardContent>
+          <div className="flex justify-between items-center mb-4">
+            <Typography variant="body1" color="text.secondary">
+              💰 {job.payment}
             </Typography>
-            <Typography gutterBottom variant="h6" component="div">
-              {job.jobTitle}
+            <Typography variant="body1" color="text.secondary">
+              👥 {job.peopleNeeded} Needed
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Subtitle
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Cost: {job.payment}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions className='custom-actions'>
-          <Button size="small" className='ignore-button' onClick={handleDeleteClick}>
-            Delete
-          </Button>
-          <Button size="small" className='apply-button' onClick={handleApplications}>
-            View Applications
-          </Button>
-        </CardActions>
+          </div>
+
+          <div 
+            className="flex flex-d-r justify-between" 
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }} // Added inline styles
+          >
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleCardClick}
+              sx={{
+                backgroundColor: '#000',
+                '&:hover': { backgroundColor: '#333' },
+                flex: 1 // Ensures this button takes up the remaining space
+              }}
+            >
+              View Details
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDeleteClick}
+              sx={{
+                minWidth: 'auto', // Keeps button width minimal for the emoji
+                flex: 'none', // Prevents stretching
+              }}
+            >
+              🗑️
+            </Button>
+          </div>
+
+        </CardContent>
       </Card>
 
-      <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Job Details</DialogTitle>
+      {/* Detailed Job Dialog */}
+      <Dialog 
+        open={isDialogOpen} 
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '16px',
+            padding: '16px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+          {job.jobTitle}
+        </DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Job Title:</strong> {job.jobTitle}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Type of Job:</strong> {job.jobType}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Payment:</strong> {job.payment}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>People Needed:</strong> {job.peopleNeeded}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Location:</strong> {job.location}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Date:</strong> {job.date}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Time:</strong> {job.time}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Negotiability:</strong> {job.negotiability}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Description:</strong> {job.description}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Additional Details:</strong> {job.additionalDetails}
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { label: 'Job Type', value: job.jobType },
+              { label: 'Payment', value: job.payment },
+              { label: 'People Needed', value: job.peopleNeeded },
+              { label: 'Location', value: job.location },
+              { label: 'Date', value: job.date },
+              { label: 'Time', value: job.time },
+            ].map(({ label, value }) => (
+              <div key={label} className="border-b pb-2">
+                <Typography variant="body2" color="text.secondary">
+                  {label}
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {value}
+                </Typography>
+              </div>
+            ))}
+          </div>
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ mt: 2, fontStyle: 'italic' }}
+          >
+            {job.description}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEditClick}>Edit</Button>
-          <Button onClick={handleCloseDialog}>Close</Button>
+          <Button 
+            onClick={() => {
+              setDialogOpen(false);
+              setEditDialogOpen(true);
+            }}
+            variant="contained"
+            sx={{
+              backgroundColor: '#000',
+              '&:hover': { backgroundColor: '#333' }
+            }}
+          >
+            Edit Job
+          </Button>
+          <Button 
+            onClick={() => navigate(`/job-provider/application/${job.id}`)}
+            variant="outlined"
+          >
+            View Applications
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isEditDialogOpen} onClose={handleEditClose}>
-        <DialogTitle>Edit Job</DialogTitle>
+
+
+      {/* Edit Job Dialog */}
+      <Dialog 
+        open={isEditDialogOpen} 
+        onClose={handleEditClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '16px',
+            padding: '16px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+          Edit Job
+        </DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="normal">
             <TextField

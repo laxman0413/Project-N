@@ -1,55 +1,74 @@
-.applied-jobs-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border: 1px solid #ddd;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* AppliedJobs.css */
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 2em;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
 .applied-job-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .jobs-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr); /* Default to 1 column */
-}
-
-/* For small screens (mobiles) */
-@media only screen and (max-width: 600px) {
-  .jobs-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-/* For medium screens (tablets) */
-@media only screen and (min-width: 601px) and (max-width: 900px) {
-  .jobs-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* For large screens (laptops) */
-@media only screen and (min-width: 901px) {
-  .jobs-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
 .no-jobs-message {
   text-align: center;
   color: #666;
+  font-size: 1.2em;
+  margin-top: 2rem;
 }
 
 .error-message {
-  color: red;
+  color: #d9534f;
   text-align: center;
+  margin: 1rem 0;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: #007bff;
+}
+
+.carder-container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.carder-container:hover {
+  transform: translateY(-5px);
+}
+
+.fixed-menu {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
 }

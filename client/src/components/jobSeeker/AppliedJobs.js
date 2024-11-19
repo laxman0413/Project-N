@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Menu from './Menu';
 import CarderSeekerApp from './CarderSeekerApp';
-import './AppliedJobs.css'; // For additional styling
+import './AppliedJobs.css'; // Import updated styling
 
 function AppliedJobs() {
   const [appliedJobs, setAppliedJobs] = useState([]);
@@ -45,29 +45,35 @@ function AppliedJobs() {
   };
 
   return (
-    <div >
-      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+    <div>
+      <div className="fixed-menu">
         <Menu />
       </div>
-      <pre>  </pre>
-      <pre>  </pre>
-      <h2 className="title">Applied Jobs</h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="applied-job-list">
-          {appliedJobs.length > 0 ? (
-            <div className="jobs-grid">
-              {appliedJobs.map((job) => (
-                <CarderSeekerApp key={job.application_id} job={job} onWithdraw={handleWithdraw} />
-              ))}
-            </div>
-          ) : (
-            <p className="no-jobs-message">No jobs applied yet.</p>
-          )}
-          {error && <p className="error-message">{error}</p>}
-        </div>
-      )}
+      <div className="content">
+        <h2 className="title">Applied Jobs</h2>
+        {loading ? (
+          <div className="loading-spinner">
+            <p>Loading...</p>
+          </div>
+        ) : (
+          <div className="applied-job-list">
+            {appliedJobs.length > 0 ? (
+              <div className="jobs-grid">
+                {appliedJobs.map((job) => (
+                  <CarderSeekerApp
+                    key={job.application_id}
+                    job={job}
+                    onWithdraw={handleWithdraw}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="no-jobs-message">No jobs applied yet.</p>
+            )}
+            {error && <p className="error-message">{error}</p>}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

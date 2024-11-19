@@ -98,7 +98,29 @@ job_provider.post('/login', async (req, res) => {
   });
 });
 
+//edit profile 
+job_provider.put('/updateProfile',verifyToken,async(req,res)=>{
+  const {name,phone}=req.body;
+  const id=req.res.locals.decode.id;
+  const nid="JP"+phone;
+  const db = req.app.get("db");
+  const request = new db.Request();
+  console.log("user updated successfully");
+  const query=`UPDATE job_provider SET name=@nameParam,provider_id=@providerIdParam,phone=@phoneParam where provider_id=@providerId`;
 
+  request.input('nameParam', sql.NVarChar, name);
+  request.input('providerIdParam', sql.VarChar, nid);
+  request.input('phoneParam', sql.VarChar, phone);
+  request.input('providerId', sql.VarChar,id);
+  try{
+    await request.query(query);
+    console.log("user updated successfully");
+    res.status(200).send({message:'Profile updated successfully'});
+  }catch(e){
+    console.error('Error:', e.message);
+    res.status(500).send({message:'Internal Server Error'});
+  }
+});
 // To post a new job
 job_provider.post('/addJob',verifyToken, multerObj.single("image"), async (req, res) => {
   const {
