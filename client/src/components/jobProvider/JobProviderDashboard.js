@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import CarderProvider from './CarderProvider';
 import Pagination from '@mui/material/Pagination';
 import './JobProviderDashboard.css';
+import AdCard from '../advertisement/AdCard';
 
 function JobProviderDashboard() {
   const [selectedImg, setSelectedImg] = useState(null);
@@ -27,6 +28,7 @@ function JobProviderDashboard() {
   const [isTicketModalOpen, setTicketModalOpen] = useState(false);
   const [showCustomJobType, setShowCustomJobType] = useState(false);
   const [jobs, setJobs] = useState([]);
+  const [ads, setAds] = useState([]);
   const [page, setPage] = useState(1);
   const jobsPerPage = 8;
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ function JobProviderDashboard() {
     "City Tower",
     "D. C. Court"
   ];
-
+  
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
       jobType: 'construction',
@@ -91,23 +93,27 @@ function JobProviderDashboard() {
     }
   });
 
-  const fetchJobs = useCallback(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.get('https://nagaconnect-iitbilai.onrender.com/jobProvider/jobs', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(response => {
-          setJobs(response.data);
+  const fetchJobs = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/job-seeker/login");
+      return;
+    }
+    
+    try {
+      const [jobResponse, adsResponse] = await Promise.all([
+        axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', {
+          headers: { Authorization: `Bearer ${token}` }
         })
-        .catch(error => {
-          console.error('Error fetching jobs:', error);
-        });
-    } else {
-      console.log("Please Login First");
-      navigate("/job-provider/login");
+      ]);
+
+      setJobs(jobResponse.data);
+      setAds(adsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
   }, [navigate]);
 
@@ -257,7 +263,7 @@ function JobProviderDashboard() {
     width: '100%',
     zIndex: 1000,
     backgroundColor: '#f8f9fa',
-    padding: '10px',
+    paddingBottom: '10px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -287,14 +293,14 @@ function JobProviderDashboard() {
     <button
       className='btn'
       onClick={handlePostJobClick}
-      style={{
-        backgroundColor: 'black',
-        color: 'white',
-        border: 'none',
-        padding: '10px 20px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-      }}
+          style={{
+            backgroundColor: 'black',
+            color: 'white',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
     >
       POST A JOB
     </button>
@@ -474,13 +480,15 @@ function JobProviderDashboard() {
           </DialogActions>
         </Dialog>
 
-        <div style={{ paddingTop: '100px' }}>
-          <h2>Previous Jobs</h2>
+        <div style={{ paddingTop: '30px' }}>
+          <h2>Previous Posted Jobs</h2>
           <div className="job-list">
             {currentJobs.map((job, index) => (
               <React.Fragment key={job.id}>
                 <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
-                {(index === 2 || index === 6) && <div className="advertisement">Advertisement</div>}
+                {(index + 1) % 3 === 0 && ads.length > Math.floor(index / 3) && (
+                <AdCard ad={ads[Math.floor(index / 3)]} />
+              )}
               </React.Fragment>
             ))}
           </div>

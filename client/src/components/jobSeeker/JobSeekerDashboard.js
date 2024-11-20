@@ -129,35 +129,64 @@ const JobSeekerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="fixed top-0 w-full bg-white border-b border-gray-200 shadow-sm z-50">
-        <div >
-          <div >
-          <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+    <div >
+      <header>
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                width: '100%',
+                zIndex: 1000,
+                backgroundColor: '#f8f9fa',
+                paddingBottom: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+          <div style={{ width: '100%' }}>
             <Menu />
           </div>
-          <pre> </pre>
-          <pre> </pre>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setTicketModalOpen(true)}
-                className="flex items-center px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800"
-              >
-                Raise Ticket
-              </button>
+
+          {/* Buttons Section */}
+          <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+            <button
+              className='btn'
+              onClick={()=>setTicketModalOpen(true)}
+              style={{
+                backgroundColor: 'white',
+                color: 'blue',
+                border: '2px solid blue',
+                padding: '10px 20px',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
+            >
+              RAISE A TICKET
+            </button>
               <Link
                 to="/job-seeker/applied-jobs"
-                className="flex items-center px-4 py-2 text-sm font-medium text-black border border-black rounded-md hover:bg-gray-100"
+                style={{
+                  backgroundColor: 'black',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                }}
               >
                 Applied Jobs
               </Link>
             </div>
-          </div>
         </div>
       </header>
-
+      <pre> </pre>
+      <pre> </pre>
+      <pre> </pre>
+      <pre> </pre>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <div className="mb-8 space-y-4">
+          <h1> Resently Posted Jobs</h1>
           <div className="flex items-center space-x-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -166,7 +195,7 @@ const JobSeekerDashboard = () => {
                 placeholder="Search jobs..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-black focus:border-black"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
               />
             </div>
             <button
@@ -179,48 +208,51 @@ const JobSeekerDashboard = () => {
           </div>
 
           {isFilterVisible && (
-            <div className="p-4 bg-white border border-gray-200 rounded-md shadow-sm">
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">Location</h3>
-                  <div className="space-y-2">
-                    {locations.map((location) => (
-                      <label key={location} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
-                          checked={selectedLocations.includes(location)}
-                          onChange={() => handleLocationChange(location)}
-                        />
-                        <span className="ml-2 text-sm text-gray-700">{location}</span>
-                      </label>
-                    ))}
-                  </div>
+          <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+            <div className="grid grid-cols-2 gap-8">
+              {/* Location Filter */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Location</h3>
+                <div className="space-y-3">
+                  {locations.map((location) => (
+                    <div key={location} className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        className="w-5 h-5 text-black border-gray-300 rounded focus:ring-black"
+                        checked={selectedLocations.includes(location)}
+                        onChange={() => handleLocationChange(location)}
+                      />
+                      <span className="text-sm text-gray-700">{location   }</span>
+                    </div>
+                  ))}
                 </div>
-
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">Work Type</h3>
-                  <div className="space-y-2">
-                    {["construction", "factoryWork", "agriculture", "transportation", "domesticWork", "others"].map((type) => (
-                      <label key={type} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
-                          checked={selectedWorkTypes.includes(type)}
-                          onChange={() => handleWorkTypeChange(type)}
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          {type.split(/(?=[A-Z])/).join(" ")}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
+              </div>
+                  <pre> </pre>
+              {/* Work Type Filter */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Work Type</h3>
+                <div className="space-y-3">
+                  {["construction", "factoryWork", "agriculture", "transportation", "domesticWork", "others"].map((type) => (
+                    <div key={type} className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        className="w-5 h-5 text-black border-gray-300 rounded focus:ring-black"
+                        checked={selectedWorkTypes.includes(type)}
+                        onChange={() => handleWorkTypeChange(type)}
+                      />
+                      <span className="text-sm text-gray-700">
+                        {type.split(/(?=[A-Z])/).join(" ")}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
+        </div>
+          <pre> </pre>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentJobs.map((job, index) => (
             <React.Fragment key={job.id || index}>
