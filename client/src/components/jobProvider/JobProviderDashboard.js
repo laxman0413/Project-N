@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import Menu from "./Menu";
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import Menu from './Menu';
+import { useForm } from 'react-hook-form';
 import {
   Dialog,
   DialogTitle,
@@ -14,12 +14,12 @@ import {
   MenuItem,
   FormControlLabel,
   Checkbox,
-  Typography,
-} from "@mui/material";
-import Pagination from "@mui/material/Pagination";
-import CarderProvider from "./CarderProvider";
-import { useNavigate } from "react-router-dom";
-import "./JobProviderDashboard.css";
+  Typography
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import CarderProvider from './CarderProvider';
+import Pagination from '@mui/material/Pagination';
+import './JobProviderDashboard.css';
 
 function JobProviderDashboard() {
   const [selectedImg, setSelectedImg] = useState(null);
@@ -29,37 +29,84 @@ function JobProviderDashboard() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const jobsPerPage = 8;
-  const [err, setErr] = useState("");
   const navigate = useNavigate();
-
+  const [err, setErr] = useState("");
   const locations = [
     "Dobinala Junction",
-    "Ara Mile",
+    "Ara mile",
     "Marwari Patti",
     "Police Point",
     "Toluvi Junction Purana Bazar",
     "City Tower",
-    "D. C. Court",
+    "D. C. Court"
   ];
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm();
-  const jobType = watch("jobType");
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+    defaultValues: {
+      jobType: 'construction',
+      negotiability: false,
+      location: '',
+      jobTitle: '',
+      payment: '',
+      peopleNeeded: '',
+      date: '',
+      time: '',
+      customJobType: '',
+    },
+    resolver: async (data) => {
+      const errors = {};
+      
+      if (!data.jobTitle?.trim()) {
+        errors.jobTitle = { message: "Job title is required" };
+      }
+      
+      if (!data.payment?.trim()) {
+        errors.payment = { message: "Payment is required" };
+      } else if (isNaN(data.payment)) {
+        errors.payment = { message: "Payment must be a number" };
+      }
+      
+      if (!data.peopleNeeded?.trim()) {
+        errors.peopleNeeded = { message: "Number of people needed is required" };
+      } else if (isNaN(data.peopleNeeded)) {
+        errors.peopleNeeded = { message: "Must be a number" };
+      }
+      
+      if (!data.location) {
+        errors.location = { message: "Location is required" };
+      }
+      
+      if (!data.date) {
+        errors.date = { message: "Date is required" };
+      }
+      
+      if (data.jobType === 'others' && !data.customJobType?.trim()) {
+        errors.customJobType = { message: "Custom job type is required" };
+      }
+
+      return {
+        values: data,
+        errors: Object.keys(errors).length > 0 ? errors : {}
+      };
+    }
+  });
+
   const fetchJobs = useCallback(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
-      axios
-        .get("https://nagaconnect-iitbilai.onrender.com/jobProvider/jobs", {
-          headers: { Authorization: `Bearer ${token}` },
+      axios.get('https://nagaconnect-iitbilai.onrender.com/jobProvider/jobs', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          setJobs(response.data);
         })
-        .then((response) => setJobs(response.data))
-        .catch((error) => console.error("Error fetching jobs:", error));
+        .catch(error => {
+          console.error('Error fetching jobs:', error);
+        });
     } else {
+      console.log("Please Login First");
       navigate("/job-provider/login");
     }
   }, [navigate]);
@@ -67,10 +114,10 @@ function JobProviderDashboard() {
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
-  const handleCloseTicketModal = () => {
-    setTicketModalOpen(false);
+
+  const handlePostJobClick = () => {
+    setModalOpen(true);
   };
-  const handlePostJobClick = () => setModalOpen(true);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -81,55 +128,98 @@ function JobProviderDashboard() {
 
   const handleJobTypeChange = (e) => {
     const jobType = e.target.value;
-    setShowCustomJobType(jobType === "others");
-    setValue("jobType", jobType);
+    setShowCustomJobType(jobType === 'others');
+    setValue('jobType', jobType);
   };
 
   const handleImg = (e) => {
     const file = e.target.files[0];
-    if (!file || !file.type.startsWith("image/") || file.size > 5 * 1024 * 1024) {
-      setErr("Invalid image. Ensure it's less than 5MB and of type jpg, png, etc.");
+    if (!file) {
+      setErr("Please select an image file");
       setSelectedImg(null);
       return;
     }
+    
+    if (!file.type.startsWith('image/')) {
+      setErr("Please upload a valid image file (jpg, png, etc.)");
+      setSelectedImg(null);
+      return;
+    }
+    
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      setErr("Image size should be less than 5MB");
+      setSelectedImg(null);
+      return;
+    }
+    
     setErr("");
     setSelectedImg(file);
   };
 
   const formSubmit = async (jobDetails) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/job-provider/login");
-      return;
-    }
-    if (!selectedImg) {
-      setErr("Please select an image");
-      return;
-    }
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log("Please Login First");
+        navigate("/job-provider/login");
+        return;
+      }
+
+      // Validate required image
+      if (!selectedImg) {
+        setErr("Please select an image");
+        return;
+      }
+
+      // Format the job details
+      const formattedJobDetails = {
+        ...jobDetails,
+        negotiability: jobDetails.negotiability ? 'Negotiable' : 'Non Negotiable',
+        jobType: jobDetails.jobType === 'others' ? jobDetails.customJobType : jobDetails.jobType
+      };
+
+      // Create FormData
       const formData = new FormData();
-      formData.append(
-        "jobDetails",
-        JSON.stringify({
-          ...jobDetails,
-          negotiability: jobDetails.negotiability ? "Negotiable" : "Non-Negotiable",
-          jobType: jobDetails.jobType === "others" ? jobDetails.customJobType : jobDetails.jobType,
-        })
-      );
+      formData.append("jobDetails", JSON.stringify(formattedJobDetails));
       formData.append("image", selectedImg);
 
-      await axios.post(
-        "https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob",
+      const response = await axios.post(
+        'https://nagaconnect-iitbilai.onrender.com/jobProvider/addJob', 
         formData,
-        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
-      alert("Job posted successfully!");
-      fetchJobs();
+      alert('Job posted successfully!');
+      console.log('Job posted successfully:', response.data);
+      fetchJobs(); // Refresh the job list
       handleCloseModal();
+      // Optional: Add success message
+      
+
     } catch (error) {
-      setErr(error.response?.data?.message || "Error posting job. Please try again.");
+      console.error('Error submitting form:', error);
+      setErr(error.response?.data?.message || 'Error posting job. Please try again.');
     }
   };
+
+  const jobType = watch("jobType");
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const handleOpenTicketModal = () => {
+    setTicketModalOpen(true);
+  };
+
+  const handleCloseTicketModal = () => {
+    setTicketModalOpen(false);
+  };
+
   const handleTicketSubmit = (ticketData) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -154,51 +244,94 @@ function JobProviderDashboard() {
     }
   };
 
-  const handlePageChange = (event, value) => setPage(value);
-
-  const currentJobs = jobs.slice((page - 1) * jobsPerPage, page * jobsPerPage);
+  const indexOfLastJob = page * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
-    <div className="dashboard">
-      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
-        <Menu />
-      </div>
-        <pre> </pre>
-        <pre> </pre>
+    <div>
+      <div
+  style={{
+    position: 'fixed',
+    top: 0,
+    width: '100%',
+    zIndex: 1000,
+    backgroundColor: '#f8f9fa',
+    padding: '10px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  }}
+>
+  {/* Header Section */}
+  <div style={{ width: '100%'}}>
+    <Menu />
+  </div>
 
-        <div className="dashboard-actions">
-          <Button variant="outlined" onClick={() => setTicketModalOpen(true)} sx={{ color: "black" }}>
-            Raise a Ticket
-          </Button>
-          <Button variant="contained" onClick={handlePostJobClick} sx={{ backgroundColor: "black", color: "white" }}>
-            Post a Job
-          </Button>
-        </div>
-      <pre> </pre>
-      <div className="dashboard-content">
-        <Typography variant="h4" sx={{ color: "black", textAlign: "center", marginBottom: 2 }}>
-          previous Job Listings
-        </Typography>
-        <div className="job-list">
-          {currentJobs.map((job, index) => (
-            <CarderProvider key={job.id} job={job} locations={locations} fetchJobs={fetchJobs} />
-          ))}
-        </div>
-        <Pagination
-          count={Math.ceil(jobs.length / jobsPerPage)}
-          page={page}
-          onChange={handlePageChange}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 3,
-            "& .MuiPaginationItem-root": { color: "black" },
-          }}
-        />
+  {/* Buttons Section */}
+  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+    <button
+      className='btn'
+      onClick={handleOpenTicketModal}
+      style={{
+        backgroundColor: 'white',
+        color: 'blue',
+        border: '2px solid blue',
+        padding: '10px 20px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+      }}
+    >
+      RAISE A TICKET
+    </button>
+    <button
+      className='btn'
+      onClick={handlePostJobClick}
+      style={{
+        backgroundColor: 'black',
+        color: 'white',
+        border: 'none',
+        padding: '10px 20px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+      }}
+    >
+      POST A JOB
+    </button>
+  </div>
+
+
       </div>
 
-      {/* Job Posting Modal */}
-      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+      <div style={{ paddingTop: '100px' }}>
+        {/* Ticket Modal */}
+        <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
+          <DialogTitle>Raise a Ticket</DialogTitle>
+          <DialogContent>
+            <form onSubmit={handleSubmit(handleTicketSubmit)}>
+              <div className="mb-3">
+                <label htmlFor="title">Title:</label><br />
+                <input type='text' id='title' {...register("title", { required: "Title is required" })} /> <br />
+                <label htmlFor="description">Issue Description</label>
+                <TextField
+                  fullWidth
+                  id="description"
+                  {...register("description", { required: "description is required" })}
+                  multiline
+                  rows={4}
+                />
+                {errors.issue && <Typography color="error">{errors.issue.message}</Typography>}
+              </div>
+              <button type="submit" className="btn btn-success">Submit Ticket</button>
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseTicketModal}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Job Posting Modal */}
+        <Dialog open={isModalOpen} onClose={handleCloseModal}>
           <DialogTitle>Post a Job</DialogTitle>
           <DialogContent>
             <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
@@ -340,33 +473,30 @@ function JobProviderDashboard() {
             <Button onClick={handleCloseModal}>Cancel</Button>
           </DialogActions>
         </Dialog>
-        {/* Ticket Modal */}
-        <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
-          <DialogTitle>Raise a Ticket</DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleSubmit(handleTicketSubmit)}>
-              <div className="mb-3">
-                <label htmlFor="title">Title:</label><br />
-                <input type='text' id='title' {...register("title", { required: "Title is required" })} /> <br />
-                <label htmlFor="description">Issue Description</label>
-                <TextField
-                  fullWidth
-                  id="description"
-                  {...register("description", { required: "description is required" })}
-                  multiline
-                  rows={4}
-                />
-                {errors.issue && <Typography color="error">{errors.issue.message}</Typography>}
-              </div>
-              <button type="submit" className="btn btn-success">Submit Ticket</button>
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseTicketModal}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
-    </div>
-  );
-}
 
-export default JobProviderDashboard;
+        <div style={{ paddingTop: '100px' }}>
+          <h2>Previous Jobs</h2>
+          <div className="job-list">
+            {currentJobs.map((job, index) => (
+              <React.Fragment key={job.id}>
+                <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
+                {(index === 2 || index === 6) && <div className="advertisement">Advertisement</div>}
+              </React.Fragment>
+            ))}
+          </div>
+
+          <Pagination
+            count={Math.ceil(jobs.length / jobsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+            sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
+            />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    export default JobProviderDashboard;
