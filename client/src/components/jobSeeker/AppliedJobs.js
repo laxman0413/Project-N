@@ -49,6 +49,8 @@ function AppliedJobs() {
       <div className="fixed-menu">
         <Menu />
       </div>
+      <pre> </pre>
+      <pre> </pre>
       <div className="content">
         <h2 className="title">Applied Jobs</h2>
         {loading ? (

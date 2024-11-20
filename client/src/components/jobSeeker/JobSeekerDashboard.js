@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Menu from './Menu';
-import CarderSeeker from './CarderSeeker';
-import AdCard from '../advertisement/AdCard';
+import { Search, Filter, Ticket, Briefcase } from 'lucide-react';
 import {
   Dialog,
   DialogTitle,
@@ -11,54 +9,51 @@ import {
   DialogActions,
   Button,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
-import './JobSeekerDashboard.css'; // Import CSS file for styles
+import CarderSeeker from './CarderSeeker';
+import AdCard from '../advertisement/AdCard';
+import Menu from './Menu';
 
-function JobSeekerDashboard() {
+const JobSeekerDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [ads, setAds] = useState([]);
-  const navigate = useNavigate();
   const [locations, setLocations] = useState([]);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedWorkTypes, setSelectedWorkTypes] = useState([]);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-
-  // States for Ticket Modal
   const [isTicketModalOpen, setTicketModalOpen] = useState(false);
-  const [ticketData, setTicketData] = useState({
-    title: '',
-    description: ''
-  });
+  const [ticketData, setTicketData] = useState({ title: '', description: '' });
   const [ticketErrors, setTicketErrors] = useState({});
   
+  const navigate = useNavigate();
+  const jobsPerPage = 8;
+  const adsPerPage = 2;
+
   const fetchJobs = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/job-seeker/login");
-    } else {
-      try {
-        // Fetch job details
-        const jobResponse = await axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', {
-          headers: { Authorization: 'Bearer ' + token }
-        });
-        const jobsData = jobResponse.data;
+      return;
+    }
+    
+    try {
+      const [jobResponse, adsResponse] = await Promise.all([
+        axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
 
-        // Set jobs and unique locations
-        setJobs(jobsData);
-        const uniqueLocations = [...new Set(jobsData.map(job => job.location))];
-        setLocations(uniqueLocations);
-
-        // Fetch ads
-        const adsResponse = await axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', {
-          headers: { Authorization: 'Bearer ' + token }
-        });
-        setAds(adsResponse.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      setJobs(jobResponse.data);
+      setLocations([...new Set(jobResponse.data.map(job => job.location))]);
+      setAds(adsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
   }, [navigate]);
 
@@ -66,258 +61,237 @@ function JobSeekerDashboard() {
     fetchJobs();
   }, [fetchJobs]);
 
-  
-  
-
-  const toggleFilterVisibility = () => setIsFilterVisible(!isFilterVisible);
-
-  const handleSearchChange = (event) => setSearchQuery(event.target.value.trim().toLowerCase());
-
   const handleLocationChange = (location) => {
-    setSelectedLocations(prevSelectedLocations =>
-      prevSelectedLocations.includes(location)
-        ? prevSelectedLocations.filter(loc => loc !== location)
-        : [...prevSelectedLocations, location]
+    setSelectedLocations(prev => 
+      prev.includes(location) ? prev.filter(loc => loc !== location) : [...prev, location]
     );
   };
 
   const handleWorkTypeChange = (workType) => {
-    setSelectedWorkTypes(prevSelectedWorkTypes =>
-      prevSelectedWorkTypes.includes(workType)
-        ? prevSelectedWorkTypes.filter(type => type !== workType)
-        : [...prevSelectedWorkTypes, workType]
+    setSelectedWorkTypes(prev => 
+      prev.includes(workType) ? prev.filter(type => type !== workType) : [...prev, workType]
     );
   };
 
-  const applyFilters = (job) => {
+  const applyFilters = useCallback((job) => {
     const normalizedJobType = (job.customJobType || job.jobTitle || '').trim().toLowerCase();
+    const searchMatches = searchQuery === '' || 
+      Object.values(job).some(value => 
+        typeof value === 'string' && value.toLowerCase().includes(searchQuery)
+      );
+    const locationMatches = selectedLocations.length === 0 || 
+      selectedLocations.includes(job.location);
+    const workTypeMatches = selectedWorkTypes.length === 0 || 
+      selectedWorkTypes.includes(normalizedJobType);
 
-    const locationMatches = selectedLocations.length === 0 || selectedLocations.includes(job.location);
-    const workTypeMatches = selectedWorkTypes.length === 0 || selectedWorkTypes.includes(normalizedJobType);
-    const searchMatches = searchQuery === '' || Object.values(job).some(value =>
-      typeof value === 'string' && value.toLowerCase().includes(searchQuery)
-    );
-
-    return locationMatches && workTypeMatches && searchMatches;
-  };
+    return searchMatches && locationMatches && workTypeMatches;
+  }, [searchQuery, selectedLocations, selectedWorkTypes]);
 
   const filteredJobs = jobs.filter(applyFilters);
-
-  // Pagination logic
-  const jobsPerPage = 8;
-  const adsPerPage = 2;
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const totalAdsPages = Math.ceil(ads.length / adsPerPage);
+  const currentJobs = filteredJobs.slice(
+    (currentPage - 1) * jobsPerPage, 
+    currentPage * jobsPerPage
+  );
+  const currentAds = ads.slice(
+    (currentPage - 1) * adsPerPage,
+    currentPage * adsPerPage
+  );
 
-  const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
-  const currentAds = ads.slice(((currentPage - 1) * adsPerPage), currentPage * adsPerPage);
-
-  const handlePageChange = (direction) => {
-    setCurrentPage(prevPage => {
-      if (direction === 'next') return Math.min(prevPage + 1, totalPages);
-      if (direction === 'prev') return Math.max(prevPage - 1, 1);
-      return prevPage;
-    });
-  };
-
-  // Handlers for Ticket Modal
-  const handleOpenTicketModal = () => {
-    setTicketModalOpen(true);
-  };
-
-  const handleCloseTicketModal = () => {
-    setTicketModalOpen(false);
-    setTicketData({ title: '', description: '' });
-    setTicketErrors({});
-  };
-
-  const handleTicketChange = (e) => {
-    const { name, value } = e.target;
-    setTicketData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const validateTicket = () => {
+  const handleTicketSubmit = async () => {
     const errors = {};
-    if (!ticketData.title) {
-      errors.title = "Title is required";
-    }
-    if (!ticketData.description) {
-      errors.description = "Description is required";
-    }
-    return errors;
-  };
-
-  const handleTicketSubmit = (e) => {
-    e.preventDefault();
-    const errors = validateTicket();
+    if (!ticketData.title) errors.title = "Title is required";
+    if (!ticketData.description) errors.description = "Description is required";
+    
     if (Object.keys(errors).length > 0) {
       setTicketErrors(errors);
       return;
     }
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.post('https://nagaconnect-iitbilai.onrender.com/jobSeeker/RaiseTicket', ticketData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(response => {
-          console.log('Ticket raised successfully:', response.data);
-          handleCloseTicketModal();
-          // Optionally, you can show a success message to the user
-        })
-        .catch(error => {
-          console.error('Error raising ticket:', error);
-          // Optionally, handle error (e.g., show error message)
-        });
-    } else {
-      console.log("Please Login First");
+    const token = localStorage.getItem("token");
+    if (!token) {
       navigate("/job-seeker/login");
+      return;
+    }
+
+    try {
+      await axios.post(
+        'https://nagaconnect-iitbilai.onrender.com/jobSeeker/RaiseTicket',
+        ticketData,
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
+      alert("Rasied ticket successfully");
+      setTicketModalOpen(false);
+      setTicketData({ title: '', description: '' });
+    } catch (error) {
+      console.error('Error submitting ticket:', error);
     }
   };
 
   return (
-    <div>
-      {/* Fixed Menu Bar */}
-      <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
-        <Menu />
-      </div>
-
-      {/* Spacer to prevent content from being hidden behind fixed menu */}
-      <div style={{ paddingTop: '60px' }}></div>
-
-      {/* Main Content */}
-      <div className="dashboard-container">
-        {/* Ticket Modal */}
-        <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
-          <DialogTitle>Raise a Ticket</DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleTicketSubmit}>
-              <div className="mb-3">
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  label="Title"
-                  name="title"
-                  fullWidth
-                  variant="standard"
-                  value={ticketData.title}
-                  onChange={handleTicketChange}
-                  error={!!ticketErrors.title}
-                  helperText={ticketErrors.title}
-                />
-              </div>
-              <div className="mb-3">
-                <TextField
-                  margin="dense"
-                  label="Description"
-                  name="description"
-                  fullWidth
-                  multiline
-                  rows={4}
-                  variant="standard"
-                  value={ticketData.description}
-                  onChange={handleTicketChange}
-                  error={!!ticketErrors.description}
-                  helperText={ticketErrors.description}
-                />
-              </div>
-              <DialogActions>
-                <Button onClick={handleCloseTicketModal}>Cancel</Button>
-                <Button type="submit" variant="contained" color="primary">Submit</Button>
-              </DialogActions>
-            </form>
-          </DialogContent>
-        </Dialog>
-
-        {/* Raise a Ticket Button */}
-        <button className="raise-ticket-btn" onClick={handleOpenTicketModal}>
-          Raise a Ticket
-        </button>
-
-        {/* Applied Jobs Button */}
-        <button className="applied-jobs-btn">
-          <Link to="/job-seeker/applied-jobs">Applied Jobs</Link>
-        </button>
-        <br />
-
-        {/* Filter Button */}
-        <button className="filter-btn" onClick={toggleFilterVisibility}>Filter Jobs</button>
-        {isFilterVisible && (
-          <div className="filters">
-            <h4>Filter by Location:</h4>
-            <div className="filter-options">
-              {locations.map((location, index) => (
-                <div key={index} className="filter-item">
-                  <input
-                    type="checkbox"
-                    id={location}
-                    value={location}
-                    checked={selectedLocations.includes(location)}
-                    onChange={() => handleLocationChange(location)}
-                  />
-                  <label htmlFor={location}>{location}</label>
-                </div>
-              ))}
-            </div>
-
-            <h4>Filter by Type of Work:</h4>
-            <div className="filter-options">
-              {["construction", "factoryWork", "agriculture", "transportation", "domesticWork", "others"].map((workType, index) => (
-                <div key={index} className="filter-item">
-                  <input
-                    type="checkbox"
-                    id={workType}
-                    value={workType}
-                    checked={selectedWorkTypes.includes(workType)}
-                    onChange={() => handleWorkTypeChange(workType)}
-                  />
-                  <label htmlFor={workType}>{workType.split(/(?=[A-Z])/).join(" ")}</label>
-                </div>
-              ))}
+    <div className="min-h-screen bg-gray-50">
+      <header className="fixed top-0 w-full bg-white border-b border-gray-200 shadow-sm z-50">
+        <div >
+          <div >
+          <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000, backgroundColor: '#f8f9fa' }}>
+            <Menu />
+          </div>
+          <pre> </pre>
+          <pre> </pre>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setTicketModalOpen(true)}
+                className="flex items-center px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800"
+              >
+                Raise Ticket
+              </button>
+              <Link
+                to="/job-seeker/applied-jobs"
+                className="flex items-center px-4 py-2 text-sm font-medium text-black border border-black rounded-md hover:bg-gray-100"
+              >
+                Applied Jobs
+              </Link>
             </div>
           </div>
-        )}
-
-        {/* Search Bar */}
-        <input
-          type='text'
-          placeholder='Search for jobs'
-          className='search-bar'
-          onChange={handleSearchChange}
-          value={searchQuery}
-        />
-
-        {/* Jobs Available */}
-        <h3>Jobs Available</h3>
-        {currentJobs.length > 0 ? (
-          <div className="jobs-grid">
-            {currentJobs.map((job, index) => (
-              <div key={job.id || index} className="job-card-wrapper">
-                <CarderSeeker job={job} fetchJobs={fetchJobs} />
-                {(index + 1) % 5 === 0 && currentAds.length > Math.floor(index / 5) && (
-                  <AdCard ad={currentAds[Math.floor(index / 5)]} />
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>No jobs match your search or filter criteria.</p>
-        )}
-
-        {/* Pagination */}
-        <div className="pagination">
-          <button onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Previous</button>
-          <span> Page {currentPage} of {totalPages} </span>
-          <button onClick={() => handlePageChange('next')} disabled={currentPage === totalPages}>Next</button>
         </div>
-      </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        <div className="mb-8 space-y-4">
+          <div className="flex items-center space-x-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-black focus:border-black"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={() => setIsFilterVisible(!isFilterVisible)}
+              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Filters
+            </button>
+          </div>
+
+          {isFilterVisible && (
+            <div className="p-4 bg-white border border-gray-200 rounded-md shadow-sm">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">Location</h3>
+                  <div className="space-y-2">
+                    {locations.map((location) => (
+                      <label key={location} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
+                          checked={selectedLocations.includes(location)}
+                          onChange={() => handleLocationChange(location)}
+                        />
+                        <span className="ml-2 text-sm text-gray-700">{location}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">Work Type</h3>
+                  <div className="space-y-2">
+                    {["construction", "factoryWork", "agriculture", "transportation", "domesticWork", "others"].map((type) => (
+                      <label key={type} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
+                          checked={selectedWorkTypes.includes(type)}
+                          onChange={() => handleWorkTypeChange(type)}
+                        />
+                        <span className="ml-2 text-sm text-gray-700">
+                          {type.split(/(?=[A-Z])/).join(" ")}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentJobs.map((job, index) => (
+            <React.Fragment key={job.id || index}>
+              <CarderSeeker job={job} fetchJobs={fetchJobs} />
+              {(index + 1) % 3 === 0 && currentAds.length > Math.floor(index / 3) && (
+                <AdCard ad={currentAds[Math.floor(index / 3)]} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div className="mt-8 flex items-center justify-center space-x-4">
+          <button
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </div>
+      </main>
+
+      <Dialog
+        open={isTicketModalOpen}
+        onClose={() => setTicketModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h6">Raise a Ticket</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <div className="space-y-4 mt-4">
+            <TextField
+              autoFocus
+              label="Title"
+              fullWidth
+              value={ticketData.title}
+              onChange={(e) => setTicketData({ ...ticketData, title: e.target.value })}
+              error={!!ticketErrors.title}
+              helperText={ticketErrors.title}
+            />
+            <TextField
+              label="Description"
+              multiline
+              rows={4}
+              fullWidth
+              value={ticketData.description}
+              onChange={(e) => setTicketData({ ...ticketData, description: e.target.value })}
+              error={!!ticketErrors.description}
+              helperText={ticketErrors.description}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setTicketModalOpen(false)}>Cancel</Button>
+          <Button onClick={handleTicketSubmit} variant="contained">Submit</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
-}
+};
 
 export default JobSeekerDashboard;
