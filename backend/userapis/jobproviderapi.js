@@ -153,6 +153,8 @@ job_provider.post('/addJob',verifyToken, multerObj.single("image"), async (req, 
 });
 
 
+
+
 // To get the list of jobs posted by the JobProvider
 job_provider.get('/jobs', verifyToken, (req, res) => {
   const sql = req.app.get("db");
@@ -327,13 +329,46 @@ job_provider.get('/applications/:jobId', verifyToken, async(req, res) =>{
   const db = req.app.get("db");
   const request = new db.Request();
   const result = await request.input('jobId', sql.VarChar, jobId)
-                              .query('select js.name,js.phone,js.sex,js.age,js.seeker_id as seekerId from job_applications ja, job_seeker js where ja.id=@jobId and ja.seeker_id=js.seeker_id');
+                              .query('select js.name,js.phone,ja.application_id,js.sex,js.age,js.seeker_id as seekerId,ja.ApplicationStatus from job_applications ja, job_seeker js where ja.id=@jobId and ja.seeker_id=js.seeker_id');
   res.status(200).json(result.recordset);
 } catch (err) {
   console.error('Error fetching applied jobs:', err);
   res.status(500).send({message:'Internal Server Error'});
 }
 })
+job_provider.put('/applications/:applicationId/updateStatus', verifyToken, async (req, res) => {
+  const applicationId = req.params.applicationId; // Extract application ID from route parameter
+  const { ApplicationStatus } = req.body; // Extract status from request body
+
+  console.log('Received Data:', { applicationId, ApplicationStatus }); // Debugging log
+
+  // Validate inputs
+  if (!applicationId || !ApplicationStatus) {
+    console.log('Missing Data:', { applicationId, ApplicationStatus }); // Log missing data
+    return res.status(400).send({ message: 'Application ID and Application Status are required.' });
+  }
+
+  try {
+    const db = req.app.get('db');
+    const request = new db.Request();
+
+    // Use the application ID to update the ApplicationStatus
+    await request
+      .input('applicationId', sql.VarChar, applicationId)
+      .input('ApplicationStatus', sql.VarChar, ApplicationStatus)
+      .query(
+        'UPDATE job_applications SET ApplicationStatus = @ApplicationStatus WHERE application_id = @applicationId'
+      );
+
+    res.status(200).send({ message: 'Application status updated successfully.' });
+  } catch (err) {
+    console.error('Error updating application status:', err);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 
 
 // Route to reset password
