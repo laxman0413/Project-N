@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import AdCard from './advertisement/AdCard';
+import AdCardPrivate from './advertisement/AdCardPrivate';
 import './Home.css';
 import jobProviderImage from './job-provider.jpg';
 import jobSeekerImage from './job-seeker.jpg';
@@ -79,7 +80,7 @@ function Home() {
           >
             {ads.map(ad => (
               <div key={ad.advertisement_id} className="carousel-slide">
-                <AdCard ad={ad} onDelete={handleDelete} />
+                <AdCardPrivate ad={ad} onDelete={handleDelete} />
               </div>
             ))}
           </Carousel>

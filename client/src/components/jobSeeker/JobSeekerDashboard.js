@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import CarderSeeker from './CarderSeeker';
-import AdCard from '../advertisement/AdCard';
+import AdCardPrivate from '../advertisement/AdCardPrivate';
 import Menu from './Menu';
 
 const JobSeekerDashboard = () => {
@@ -226,7 +226,7 @@ const JobSeekerDashboard = () => {
             <React.Fragment key={job.id || index}>
               <CarderSeeker job={job} fetchJobs={fetchJobs} />
               {(index + 1) % 3 === 0 && currentAds.length > Math.floor(index / 3) && (
-                <AdCard ad={currentAds[Math.floor(index / 3)]} />
+                <AdCardPrivate ad={currentAds[Math.floor(index / 3)]} />
               )}
             </React.Fragment>
           ))}
