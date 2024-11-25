@@ -150,7 +150,7 @@ job_seeker.get('/appliedJobs', verifyToken, async (req, res) => {
     const db = req.app.get("db");
     const request = new db.Request();
     const result = await request.input('seeker_id', sql.VarChar, seekerId)
-                                .query('select jd.jobTitle,jd.peopleNeeded,jd.jobType,jd.date,jd.time,jd.payment,jd.customJobType,jd.description,jd.location,jd.negotiability,jd.payment,jd.provider_id,ja.application_id,jd.images from job_applications ja, job_seeker js, jobdetails jd where jd.id=ja.id and ja.seeker_id=js.seeker_id and ja.seeker_id=@seeker_id;');
+                                .query('select jd.jobTitle,jd.peopleNeeded,jd.jobType,jd.date,jd.time,jd.payment,jd.customJobType,jd.description,jd.location,jd.negotiability,jd.payment,jd.provider_id,ja.application_id,jd.images,ja.ApplicationStatus from job_applications ja, job_seeker js, jobdetails jd where jd.id=ja.id and ja.seeker_id=js.seeker_id and ja.seeker_id=@seeker_id;');
 
     res.status(200).json(result.recordset);
   } catch (err) {

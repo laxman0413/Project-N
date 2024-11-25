@@ -73,6 +73,7 @@ function CarderSeekerApp({ job, onWithdraw }) {
             <strong>Time:</strong> {new Date(job.time).toLocaleTimeString()}<br />
             <strong>Negotiability:</strong> {job.negotiability ? job.negotiability : 'Non-Negotiable'}<br />
             <strong>Description:</strong> {job.description || 'No additional description available.'}<br />
+            <strong>Application Statys:</strong> {job.ApplicationStatus || 'waiting'}<br />
           </Typography>
         </DialogContent>
         <DialogActions>
