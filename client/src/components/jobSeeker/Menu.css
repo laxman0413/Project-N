@@ -1,0 +1,96 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  /* Navbar Styles */
+  .MuiAppBar-root {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+  }
+  .MuiDrawer-paper {
+    box-shadow: none !important; /* Removes the shadow */
+  }
+  .MuiAppBar-root {
+    box-shadow: none !important; /* Removes the shadow under the AppBar */
+  }
+  
+  
+  .MuiToolbar-root {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .navbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1976d2;
+    text-align: center;
+  }
+  
+  .MuiIconButton-root {
+    color: #666666 !important;
+    transition: color 0.3s ease;
+  }
+  
+  .MuiIconButton-root:hover {
+    color: #1976d2 !important;
+  }
+  
+  /* Drawer Styles */
+  .MuiDrawer-paper {
+    width: 300px;
+    background-color: #ffffff !important;
+    border-right: 1px solid #eeeeee;
+  }
+  
+  .drawer-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333333;
+    padding: 10px 20px;
+  }
+  
+  .drawer-footer {
+    text-align: center;
+    color: #888888;
+    margin-top: 20px;
+    font-size: 0.8rem;
+  }
+  
+  /* Sidebar List Styles */
+  .MuiListItem-root {
+    padding: 15px 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .MuiListItem-root:hover {
+    background-color: #f4f8fc;
+  }
+  
+  .MuiListItemText-primary {
+    font-size: 1rem;
+    color: #555555;
+    font-weight: 500;
+  }
+  
+  .MuiListItemText-primary:hover {
+    color: #1976d2;
+  }
+  
+  /* Divider Styling */
+  .MuiDivider-root {
+    background-color: #eeeeee;
+    margin: 5px 0;
+  }
+  
+  /* Footer Style */
+  .drawer-footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.8rem;
+    color: #888888;
+  }
+  

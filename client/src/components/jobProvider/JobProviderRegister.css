@@ -1,66 +1,229 @@
-.register-container {
-  max-width: 400px;
-  margin: auto;
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
   padding: 20px;
-  background-color: #f2f1ec;
-  border-radius: 12px;
+}
+
+.register-contain {
+  display: flex;
+  background-color: #dad6d6;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  margin: 0 auto; /* Center the container */
+  overflow: hidden;
+}
+
+.info-section {
+  flex: 1;
+  background-color: #f4f8fc;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  font-family: Arial, sans-serif;
+}
+
+.form-section {
+  flex: 2;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.info-image {
+  width: 120px;
+  margin-bottom: 20px;
+}
+
+.info-section h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #212529;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.checkmark {
+  color: #28a745;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.form-section {
+  flex: 2;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .back-button {
   background: none;
   border: none;
-  font-size: 1.2em;
-  color: #333;
+  font-size: 1.5rem;
+  color: #007bff;
   cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  text-decoration: underline;
 }
 
 .form-title {
-  font-size: 2em;
+  font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 1em;
+  margin-bottom: 5px;
+  color: #212529;
+}
+
+.form-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.form-container {
+  width: 100%;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #495057;
 }
 
 .form-control {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 1em;
-  border: 1px solid #ddd;
-  border-radius: 25px;
-  background-color: #fff;
-  text-align: center;
-}
-
-.btn-submit {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid black;
-  border-radius: 25px;
-  background-color: #000; /* Changed to black */
-  color: white;
-  font-size: 1em;
-  cursor: pointer;
-}
-
-.alternative-login {
-  margin-top: 10px;
-  color: #6c757d;
-}
-
-.otp-verification {
-  text-align: center;
-}
-
-.error-message {
-  color: #e74c3c;
-  font-size: 0.875em;
+  padding: 10px 15px;
   margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-control.input-error {
+  border-color: #dc3545;
 }
 
 .validation-error {
-  color: #e74c3c;
-  font-size: 0.75em;
-  margin-top: -8px;
+  color: #dc3545;
+  font-size: 0.9rem;
   margin-bottom: 10px;
+}
+
+.btn-dark {
+  background-color: #343a40;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-dark:hover {
+  background-color: #212529;
+}
+
+.alternative-login {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.alternative-login a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.alternative-login a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .register-contain {
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .info-section {
+    padding: 20px;
+    order: 2;
+  }
+
+  .form-section {
+    padding: 20px;
+    order: 1;
+  }
+  .form-section {
+    margin-bottom: 20px;
+  }
+
+  .info-image {
+    width: 100px;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .info-section h3 {
+    font-size: 1.2rem;
+  }
+  .info-section {
+    margin-bottom: 20px;
+  }
+
+  .info-list li {
+    font-size: 0.9rem;
+  }
+
+  .form-title {
+    font-size: 1.2rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .form-control {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
+  .btn-dark {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
 }

@@ -5,60 +5,91 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Play&display=swap');
 
 body{
-margin:0;
-overflow-x:hidden;
+  margin:0;
+  overflow-x:hidden;
 }
 
 .footer{
-background:#000;
-padding:30px 0px;
-font-family: 'Play', sans-serif;
-text-align:center;
+  background:#000;
+  padding:40px 20px;
+  font-family: 'Play', sans-serif;
+  color:#fff;
+  margin-bottom: 0%;
 }
 
-.footer .row{
-width:100%;
-margin:1% 0%;
-padding:0.6% 0%;
-color:gray;
-font-size:0.8em;
+.footer .help-section{
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.footer .row a{
-text-decoration:none;
-color:gray;
-transition:0.5s;
+.footer .help-section h3{
+  font-size: 1.5em;
+  margin-bottom: 10px;
 }
 
-.footer .row a:hover{
-color:#fff;
+.footer .help-section p{
+  margin-bottom: 20px;
+  color: gray;
 }
 
-.footer .row ul{
-width:100%;
+.footer .help-section .buttons{
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
-.footer .row ul li{
-display:inline-block;
-margin:0px 30px;
+.footer .help-section .buttons a{
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1px solid gray;
+  color: #fff;
+  border-radius: 5px;
+  transition: background 0.3s, color 0.3s;
 }
 
-.footer .row a i{
-font-size:2em;
-margin:0% 1%;
+.footer .help-section .buttons a:hover{
+  background: #fff;
+  color: #000;
+}
+
+.footer .links-section{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.footer .links-section ul{
+  list-style: none;
+  padding: 0;
+}
+
+.footer .links-section ul li{
+  margin: 5px 0;
+}
+
+.footer .links-section ul li a{
+  text-decoration: none;
+  color: gray;
+  transition: color 0.3s;
+}
+
+.footer .links-section ul li a:hover{
+  color: #fff;
+}
+
+.footer .copyright{
+  text-align: center;
+  color: gray;
+  font-size: 0.9em;
 }
 
 @media (max-width:720px){
-.footer{
-text-align:left;
-padding:5%;
-}
-.footer .row ul li{
-display:block;
-margin:10px 0px;
-text-align:left;
-}
-.footer .row a i{
-margin:0% 3%;
-}
+  .footer .links-section{
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer .links-section ul{
+    margin-bottom: 20px;
+  }
 }

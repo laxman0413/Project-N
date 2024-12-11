@@ -7,7 +7,6 @@ function JobProviderRootLayout() {
     <div>
       <UserLoginContextStore>
         <Outlet />
-        <Footer style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} />
       </UserLoginContextStore>
     </div>
   )

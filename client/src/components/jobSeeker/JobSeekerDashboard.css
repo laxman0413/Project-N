@@ -1,156 +1,273 @@
-/* General Styling */
+/* General Styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #fff;
-  color: #333;
+  font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-}
-
-/* Dashboard Container */
-.dashboard-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Menu Bar */
-.fixed-menu {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-}
-
-/* Spacer */
-.spacer {
-  padding-top: 60px;
-}
-
-/* Ticket Button */
-.raise-ticket-btn,
-.applied-jobs-btn,
-.filter-btn {
-  background-color: #333;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  margin: 10px 0;
-  transition: background-color 0.3s;
-  font-size: 16px;
-}
-
-.raise-ticket-btn:hover,
-.applied-jobs-btn:hover,
-.filter-btn:hover {
-  background-color: #555;
-}
-
-/* Filter Section */
-.filters {
-  background-color: #f8f8f8;
-  padding: 20px;
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-.filters h4 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  background-color: #f5f5f5;
   color: #333;
 }
 
-.filter-options {
+/* Header Styles */
+header {
+  background-color: #1a1a1a;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header .menu {
+  padding: 10px;
+}
+
+/* General Dashboard Styles */
+.job-seeker-dashboard {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.filter-item {
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-input[type="checkbox"] {
-  margin-right: 8px;
-}
-
-label {
-  font-size: 14px;
-  color: #333;
-}
-
-/* Search Bar */
-.search-bar {
-  padding: 10px;
+/* Header */
+.dashboard-header {
+  position: fixed;
+  top: 0;
   width: 100%;
-  max-width: 400px;
-  border: 1px solid #ccc;
-  margin-bottom: 20px;
-  font-size: 16px;
+  z-index: 1000;
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Jobs Grid */
-.jobs-grid {
+/* Main Section */
+.dashboard-main {
+  margin-top: 80px;
+  padding: 20px;
+  max-width: 70%;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  justify-content: center;
+  margin: auto;
+  margin-bottom: 40px;
+}
+
+.search-bar,
+.location-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-icon,
+.location-icon {
+  color: #aaa;
+}
+
+.search-input,
+.location-dropdown {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-input:focus,
+.location-dropdown:focus {
+  outline: none;
+  border-color: #9dbce4;
+  box-shadow: 0 0 3px rgba(26, 115, 232, 0.3);
+}
+
+/* Card Grid */
+.card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
 
-.job-card-wrapper {
-  border: 1px solid #ccc;
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-}
-
 /* Pagination */
-.pagination {
-  text-align: center;
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   margin-top: 20px;
 }
 
-.pagination button {
-  background-color: #333;
+.pagination-button {
+  padding: 10px 20px;
+  background-color: #1a73e8;
   color: #fff;
   border: none;
-  padding: 8px 20px;
+  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.pagination button:hover {
-  background-color: #555;
+.pagination-button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
 }
 
-.pagination span {
+.pagination-info {
   font-size: 16px;
-  color: #333;
-  margin: 0 10px;
+  color: #555;
 }
 
-/* Modal Styling */
-.MuiDialog-paper {
+/* Job Search Container */
+.job-search-container {
+  margin: 20px auto;
+  max-width: 600px;
+  padding: 20px;
   background-color: #fff;
   border-radius: 8px;
-  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.MuiDialogActions-root {
+.job-search-container input,
+.job-search-container select {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.job-search-container input:focus,
+.job-search-container select:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.3);
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  background-color: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Advertisement Card */
+.ad-card {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+footer {
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+footer a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* General Grid for Cards */
+main .grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
 }
 
-.MuiButton-root {
-  color: #333;
+@media (min-width: 768px) {
+  main .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
 }
 
-.MuiTextField-root {
-  margin-bottom: 20px;
+@media (min-width: 1024px) {
+  main .grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
-.MuiDialogTitle-root {
-  font-size: 18px;
-  color: #333;
+/* CarderSeeker Styles */
+.card-seeker {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-seeker img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.card-seeker h3 {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.card-seeker p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.card-seeker button {
+  padding: 10px 15px;
+  background-color: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Center Alignment for Mobile */
+@media (max-width: 768px) {
+  main .grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .dashboard-main {
+    max-width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 }

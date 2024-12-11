@@ -25,6 +25,7 @@ import ResetPasswordPro from './components/jobProvider/ResetPasswordPro';
 import JobProviderProfile from './components/jobProvider/JobProviderProfile';
 import JobProviderPubP from './components/PublicProfiling/JobProviderPubP';
 import JobSeekerPubP from './components/PublicProfiling/JobSeekerPubP';
+import HelpnSupport from './components/support/HelpnSupport';
 function App() {
   const RouterObj=createBrowserRouter([
     {
@@ -123,6 +124,10 @@ function App() {
         {
           path:'/ppprofile/:userId',
           element:<JobProviderPubP />
+        },
+        {
+          path:'/help-and-support/:role',
+          element:<HelpnSupport />
         }
       ]
     }

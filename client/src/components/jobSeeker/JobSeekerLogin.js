@@ -1,13 +1,23 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect,useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate ,Link} from "react-router-dom";
 import { Logincontex } from './JobseekerloginContext/Logincontext';
 import './JobSeekerLogin.css'; // Custom CSS file for styling
+import logoImage from '../logo.png';
 
 function JobSeekerLogin() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [currentuser, error, userloginStatus, LoginUser] = useContext(Logincontex);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const forsubmit = (userObj) => {
     LoginUser(userObj);
@@ -21,60 +31,73 @@ function JobSeekerLogin() {
   }, [userloginStatus, navigate]);
 
   return (
-    <div className="login-container">
-      <h1 className="text-center">Job Seeker Login</h1>
-      {error && <p className="error-message">{error}</p>}
-      <div className="login-form-container">
-        <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-3">
-          <form onSubmit={handleSubmit(forsubmit)} className="login-form">
-            <div className="mb-3">
-              
-            <input
-              type="text"
-              className={`form-control ${errors.phone ? 'input-error' : ''}`}
-              placeholder="Phone No"
-              onKeyPress={(event) => {
-                if (!/[0-9]/.test(event.key) || event.target.value.length >= 10) {
-                  event.preventDefault();
-                }
-              }}
-              {...register("phone", {
-                required: "Phone number is required",
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Phone number must be exactly 10 digits"
-                }
-              })}
-              required
-            />
-            {errors.phone && <p className="validation-error">{errors.phone.message}</p>}
-            </div>
-            <div className="mb-3">
-              
-            <input
-              type="password"
-              name="password"
-              className={`form-control ${errors.password ? 'input-error' : ''}`}
-              placeholder="Password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters long"
-                }
-              })}
-              required
-            />
-            {errors.password && <p className="validation-error">{errors.password.message}</p>}
-            </div>
-            <button type="submit" className="btn-dark btn-submit">Login</button>
-          </form>
+    <div className="login-page">
+      <div className="login-container">
+      {!isMobile && (
+        <div className="info-section">
+          <img src={logoImage} alt="Login Info" className="info-image" />
+          <h3>Empower Your Career with NagaConnect!</h3>
+          <p>Find your job, connect with top recruiters, and take your work life to the next level.</p>
+          <ul className="info-links">
+            <li>Top Job Opportunities</li>
+            <li>Guided Job Application</li>
+          </ul>
         </div>
-        <div className="text-center mt-3">
-            <Link to="/job-seeker/reset-password" className="forgot-password-link">
-              Forgot your password?
-            </Link>
+      )}
+
+        <div className="form-section">
+          <h1 className="text-center">Job Seeker Login</h1>
+          {error && <p className="error-message">{error}</p>}
+          <div className="form-container">
+            <form onSubmit={handleSubmit(forsubmit)} className="login-form">
+              <label htmlFor="email" className="form-label">Phone </label>
+              <input
+                type="number"
+                id="number"
+                className={`form-control ${errors.email ? 'input-error' : ''}`}
+                placeholder="Enter your registered phone"
+                {...register("phone", {
+                  required: "Phone is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: "Enter a valid Phone Number",
+                  }
+                })}
+                required
+              />
+              {errors.email && <p className="validation-error">{errors.email.message}</p>}
+
+              <label htmlFor="password" className="form-label">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className={`form-control ${errors.password ? 'input-error' : ''}`}
+                placeholder="Enter your password"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long"
+                  }
+                })}
+                required
+              />
+              {errors.password && <p className="validation-error">{errors.password.message}</p>}
+
+              <button type="submit" className="btn-primary btn-submit">Log in</button>
+            </form>
+            <div className="text-center mt-3">
+              <Link to="/job-seeker/reset-password" className="forgot-password-link">
+                Forgot your password?
+              </Link>
+              <p>or</p>
+              <Link to="/job-seeker/register" className="create-account-link">
+                Create account
+              </Link>
+            </div>
           </div>
+        </div>
       </div>
     </div>
   );
