@@ -3,7 +3,20 @@ import axios from 'axios';
 import { Logincontex } from '../jobSeeker/JobseekerloginContext/Logincontext'; // Correct import
 import { FaUser, FaBirthdayCake, FaPhone, FaGenderless, FaBriefcase } from 'react-icons/fa';
 import Menu from './Menu';
-
+import Swal from 'sweetalert2';
+function showAlertSuccess(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
+function showAlertError(data){
+  Swal.fire({
+    title: data,
+    icon: 'error',
+    confirmButtonText: 'OK'
+  })
+}
 function JobSeekerProfile() {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState('');
@@ -65,7 +78,7 @@ function JobSeekerProfile() {
         },
       })
       .then(response => {
-        alert("User Profile edited Successfully");
+        showAlertSuccess("User Profile edited Successfully");
         setProfile(editData);  // Update profile with the new data
         setIsEditing(false);  // Exit edit mode
       })

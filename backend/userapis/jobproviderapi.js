@@ -161,7 +161,7 @@ job_provider.get('/jobs', verifyToken, (req, res) => {
   const request = new sql.Request();
   const provider_id = req.res.locals.decode.id;
   
-  const sqlQuery = 'SELECT * FROM jobdetails WHERE provider_id = @provider_id';
+  const sqlQuery = 'SELECT * FROM jobdetails WHERE provider_id = @provider_id order by date desc';
   request.input('provider_id', sql.VarChar, provider_id);
   
   request.query(sqlQuery, (err, result) => {
@@ -206,7 +206,7 @@ job_provider.put('/editJob/:jobId', verifyToken, (req, res) => {
   request.input('peopleNeeded', sql.Int, peopleNeeded);
   request.input('location', sql.VarChar, location);
   request.input('date', sql.Date, date);
-  request.input('time', sql.Time, time);
+  request.input('time', sql.VarChar, time);
   request.input('description', sql.VarChar, description);
   request.input('negotiability', sql.VarChar, negotiability);
 

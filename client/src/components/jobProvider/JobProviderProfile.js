@@ -3,7 +3,13 @@ import axios from 'axios';
 import { Logincontex } from '../jobProvider/JobProviderloginContext/Logincontext';
 import { FaUser, FaPhone, FaEdit } from 'react-icons/fa';
 import Menu from './Menu';
-
+import Swal from 'sweetalert2';
+function showAlert(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
 function JobProviderProfile() {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState('');
@@ -58,7 +64,7 @@ function JobProviderProfile() {
         }
       )
       .then(response => {
-        alert(response.data.message);
+        showAlert(response.data.message);
         console.log(response.data);
         setProfile(editedProfile);
         setIsEditing(false);

@@ -4,8 +4,17 @@ import { useNavigate,Link} from "react-router-dom";
 import { Logincontex } from './JobProviderloginContext/Logincontext';
 import './JobProviderLogin.css';
 import logoImage from '../logo.png';
+import Swal from 'sweetalert2';
 
 function JobProviderLogin() {
+  function showAlert(){
+    Swal.fire({
+      title: 'Login Successfull',
+      text: 'Please continue to the application',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    })
+  }
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [currentuser, error, userloginStatus, LoginUser, LogoutUser] = useContext(Logincontex);
@@ -25,7 +34,7 @@ function JobProviderLogin() {
 
   useEffect(() => {
     if (userloginStatus === true) {
-      alert("User Login Successfully")
+      showAlert("User Login Successfully");
       navigate('/job-provider/dashboard');
     }
   }, [userloginStatus, navigate]);

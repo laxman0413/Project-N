@@ -15,7 +15,20 @@ import card1 from './assets/card1.jpg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './CarderSeeker.css';
-
+import Swal from 'sweetalert2';
+function showAlertSuccess(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
+function showAlertError(data){
+  Swal.fire({
+    title: data,
+    icon: 'error',
+    confirmButtonText: 'OK'
+  })
+}
 function CarderSeeker({ job, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [application, setApplication] = useState('');
@@ -39,14 +52,14 @@ function CarderSeeker({ job, fetchJobs }) {
           }
         )
         .then(() => {
-          alert('Job applied successfully');
+          showAlertSuccess('Job applied successfully');
           fetchJobs();
         })
         .catch((error) => {
           console.error('Error submitting application:', error);
         });
     } else {
-      alert('Please Login First');
+      showAlertError('Please Login First');
     }
   };
 

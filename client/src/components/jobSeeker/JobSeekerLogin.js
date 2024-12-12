@@ -4,7 +4,20 @@ import { useNavigate ,Link} from "react-router-dom";
 import { Logincontex } from './JobseekerloginContext/Logincontext';
 import './JobSeekerLogin.css'; // Custom CSS file for styling
 import logoImage from '../logo.png';
-
+import Swal from 'sweetalert2';
+function showAlertSuccess(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
+function showAlertError(data){
+  Swal.fire({
+    title: data,
+    icon: 'error',
+    confirmButtonText: 'OK'
+  })
+}
 function JobSeekerLogin() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
@@ -25,7 +38,7 @@ function JobSeekerLogin() {
 
   useEffect(() => {
     if (userloginStatus === true) {
-      alert("User Login Successfully")
+      showAlertSuccess("User Login Successfully")
       navigate('/job-seeker/dashboard');
     }
   }, [userloginStatus, navigate]);

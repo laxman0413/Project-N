@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import Swal from 'sweetalert2';
+function showAlert(){
+  Swal.fire({
+    title: 'Login Successfull',
+    text: 'Please continue to the application',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  })
+}
 const AdminLogin = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +25,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/admin/login', { phone, password });
+      const response = await axios.post('https://nagaconnect-iitbilai.onrender.com/admin/login', { phone, password });
       if (response.status === 200) {
         setIsOtpSent(true); // OTP will be sent after login
       }
@@ -32,14 +40,14 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/admin/verify-otp', { phone, otp });
+      const response = await axios.post('https://nagaconnect-iitbilai.onrender.com/admin/verify-otp', { phone, otp });
       if (response.status === 200) {
         const { token } = response.data; // Use 'token' instead of 'adminToken'
         
         // Store the token in localStorage (or sessionStorage)
         localStorage.setItem('token', token);
 
-        alert('Login successful!');
+        showAlert();
         navigate('/admindashboard'); // Redirect to AdminDashboard on success
       }
     } catch (err) {

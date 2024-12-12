@@ -14,8 +14,17 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import AdCard from './AdCard';
-
+import Swal from 'sweetalert2';
+function showAlert(){
+  Swal.fire({
+    title: 'Login Successfull',
+    text: 'Please continue to the application',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  })
+}
 function Advertise() {
+  
   const { register, handleSubmit, reset } = useForm();
   const [isModalOpen, setModalOpen] = useState(false);
   const [ads, setAds] = useState([]);
@@ -68,7 +77,7 @@ function Advertise() {
           Authorization: `Bearer ${token}`
         }
       });
-      alert("Advertise added Successfully");
+      showAlert("Advertise added Successfully");
       console.log(response.data);
       setAds([...ads, response.data]);
       handleCloseModal();

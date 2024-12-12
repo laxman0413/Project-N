@@ -5,7 +5,13 @@ import axios from 'axios';
 import './JobProviderRegister.css'; // Assume you add styles here
 import { Link } from 'react-router-dom';
 import logoImage from '../logo.png';
-
+import Swal from 'sweetalert2';
+function showAlert(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
 function JobProviderRegister() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -65,7 +71,7 @@ function JobProviderRegister() {
           axios.post("https://nagaconnect-iitbilai.onrender.com/jobProvider/register", formData)
             .then(res => {
               if (res.status === 201) {
-                alert(res.data.message+"  Please Login!");
+                showAlert(res.data.message+"  Please Login!");
                 navigate("/job-provider/login");
               } else {
                 setError(res.data.message);

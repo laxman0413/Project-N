@@ -3,7 +3,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import './ResetPassword.css'; // Custom CSS file for styling
-
+import Swal from 'sweetalert2';
+function showAlert(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
 function ResetPassword() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
@@ -43,7 +49,7 @@ function ResetPassword() {
     axios.post('https://nagaconnect-iitbilai.onrender.com/jobProvider/reset-password', { phone, password: data.password })
       .then(response => {
         console.log('Password reset successful:', response);
-        alert('Password reset successful, Please Login!');
+        showAlert('Password reset successful, Please Login!');
         navigate('/job-seeker/login');
       })
       .catch(error => {

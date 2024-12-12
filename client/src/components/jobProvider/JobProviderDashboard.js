@@ -21,7 +21,13 @@ import CarderProvider from './CarderProvider';
 import Pagination from '@mui/material/Pagination';
 import './JobProviderDashboard.css';
 import AdCard from '../advertisement/AdCard';
-
+import Swal from 'sweetalert2';
+function showAlert(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
 function JobProviderDashboard() {
   const [selectedImg, setSelectedImg] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -102,7 +108,7 @@ function JobProviderDashboard() {
     
     try {
       const [jobResponse, adsResponse] = await Promise.all([
-        axios.get('https://nagaconnect-iitbilai.onrender.com/jobSeeker/jobdetails', {
+        axios.get('https://nagaconnect-iitbilai.onrender.com/jobProvider/jobs', {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get('https://nagaconnect-iitbilai.onrender.com/advertise/getAds', {
@@ -199,7 +205,7 @@ function JobProviderDashboard() {
           }
         }
       );
-      alert('Job posted successfully!');
+      showAlert('Job posted successfully!');
       console.log('Job posted successfully:', response.data);
       fetchJobs(); // Refresh the job list
       handleCloseModal();
@@ -237,7 +243,7 @@ function JobProviderDashboard() {
         }
       })
         .then(response => {
-          alert('Ticket raised successfully!');
+          showAlert('Ticket raised successfully!');
           console.log('Ticket raised successfully:', response.data);
           handleCloseTicketModal();
         })

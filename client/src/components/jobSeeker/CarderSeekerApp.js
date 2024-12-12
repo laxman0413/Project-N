@@ -5,7 +5,20 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import card1 from '../assets/card1.jpg'; // Assuming default image is in assets folder
-
+import Swal from 'sweetalert2';
+function showAlertSuccess(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
+function showAlertError(data){
+  Swal.fire({
+    title: data,
+    icon: 'error',
+    confirmButtonText: 'OK'
+  })
+}
 function CarderSeekerApp({ job, onWithdraw }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
@@ -28,10 +41,11 @@ function CarderSeekerApp({ job, onWithdraw }) {
           Authorization: `Bearer ${token}`
         }
       });
-      alert("job withdrawn Successfully");
+      showAlertSuccess("job withdrawn Successfully");
       onWithdraw(job.application_id);
       handleCloseDialog();
     } catch (error) {
+      showAlertError('Error withdrawing job application');
       console.error('Error withdrawing job application:', error.response?.data || error.message);
     }
   };

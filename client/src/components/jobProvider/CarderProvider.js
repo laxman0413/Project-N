@@ -17,7 +17,13 @@ import {
   FormControlLabel,
   Checkbox
 } from '@mui/material';
-
+import Swal from 'sweetalert2';
+function showAlert(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
 function CarderProvider({ job, locations, fetchJobs }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
@@ -61,7 +67,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
       })
         .then(response => {
           console.log(response.data);
-          alert(response.data.message);
+          showAlert(response.data.message);
           fetchJobs();
           setEditDialogOpen(false);
         })
@@ -80,7 +86,7 @@ function CarderProvider({ job, locations, fetchJobs }) {
         }
       })
         .then(response => {
-          alert('Job deleted successfully');
+          showAlert('Job deleted successfully');
           console.log(response.data);
           fetchJobs();
         })

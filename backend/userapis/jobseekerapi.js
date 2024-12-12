@@ -129,7 +129,7 @@ job_seeker.get('/jobdetails', verifyToken, (req, res) => {
     WHERE 
       (@locationParam IS NULL OR jd.location = @locationParam)
       AND (@jobtypeParam IS NULL OR jd.customJobType = @jobtypeParam)
-      AND ja.application_id IS NULL;  -- Ensures jobs without applications by the seeker
+      AND ja.application_id IS NULL order by date desc;  -- Ensures jobs without applications by the seeker
   `;
 
   request.query(query, (err, result) => {

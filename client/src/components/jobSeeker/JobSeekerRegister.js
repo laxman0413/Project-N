@@ -5,7 +5,20 @@ import axios from 'axios';
 import './JobSeekerRegister.css';
 import { Link } from 'react-router-dom';
 import logoImage from '../logo.png';
-
+import Swal from 'sweetalert2';
+function showAlertSuccess(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
+function showAlertError(data){
+  Swal.fire({
+    title: data,
+    icon: 'error',
+    confirmButtonText: 'OK'
+  })
+}
 function JobSeekerRegister() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -64,7 +77,7 @@ function JobSeekerRegister() {
           axios.post("https://nagaconnect-iitbilai.onrender.com/jobSeeker/register", formData)
             .then(res => {
               if (res.status === 201) {
-                alert(res.data.message+" Please Login!");
+                showAlertSuccess(res.data.message+" Please Login!");
                 navigate("/job-seeker/login");
               } else {
                 setError(res.data.message);
@@ -72,13 +85,16 @@ function JobSeekerRegister() {
             })
             .catch(error => {
               setError("Registration failed. Please try again.");
+              showAlertError("Registration failed. Please try again.");
             });
         } else {
           setError("Invalid OTP. Please try again.");
+          showAlertError("Invalid OTP. Please try again.");
         }
       })
       .catch(error => {
         setError("Error verifying OTP. Please try again.");
+        showAlertError("Error verifying OTP. Please try again.");
       });
   };
 

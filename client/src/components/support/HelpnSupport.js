@@ -5,7 +5,20 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import logoImage from '../logo.png';
-
+import Swal from 'sweetalert2';
+function showAlertSuccess(data){
+  Swal.fire({
+    title: data,
+    confirmButtonText: 'OK'
+  })
+}
+function showAlertError(data){
+  Swal.fire({
+    title: data,
+    icon: 'error',
+    confirmButtonText: 'OK'
+  })
+}
 function HelpnSupport() {
   const { role } = useParams();
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -13,7 +26,7 @@ function HelpnSupport() {
 
   useEffect(() => {
     if (role === 'unknown') {
-      alert('please login or create account first');
+      showAlertError('please login or create account first');
       navigate('/');
     }
   }, [role]);
@@ -29,7 +42,7 @@ function HelpnSupport() {
         }
       })
         .then(response => {
-          alert('Ticket raised successfully!');
+          showAlertSuccess('Ticket raised successfully!');
           console.log('Ticket raised successfully:', response.data);
           navigate(`/${role}/Dashboard`);
         })
