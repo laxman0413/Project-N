@@ -6,7 +6,19 @@ function NotificationsProvider() {
     const [notifications, setNotifications] = useState([]);
     const [error, setError] = useState(false);
     const navigate = useNavigate();
+    const updateStatus = async (id) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/job-seeker/login");
+            return;
+        }
+        axios.post(
+            'https://nagaconnect-iitbilai.onrender.com/notifications/updateStatus',
+            { id },
+            { headers: { Authorization: `Bearer ${token}` } }
 
+        )
+    };
     const fetchNotifications = useCallback(async () => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -16,7 +28,7 @@ function NotificationsProvider() {
 
         try {
             const response = await axios.get(
-                'http://localhost:3001/notifications/getNotifications',
+                'https://nagaconnect-iitbilai.onrender.com/notifications/getNotifications',
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
@@ -62,13 +74,12 @@ function NotificationsProvider() {
             {notifications.length === 0 ? (
                 <p>{error ? 'Failed to load notifications. Please try again later.' : 'No notifications found.'}</p>
             ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }} onLoad={updateStatus()}>
                     <thead>
                         <tr>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Notification</th>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date</th>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Time</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,9 +93,6 @@ function NotificationsProvider() {
                                 </td>
                                 <td style={{ border: '1px solid #ddd', padding: '8px' }}>
                                     {notification.notification_time}
-                                </td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                    {notification.viewed ? 'Viewed' : 'Unviewed'}
                                 </td>
                             </tr>
                         ))}

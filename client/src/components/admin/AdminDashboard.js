@@ -23,13 +23,13 @@ const AdminDashboard = () => {
         }
 
         // Fetch jobs
-        const jobsResponse = await axios.get("http://localhost:3001/admin/getjobs", {
+        const jobsResponse = await axios.get("https://nagaconnect-iitbilai.onrender.com/admin/getjobs", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setJobs(jobsResponse.data);
 
         // Fetch tickets
-        const ticketsResponse = await axios.get("http://localhost:3001/admin/gettickets", {
+        const ticketsResponse = await axios.get("https://nagaconnect-iitbilai.onrender.com/admin/gettickets", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTickets(ticketsResponse.data);
@@ -65,7 +65,7 @@ const AdminDashboard = () => {
 
       // Update the ticket status
       const updatedTicket = { ...selectedTicket, TicketStatus: editStatus };
-      await axios.put(`http://localhost:3001/admin/updateticket/${selectedTicket.TicketId}`, updatedTicket, {
+      await axios.put(`https://nagaconnect-iitbilai.onrender.com/admin/updateticket/${selectedTicket.TicketId}`, updatedTicket, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

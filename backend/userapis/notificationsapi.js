@@ -24,7 +24,7 @@ notifications.get('/getNotifications', verifyToken, (req, res) => {
     const request = new db.Request();
     const { id } = req.res.locals.decode;
 
-    const sqlQuery = `SELECT * FROM notifications WHERE receiver_id = @id`;
+    const sqlQuery = `SELECT * FROM notifications WHERE receiver_id = @id and viewed = 0 ORDER BY notification_date , notification_time DESC`;
     request.input('id', db.VarChar, id);
 
     request.query(sqlQuery, (err, result) => {
@@ -95,9 +95,21 @@ notifications.post('/create', verifyToken, async (req, res) => {
         res.status(500).send({ message: 'Internal Server Error' });
     }
 });
+notifications.post('/updateStatus',verifyToken,async(req,res)=>{
+    const db = req.app.get("db");
+    const request = new db.Request();
+    const { id } = req.res.locals.decode;
+    const sqlQuery = `UPDATE notifications SET viewed = 1 WHERE receiver_id = @id`;
+    request.input('id', db.VarChar, id);
+    request.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send({ message: 'Internal Server Error' });
+        }
 
-
-
+        res.status(200).send({ message: 'Notification status updated successfully' });
+    });
+});
 
 
 module.exports = notifications;

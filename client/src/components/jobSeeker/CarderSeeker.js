@@ -60,7 +60,7 @@ function CarderSeeker({ job, fetchJobs }) {
         });
 
         axios.post(
-          'http://localhost:3001/notifications/create',
+          'https://nagaconnect-iitbilai.onrender.com/notifications/create',
           {
             receiverId: job.providerId,
             data: `You have a new application for the job: ${job.jobTitle}`,
