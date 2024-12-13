@@ -53,6 +53,9 @@ app.use('/advertise',advertisement);
 const adminapi=require('./userapis/adminapi');
 app.use('/admin',adminapi);
 
+const notifications=require('./userapis/notificationsapi');
+app.use('/notifications',notifications);
+
 app.use('*',(req,res)=>{
   res.sendFile(path.join(__dirname,'../client/build/index.html'))
 })

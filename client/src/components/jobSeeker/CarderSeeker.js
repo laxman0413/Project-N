@@ -58,6 +58,23 @@ function CarderSeeker({ job, fetchJobs }) {
         .catch((error) => {
           console.error('Error submitting application:', error);
         });
+
+        axios.post(
+          'http://localhost:3001/notifications/create',
+          {
+            receiverId: job.providerId,
+            data: `You have a new application for the job: ${job.jobTitle}`,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        ).then(()=>{
+          console.log('Notification sent successfully');
+        }).catch((error)=>{
+          console.error('Error submitting application:', error);
+        })
     } else {
       showAlertError('Please Login First');
     }

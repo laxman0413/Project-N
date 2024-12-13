@@ -67,7 +67,7 @@ function Menu() {
             </IconButton>
             <IconButton>
               <Badge badgeContent={1} color="error">
-                <NotificationsIcon />
+                <NotificationsIcon  onClick={()=> handleNavigation('/job-provider/notifications')}/>
               </Badge>
             </IconButton>
             <IconButton onClick={()=>handleNavigation('/job-provider/profile')}>

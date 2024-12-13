@@ -26,6 +26,7 @@ import JobProviderProfile from './components/jobProvider/JobProviderProfile';
 import JobProviderPubP from './components/PublicProfiling/JobProviderPubP';
 import JobSeekerPubP from './components/PublicProfiling/JobSeekerPubP';
 import HelpnSupport from './components/support/HelpnSupport';
+import NotificationsProvider from './components/jobProvider/NotificationsProvider';
 function App() {
   const RouterObj=createBrowserRouter([
     {
@@ -67,6 +68,10 @@ function App() {
             {
               path:'/job-provider/profile',
               element:<JobProviderProfile />
+            },
+            {
+              path:'/job-provider/notifications',
+              element:<NotificationsProvider />
             }
           ]
         },
