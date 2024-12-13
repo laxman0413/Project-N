@@ -1,0 +1,110 @@
+.job-card-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .job-card {
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .job-image-container {
+    position: relative;
+  }
+  
+  .job-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .deadline-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #0073e6;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 12px;
+  }
+  
+  .expired-job .deadline-badge {
+    background-color: #e53935;
+  }
+  
+  .job-card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 300px; /* Fixed width */
+    height: 400px; /* Fixed height */
+    position: relative;
+  }
+  
+  .job-card.expired-job {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  
+  .job-card img {
+    width: 100%;
+    height: 180px; /* Fixed height for the image */
+    object-fit: cover;
+  }
+  
+  .job-card .deadline-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff5757;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .job-card .job-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+    text-align: center;
+  }
+  
+  .job-card .job-location,
+  .job-card .job-payment {
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .job-card-wrapper {
+      margin: 10px 0;
+    }
+  
+    .job-card {
+      max-width: 100%;
+    }
+  
+    .job-image {
+      height: 150px;
+    }
+  }
+  
