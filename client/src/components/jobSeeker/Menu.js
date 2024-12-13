@@ -112,10 +112,10 @@ function Menu() {
             <ListItem button onClick={()=>handleNavigation('/help-and-support/job-seeker')}>
               <ListItemText primary="Help Centre" />
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={()=>handleNavigation('/privacy-policy')}>
               <ListItemText primary="Privacy Centre" />
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={()=>handleNavigation('/terms-and-conditions')}>
               <ListItemText primary="Terms" />
             </ListItem>
             <Divider />
