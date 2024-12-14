@@ -42,6 +42,30 @@ notifications.get('/getNotifications', verifyToken, (req, res) => {
         res.status(200).send(notifications);
     });
 });
+notifications.get('/getUnreadCount', verifyToken, async (req, res) => {
+    try {
+        const db = req.app.get("db");
+        const request = new db.Request();
+        const { id } = req.res.locals.decode;
+
+        // SQL Query to get the count of unread notifications
+        const sqlQuery = `SELECT COUNT(*) AS unreadCount FROM notifications WHERE receiver_id = @id AND viewed = 0`;
+        request.input('id', db.VarChar, id);
+
+        const result = await request.query(sqlQuery);
+
+        if (result.recordset.length > 0) {
+            const unreadCount = result.recordset[0].unreadCount;
+            return res.status(200).json({ unreadCount });
+        } else {
+            return res.status(200).json({ unreadCount: 0 });
+        }
+    } catch (err) {
+        console.error('Error fetching unread notifications count:', err);
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+});
+
 
 
 notifications.get('/data4', async (req, res) => {
@@ -75,7 +99,8 @@ notifications.post('/create', verifyToken, async (req, res) => {
 
     const { receiverId, data } = req.body;
     const creatorId = req.res.locals.decode.id; // Use the decoded user ID from the token
-
+    
+    console.log({creatorId,receiverId,data});
     if (!creatorId || !receiverId || !data) {
         console.error('Missing required fields: creatorId, receiverId, or data');
         return res.status(400).send({ message: 'creatorId, receiverId, and data are required' });

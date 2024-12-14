@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState,useContext,useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -25,7 +25,43 @@ import './Menu.css';
 function Menu() {
   const [currentuser, error, userloginStatus, LoginUser, LogoutUser] = useContext(Logincontex);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+useEffect(() => {
+    // Fetch unread notification count
+    const fetchUnreadCount = async () => {
+      try {
+        // Get token from local storage or context
+        const token = localStorage.getItem('token'); // Adjust if you store it elsewhere
+        if (!token) {
+          console.error('Token is missing');
+          return;
+        }
+  
+        // Make the request with the token
+        const response = await fetch('https://nagaconnect-iitbilai.onrender.com/notifications/getUnreadCount', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Send token in Authorization header
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setUnreadCount(data.unreadCount || 0);
+        } else {
+          console.error('Failed to fetch unread notification count');
+        }
+      } catch (error) {
+        console.error('Error fetching unread notification count:', error);
+      }
+    };
+  
+    fetchUnreadCount();
+  }, []);
+  
+
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -67,8 +103,8 @@ function Menu() {
               <ChatIcon />
             </IconButton>
             <IconButton>
-              <Badge badgeContent={1} color="error">
-                <NotificationsIcon />
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon onClick={()=> handleNavigation('/job-seeker/notifications')} />
               </Badge>
             </IconButton>
             <IconButton onClick={()=>handleNavigation('/job-seeker/profile')}>

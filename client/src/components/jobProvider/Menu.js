@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -24,7 +24,43 @@ import './Menu.css';
 function Menu() {
   const [currentuser, error, userloginStatus, LoginUser, LogoutUser] = useContext(Logincontex);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch unread notification count
+    const fetchUnreadCount = async () => {
+      try {
+        // Get token from local storage or context
+        const token = localStorage.getItem('token'); // Adjust if you store it elsewhere
+        if (!token) {
+          console.error('Token is missing');
+          return;
+        }
+  
+        // Make the request with the token
+        const response = await fetch('https://nagaconnect-iitbilai.onrender.com/notifications/getUnreadCount', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Send token in Authorization header
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setUnreadCount(data.unreadCount || 0);
+        } else {
+          console.error('Failed to fetch unread notification count');
+        }
+      } catch (error) {
+        console.error('Error fetching unread notification count:', error);
+      }
+    };
+  
+    fetchUnreadCount();
+  }, []);
+  
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -47,78 +83,60 @@ function Menu() {
 
   return (
     <div>
-      {/* Navbar */}
       <AppBar position="static" sx={{ backgroundColor: '#ffffff', color: '#000000' }}>
         <Toolbar>
-          {/* Hamburger Menu Icon */}
           <IconButton edge="start" onClick={handleDrawerOpen} sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
 
-          {/* Logo */}
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <h1 style={{ height: '20px' }}><b>NagaConnect</b> </h1>
           </Typography>
 
-          {/* Action Icons */}
           <Box>
             <IconButton>
               <ChatIcon />
             </IconButton>
             <IconButton>
-              <Badge badgeContent={1} color="error">
-                <NotificationsIcon  onClick={()=> handleNavigation('/job-provider/notifications')}/>
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon onClick={() => handleNavigation('/job-provider/notifications')} />
               </Badge>
             </IconButton>
-            <IconButton onClick={()=>handleNavigation('/job-provider/profile')}>
+            <IconButton onClick={() => handleNavigation('/job-provider/profile')}>
               <AccountCircleIcon />
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer (Sidebar Menu) */}
       <Drawer anchor="left" open={isDrawerOpen} onClose={handleDrawerClose}>
         <Box sx={{ width: 300 }}>
-          {/* Sidebar List */}
           <List>
-            {/* Header */}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ListItem>
-              <ListItemText primary={<Typography variant="h6">Menu</Typography>} />
-            </ListItem>
-            
-            <IconButton onClick={handleDrawerClose}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
+              <ListItem>
+                <ListItemText primary={<Typography variant="h6">Menu</Typography>} />
+              </ListItem>
+              <IconButton onClick={handleDrawerClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
             <Divider />
-            {/* Links */}
-            <ListItem button onClick={()=>navigate('/job-provider/DashBoard')}>
+            <ListItem button onClick={() => navigate('/job-provider/DashBoard')}>
               <ListItemText primary="Home" />
             </ListItem>
             <Divider />
-            <ListItem button onClick={()=>handleNavigation('/job-provider/profile')} >
+            <ListItem button onClick={() => handleNavigation('/job-provider/profile')}>
               <ListItemText primary="Profile" />
             </ListItem>
-            <ListItem button onClick={()=>handleNavigation('/job-provider/applied-jobs')}>
+            <ListItem button onClick={() => handleNavigation('/job-provider/applied-jobs')}>
               <ListItemText primary="Job Applications" />
             </ListItem>
-            <ListItem button>
-              <ListItemText primary="My Reviews" />
-            </ListItem>
             <Divider />
-            <ListItem button onClick={()=>handleNavigation('/help-and-support/job-provider')}>
+            <ListItem button onClick={() => handleNavigation('/help-and-support/job-provider')}>
               <ListItemText primary="Help Centre" />
             </ListItem>
-            <ListItem button>
-              <ListItemText primary="Privacy Centre" />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Terms" />
-            </ListItem>
             <Divider />
-            <ListItem button onClick={()=>handleLogout()}>
+            <ListItem button onClick={() => handleLogout()}>
               <ListItemText primary="Sign Out" />
             </ListItem>
             <ListItem>

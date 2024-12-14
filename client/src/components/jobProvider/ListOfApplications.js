@@ -68,6 +68,7 @@ function ListOfApplications() {
           }
         )
         .then(() => {
+          // Update application status locally
           setApplications((prev) =>
             prev.map((app) =>
               app.application_id === selectedApplication.application_id
@@ -75,13 +76,41 @@ function ListOfApplications() {
                 : app
             )
           );
+  
+          // Close modal
           setOpenModal(false);
+  
+          // Send notification if status is "Shortlisted"
+          if (applicationStatus === "Shortlisted") {
+            console.log('Sending notification...');
+            console.log(selectedApplication.seekerId);
+            axios
+              .post(
+                'https://nagaconnect-iitbilai.onrender.com/notifications/create',
+                {
+                  receiverId: selectedApplication.seekerId, // Use seeker_id from the selected application
+                  data: `Your application for job ID ${jobId} has been accepted`,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
+              .then(() => {
+                console.log('Notification sent');
+              })
+              .catch((error) => {
+                console.error('Error sending notification:', error);
+              });
+          }
         })
         .catch((error) => {
           console.error('Error updating status:', error);
         });
     }
   };
+  
 
   return (
     <div>

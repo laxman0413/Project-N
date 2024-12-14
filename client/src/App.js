@@ -27,6 +27,7 @@ import JobProviderPubP from './components/PublicProfiling/JobProviderPubP';
 import JobSeekerPubP from './components/PublicProfiling/JobSeekerPubP';
 import HelpnSupport from './components/support/HelpnSupport';
 import NotificationsProvider from './components/jobProvider/NotificationsProvider';
+import NotificationsSeeker from './components/jobSeeker/NotificationsSeeker';
 function App() {
   const RouterObj=createBrowserRouter([
     {
@@ -107,6 +108,10 @@ function App() {
             {
               path:'/job-seeker/reset-password',
               element:<ResetPassword />
+            },
+            {
+              path:'/job-seeker/notifications',
+              element:<NotificationsSeeker />
             }
           ]
         },

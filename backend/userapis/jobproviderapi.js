@@ -323,19 +323,43 @@ job_provider.delete('/deleteJob/:jobId', verifyToken, async(req, res) => {
 
 
 //To get the list of applications for a patticular job
-job_provider.get('/applications/:jobId', verifyToken, async(req, res) =>{
- const jobId = req.params.jobId;
- try {
-  const db = req.app.get("db");
-  const request = new db.Request();
-  const result = await request.input('jobId', sql.VarChar, jobId)
-                              .query('select js.name,js.phone,ja.application_id,js.sex,js.age,js.seeker_id as seekerId,ja.ApplicationStatus from job_applications ja, job_seeker js where ja.id=@jobId and ja.seeker_id=js.seeker_id');
-  res.status(200).json(result.recordset);
-} catch (err) {
-  console.error('Error fetching applied jobs:', err);
-  res.status(500).send({message:'Internal Server Error'});
-}
-})
+job_provider.get('/applications/:jobId', verifyToken, async (req, res) => {
+  const jobId = req.params.jobId;
+
+  try {
+    const db = req.app.get("db");
+    const request = new db.Request();
+
+    // Use parameterized input to prevent SQL injection
+    const result = await request
+      .input('jobId', db.VarChar, jobId)
+      .query(`
+        SELECT 
+          js.name, 
+          js.phone, 
+          ja.application_id, 
+          js.sex, 
+          js.age, 
+          js.seeker_id, 
+          jd.jobTitle, 
+          ja.ApplicationStatus 
+        FROM 
+          job_applications AS ja
+        INNER JOIN 
+          job_seeker AS js ON ja.seeker_id = js.seeker_id
+        INNER JOIN 
+          jobdetails AS jd ON ja.id = jd.id
+        WHERE 
+          ja.id = @jobId
+      `);
+
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('Error fetching applied jobs:', err);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+});
+
 job_provider.put('/applications/:applicationId/updateStatus', verifyToken, async (req, res) => {
   const applicationId = req.params.applicationId; // Extract application ID from route parameter
   const { ApplicationStatus } = req.body; // Extract status from request body

@@ -9,7 +9,7 @@ function NotificationsProvider() {
     const updateStatus = async (id) => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/job-seeker/login");
+            navigate("/job-provider/login");
             return;
         }
         axios.post(
@@ -22,7 +22,7 @@ function NotificationsProvider() {
     const fetchNotifications = useCallback(async () => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/job-seeker/login");
+            navigate("/job-provider/login");
             return;
         }
 
