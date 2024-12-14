@@ -81,12 +81,12 @@ function ListOfApplications() {
           // Send notification if status is "Shortlisted"
           if (applicationStatus === "Shortlisted") {
             console.log('Sending notification...');
-            console.log(selectedApplication.seekerId);
+            console.log(selectedApplication.seeker_id);
             axios
               .post(
                 'https://nagaconnect-iitbilai.onrender.com/notifications/create',
                 {
-                  receiverId: selectedApplication.seekerId, // Use seeker_id from the selected application
+                  receiverId: selectedApplication.seeker_id, // Use seeker_id from the selected application
                   data: `Your application for job ID ${jobId} has been accepted`,
                 },
                 {
