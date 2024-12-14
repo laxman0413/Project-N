@@ -1,56 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import "./ListOfApplications.css";
 import {
   Card,
   CardContent,
   Typography,
   Grid,
-  Container,
   Button,
   Box,
   Modal,
   TextField,
   MenuItem,
-} from '@mui/material';
-import Menu from './Menu';
+} from "@mui/material";
+import logoImage from '../logo.png'; 
+import Menu from "./Menu";
 
 function ListOfApplications() {
   const { jobId } = useParams();
+  const [jobDetails, setJobDetails] = useState(null);
   const [applications, setApplications] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
-  const [applicationStatus, setApplicationStatus] = useState('');
+  const [applicationStatus, setApplicationStatus] = useState("");
   const navigate = useNavigate();
 
+  // Fetch job details and applications
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       axios
+        .get(`https://nagaconnect-iitbilai.onrender.com/jobProvider/jobDetails/${jobId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => setJobDetails(response.data))
+        .catch((error) => console.error("Error fetching job details:", error));
+
+      axios
         .get(`https://nagaconnect-iitbilai.onrender.com/jobProvider/applications/${jobId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         })
-        .then((response) => {
-          setApplications(response.data);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching applications:', error);
-        });
-    } else {
-      console.log('Please Login First');
+        .then((response) => setApplications(response.data))
+        .catch((error) => console.error("Error fetching applications:", error));
     }
   }, [jobId]);
 
-  const handleChat = (phoneNum) => {
-    return `https://wa.me/+91${phoneNum}`;
-  };
-
+  const handleChat = (phoneNum) => `https://wa.me/+91${phoneNum}`;
   const handleEditClick = (application) => {
     setSelectedApplication(application);
-    setApplicationStatus(application.ApplicationStatus || 'Pending');
+    setApplicationStatus(application.ApplicationStatus || "Pending");
     setOpenModal(true);
   };
 
@@ -110,42 +108,76 @@ function ListOfApplications() {
         });
     }
   };
-  
 
   return (
-    <div>
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          width: '100%',
-          zIndex: 1000,
-          backgroundColor: '#f8f9fa',
-        }}
-      >
-        <Menu />
+    <div >
+      {/* Sidebar */}
+      <div>
+            <Menu />
       </div>
-      <pre> </pre>
-      <pre> </pre>
-      <Container>
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <h2 variant="h4" gutterBottom>
-            Applications for Job ID: {jobId}
-          </h2>
-        </Box>
-        {applications.length === 0 ? (
-          <Typography variant="h6" color="textSecondary" align="center">
-            No applications found.
-          </Typography>
-        ) : (
-          <Grid container spacing={3}>
+      <div className="list-of-applications">
+      <aside className="sidebar">
+        
+
+        <div className="job-details">
+          <h2>Job Details</h2>
+          {jobDetails ? (
+            <ul>
+              <li>
+                <strong>Job Type:</strong> {jobDetails.jobType}
+              </li>
+              <li>
+                <strong>Payment:</strong> {jobDetails.payment}
+              </li>
+              <li>
+                <strong>People Needed:</strong> {jobDetails.peopleNeeded}
+              </li>
+              <li>
+                <strong>Location:</strong> {jobDetails.location}
+              </li>
+              <li>
+                <strong>Expires In:</strong> {jobDetails.date}
+              </li>
+              <li>
+                <strong>Description:</strong>{" "}
+                {jobDetails.description || "No description provided"}
+              </li>
+            </ul>
+          ) : (
+            <p>Loading job details...</p>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="main-content">
+
+        <div className="talent-grid">
+          <h1>Applications</h1>
+          <Grid container spacing={2}>
             {applications.map((application) => (
-              <Grid item xs={12} sm={6} md={4} key={application.application_id}>
-                <Card sx={{ minHeight: 220 }}>
+              <Grid item xs={12} sm={6} key={application.application_id}>
+                <Card className="talent-card">
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {application.name}
-                    </Typography>
+                    <div
+                      onClick={() =>
+                        navigate(`/spprofile/${application.seeker_id}`)
+                      }
+                      style={{ cursor: "pointer" }}
+                    >
+                      <img
+                        src={application.image || "https://via.placeholder.com/300x150"}
+                        alt={application.name}
+                        className="application-image"
+                      />
+                      <Typography
+                        variant="h6"
+                        className="application-name"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        {application.name}
+                      </Typography>
+                    </div>
                     <Typography variant="body2" color="textSecondary">
                       <strong>Sex:</strong> {application.sex}
                     </Typography>
@@ -156,70 +188,40 @@ function ListOfApplications() {
                       <strong>Phone:</strong> {application.phone}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      <strong>Status:</strong> {application.ApplicationStatus || 'Pending'}
+                      <strong>Status:</strong>{" "}
+                      {application.ApplicationStatus || "Pending"}
                     </Typography>
-                    
-                    <Box sx={{ mt: 2 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          navigate(`/spprofile/${application.seeker_id}`);
-                        }}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ width: '100%' }}
-                      >
-                        View profile
-                      </Button>
-                    </Box>
-                    <Box sx={{ mt: 2 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        href={handleChat(application.phone)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ width: '100%' }}
-                      >
-                        Chat
-                      </Button>
-                    </Box>
-                    <Box sx={{ mt: 2 }}>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => handleEditClick(application)}
-                        sx={{ width: '100%' }}
-                      >
-                        Edit Status
-                      </Button>
-                    </Box>
                   </CardContent>
+                  <Box className="card-actions">
+                    <Button
+                      variant="contained"
+                      color="success"
+                      href={handleChat(application.phone)}
+                      target="_blank"
+                      sx={{ fontSize: "12px" }}
+                    >
+                      Chat
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={() => handleEditClick(application)}
+                      sx={{ fontSize: "12px" }}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
                 </Card>
               </Grid>
             ))}
           </Grid>
-        )}
-      </Container>
+        </div>
+      </div>
 
+      {/* Modal for Status Update */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            borderRadius: 2,
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography variant="h6" mb={2}>
-            Update Status
-          </Typography>
+        <Box className="modal-box">
+          <Typography variant="h6">Update Status</Typography>
           <TextField
             select
             label="Status"
@@ -227,11 +229,11 @@ function ListOfApplications() {
             onChange={(e) => setApplicationStatus(e.target.value)}
             fullWidth
             variant="outlined"
-            margin="normal"
+            sx={{ marginBottom: "20px" }}
           >
             <MenuItem value="Pending">Pending</MenuItem>
-            <MenuItem value="Shortlisted">Select for Job</MenuItem>
-            <MenuItem value="Rejected">Reject person</MenuItem>
+            <MenuItem value="Shortlisted">Shortlisted</MenuItem>
+            <MenuItem value="Rejected">Rejected</MenuItem>
           </TextField>
           <Button
             variant="contained"
@@ -243,6 +245,7 @@ function ListOfApplications() {
           </Button>
         </Box>
       </Modal>
+      </div>
     </div>
   );
 }
