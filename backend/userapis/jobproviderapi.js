@@ -174,6 +174,26 @@ job_provider.get('/jobs', verifyToken, (req, res) => {
 });
 
 
+//jobdetails for specific jobid
+job_provider.get('/jobDetails/:jobId', verifyToken, (req, res) => {
+  const jobId = req.params.jobId;
+  const sql = req.app.get("db");
+  const request = new sql.Request();
+  const provider_id = req.res.locals.decode.id;
+  
+  const sqlQuery = 'SELECT * FROM jobdetails WHERE provider_id = @provider_id and id=@jobId order by date desc';
+  request.input('provider_id', sql.VarChar, provider_id);
+  request.input('jobId', sql.Int, jobId);
+  
+  request.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send({message:'Internal Server Error'});
+    }
+    res.status(200).send(result.recordset[0]);
+  });
+});
+
 // To modify any of the previously posted jobs by the JobProvider
 job_provider.put('/editJob/:jobId', verifyToken, (req, res) => {
   const jobId = req.params.jobId;
@@ -342,7 +362,8 @@ job_provider.get('/applications/:jobId', verifyToken, async (req, res) => {
           js.age, 
           js.seeker_id, 
           jd.jobTitle, 
-          ja.ApplicationStatus 
+          ja.ApplicationStatus,
+          js.image
         FROM 
           job_applications AS ja
         INNER JOIN 
