@@ -135,6 +135,12 @@ function Menu() {
             <ListItem button onClick={() => handleNavigation('/help-and-support/job-provider')}>
               <ListItemText primary="Help Centre" />
             </ListItem>
+            <ListItem button onClick={()=>handleNavigation('/privacy-policy')}>
+              <ListItemText primary="Privacy Centre" />
+            </ListItem>
+            <ListItem button onClick={()=>handleNavigation('/terms-and-conditions')}>
+              <ListItemText primary="Terms" />
+            </ListItem>
             <Divider />
             <ListItem button onClick={() => handleLogout()}>
               <ListItemText primary="Sign Out" />

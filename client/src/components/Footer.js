@@ -18,8 +18,8 @@ const Footer = () => {
         <li><strong>NagaConnect</strong></li>
         <li><a href="#">About NagaConnect</a></li>
         <li><a href="#">Security</a></li>
-        <li><a href="#">Terms</a></li>
-        <li><a href="#">Privacy Centre</a></li>
+        <li><a href="/terms-and-conditions">Terms</a></li>
+        <li><a href="/privacy-policy">Privacy Centre</a></li>
       </ul>
       <ul>
         <li><strong>Employers</strong></li>

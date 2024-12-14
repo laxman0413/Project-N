@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Menu from './Menu';
 import CarderSeekerApp from './CarderSeekerApp';
-import './AppliedJobs.css'; // Import updated styling
+import './AppliedJobs.css';
 
 function AppliedJobs() {
   const [appliedJobs, setAppliedJobs] = useState([]);
@@ -44,13 +44,27 @@ function AppliedJobs() {
     setAppliedJobs(appliedJobs.filter(job => job.application_id !== application_id));
   };
 
+  const sortedJobs = appliedJobs.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    // If either date is invalid, treat it as expired
+    if (isNaN(dateA)) return 1;
+    if (isNaN(dateB)) return -1;
+
+    // Sort by expiration status first
+    if (dateA < new Date() && dateB >= new Date()) return 1;
+    if (dateA >= new Date() && dateB < new Date()) return -1;
+
+    // Then sort by nearest deadline
+    return dateA - dateB;
+  });
+
   return (
-    <div>
+    <div className="applied-jobs-page">
       <div className="fixed-menu">
         <Menu />
       </div>
-      <pre> </pre>
-      <pre> </pre>
       <div className="content">
         <h2 className="title">Applied Jobs</h2>
         {loading ? (
@@ -59,9 +73,9 @@ function AppliedJobs() {
           </div>
         ) : (
           <div className="applied-job-list">
-            {appliedJobs.length > 0 ? (
+            {sortedJobs.length > 0 ? (
               <div className="jobs-grid">
-                {appliedJobs.map((job) => (
+                {sortedJobs.map((job) => (
                   <CarderSeekerApp
                     key={job.application_id}
                     job={job}
@@ -81,3 +95,4 @@ function AppliedJobs() {
 }
 
 export default AppliedJobs;
+
