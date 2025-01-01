@@ -95,9 +95,6 @@ function Menu() {
 
           <Box>
             <IconButton>
-              <ChatIcon />
-            </IconButton>
-            <IconButton>
               <Badge badgeContent={unreadCount} color="error">
                 <NotificationsIcon onClick={() => handleNavigation('/job-provider/notifications')} />
               </Badge>

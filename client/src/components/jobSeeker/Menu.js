@@ -100,9 +100,6 @@ useEffect(() => {
           {/* Action Icons */}
           <Box>
             <IconButton>
-              <ChatIcon />
-            </IconButton>
-            <IconButton>
               <Badge badgeContent={unreadCount} color="error">
                 <NotificationsIcon onClick={()=> handleNavigation('/job-seeker/notifications')} />
               </Badge>

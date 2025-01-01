@@ -260,90 +260,50 @@ function JobProviderDashboard() {
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
+
   return (
     <div>
-      <div
-  style={{
-    position: 'fixed',
-    top: 0,
-    width: '100%',
-    zIndex: 1000,
-    backgroundColor: '#f8f9fa',
-    paddingBottom: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  }}
->
-  {/* Header Section */}
-  <div style={{ width: '100%' }}>
-    <Menu />
-  </div>
-
-  {/* Buttons Section */}
-  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-    <button
-      className='btn'
-      onClick={handleOpenTicketModal}
-      style={{
-        backgroundColor: 'white',
-        color: 'blue',
-        border: '2px solid blue',
-        padding: '10px 20px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-      }}
-    >
-      RAISE A TICKET
-    </button>
-    <button
-      className='btn'
-      onClick={handlePostJobClick}
-          style={{
-            backgroundColor: 'black',
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-    >
-      POST A JOB
-    </button>
-  </div>
-
-
+      {/* Header Section */}
+      <div style={{ width: '100%' }}>
+        <Menu />
       </div>
-
-      <div style={{ paddingTop: '100px' }}>
-        {/* Ticket Modal */}
-        <Dialog open={isTicketModalOpen} onClose={handleCloseTicketModal}>
-          <DialogTitle>Raise a Ticket</DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleSubmit(handleTicketSubmit)}>
-              <div className="mb-3">
-                <label htmlFor="title">Title:</label><br />
-                <input type='text' id='title' {...register("title", { required: "Title is required" })} /> <br />
-                <label htmlFor="description">Issue Description</label>
-                <TextField
-                  fullWidth
-                  id="description"
-                  {...register("description", { required: "description is required" })}
-                  multiline
-                  rows={4}
-                />
-                {errors.issue && <Typography color="error">{errors.issue.message}</Typography>}
-              </div>
-              <button type="submit" className="btn btn-success">Submit Ticket</button>
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseTicketModal}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Job Posting Modal */}
-        <Dialog open={isModalOpen} onClose={handleCloseModal}>
+  
+      {/* Post a Job Section */}
+      <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            width: '300px',
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+            padding: '20px',
+            textAlign: 'center',
+            backgroundColor: '#f9f9f9',
+          }}
+          onClick={handlePostJobClick}
+        >
+          <h3 style={{ margin: '10px 0', color: '#333' }}>Post a Job</h3>
+          <p style={{ fontSize: '14px', color: '#666', margin: '10px 0' }}>
+            Click here to post a new job. Provide all the necessary details to make it visible to job seekers.
+          </p>
+          <button
+            style={{
+              backgroundColor: 'black',
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              marginTop: '10px',
+            }}
+          >
+            Post Now
+          </button>
+        </div>
+      </div>
+  
+      {/* Job Posting Modal */}
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
           <DialogTitle>Post a Job</DialogTitle>
           <DialogContent>
             <div className="container col-l1 col-sm-8 col-md-6 mx-auto mt-3">
@@ -485,32 +445,36 @@ function JobProviderDashboard() {
             <Button onClick={handleCloseModal}>Cancel</Button>
           </DialogActions>
         </Dialog>
-
-        <div style={{ paddingTop: '30px' }}>
-          <h2>Previous Posted Jobs</h2>
-          <div className="job-list">
-            {currentJobs.map((job, index) => (
-              <React.Fragment key={job.id}>
-                <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
-                {(index + 1) % 3 === 0 && ads.length > Math.floor(index / 3) && (
-                <AdCard ad={ads[Math.floor(index / 3)]} />
-              )}
-              </React.Fragment>
-            ))}
-          </div>
-
-          <Pagination
-            count={Math.ceil(jobs.length / jobsPerPage)}
-            page={page}
-            onChange={handlePageChange}
-            variant="outlined"
-            shape="rounded"
-            sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
-            />
+  
+      {/* Job List Section */}
+      <div className="job-list">
+        {currentJobs.map((job, index) => (
+          <React.Fragment key={job.id}>
+            <div className="job-card">
+              <CarderProvider job={job} locations={locations} fetchJobs={fetchJobs} />
             </div>
-          </div>
-        </div>
-      );
+            {(index + 1) % 3 === 0 && ads.length > Math.floor(index / 3) && (
+              <div className="ad-card">
+                <AdCard ad={ads[Math.floor(index / 3)]} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+  
+      {/* Pagination Section */}
+      <div className="pagination-container" style={{ marginTop: '20px' }}>
+        <Pagination
+          count={Math.ceil(jobs.length / jobsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+        />
+      </div>
+    </div>
+  );
+  
     }
     
     export default JobProviderDashboard;
