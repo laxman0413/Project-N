@@ -1,0 +1,139 @@
+/*drop table jobdetails;
+drop table job_seeker;
+drop table job_provider;*/
+
+/*
+CREATE TABLE job_provider (
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    provider_id VARCHAR(12) NOT NULL,
+    image VARCHAR(500) NULL,
+    PRIMARY KEY (provider_id)
+);*/
+
+create table AdminsOfNagaConnect(name varchar(30),password varchar(255),phone varchar(12),id varchar(12) primary key);
+
+CREATE TABLE job_seeker (
+    name VARCHAR(25) NOT NULL,
+    password VARCHAR(120) NULL,
+    phone VARCHAR(10) NOT NULL,
+    jobType VARCHAR(50) NULL,
+    age INT NOT NULL,
+    sex VARCHAR(5) NULL,
+    seeker_id VARCHAR(12) NOT NULL,
+    image VARCHAR(500) NULL,
+    PRIMARY KEY (seeker_id)
+);
+
+CREATE TABLE jobdetails (
+    id INT NOT NULL,
+    jobTitle VARCHAR(255) NOT NULL,
+    jobType VARCHAR(50) NOT NULL,
+    customJobType VARCHAR(255) NULL,
+    payment DECIMAL(10, 2) NOT NULL,
+    peopleNeeded INT NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    time TIME(7) NOT NULL,
+    description VARCHAR(500) NULL,
+    provider_id VARCHAR(12) NULL,
+    negotiability NVARCHAR(30) NULL DEFAULT 'Non Negotiable',
+    images VARCHAR(255) NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE advertisements (
+    advertisement_id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    user_id VARCHAR(12) NOT NULL,
+    shop_name VARCHAR(100) NOT NULL,
+    shop_location VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    images VARCHAR(255) NULL,
+    pull_count INT DEFAULT 0 NULL
+);
+
+CREATE TABLE job_applications (
+    application_id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    seeker_id VARCHAR(12) NOT NULL,
+    id INT NOT NULL,
+    application_date DATETIME DEFAULT GETDATE() NULL
+);
+
+CREATE TABLE otp_verification (
+    phone VARCHAR(20) NOT NULL,
+    otp VARCHAR(6) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE() NOT NULL
+);
+
+
+CREATE TABLE notifications (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    creator_id Varchar(15) NOT NULL,  -- User who creates the notification
+    receiver_id Varchar(15) NOT NULL, -- User who receives the notification
+    notification_data NVARCHAR(MAX) NOT NULL,
+    notification_date DATE NOT NULL DEFAULT GETDATE(),
+    notification_time TIME NOT NULL DEFAULT GETDATE(),
+    viewed BIT NOT NULL DEFAULT 0  -- 0 for not viewed, 1 for viewed
+);
+
+
+create table Tickets (TicketId int primary key IDENTITY(1,1),TicketOwner Varchar(30),TicketStatus Varchar(20) default 'Open',Title Varchar(40),Description varchar(255));
+
+
+
+--job provider trigger
+CREATE TRIGGER [dbo].[trg_before_insert_job_provider]
+ON [dbo].[job_provider]
+INSTEAD OF INSERT
+AS
+BEGIN
+    -- Insert the new row with the computed provider_id
+    INSERT INTO job_provider (provider_id, name, password, phone, image)
+    SELECT 
+        'jp' + i.phone AS provider_id,
+        i.name, 
+        i.password, 
+        i.phone,
+        i.image
+    FROM 
+        inserted i;
+END;
+GO
+
+
+
+--alter table job_seeker add place varchar(40);
+/*
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER [dbo].[trg_BeforeInsertJobSeeker]
+ON [dbo].[job_seeker]
+INSTEAD OF INSERT
+AS
+BEGIN
+    -- Insert into job_seeker by concatenating 'JS' with phone_number to form seeker_id
+    INSERT INTO job_seeker(id, name, password, phone, age, sex, place, jobType, image)
+    SELECT 'JS' + i.phone, i.name, i.password, i.phone, i.age, i.sex, i.place, i.jobType, i.image
+    FROM inserted i;
+END
+GO*/
+
+
+/*create table job_seeker(seeker_id varchar(12),name varchar(25),password varchar(50), phone_number varchar(10),age integer, sex varchar(6),place varchar(20), jobType varchar(30),image varchar(255));
+*/
+
+
+--alter table jobdetails add negotiability varchar(30) default "Non Negotiable";
+
+select * from jobdetails;
+Select * From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'jobdetails';
+
+SELECT * FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE';
+
+
